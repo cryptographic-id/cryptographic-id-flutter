@@ -150,27 +150,3 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 }
-
-/*
-class GenerateQR extends StatefulWidget {
-  _GenerateQRState createState() => _GenerateQRState();
-}
-
-class _GenerateQRState extends State<GenerateQR> {
-  String qrData = "Teststring";
-  final qrdataFeed = TextEditingController();
-
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Center(child: Text("Generate QR Code")),
-      ),
-      body: Container(
-        padding: EdgeInsets.all(20),
-        child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              QrImage(data: qrData),
-*/
