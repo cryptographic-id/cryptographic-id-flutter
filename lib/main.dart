@@ -21,6 +21,48 @@ class MyApp extends StatelessWidget {
   }
 }
 
+class ScanQR extends StatefulWidget {
+  const ScanQR({Key? key, required this.title}) : super(key: key);
+  final String title;
+
+  @override
+  State<ScanQR> createState() => ScanQRState();
+}
+
+class ScanQRState extends State<ScanQR> {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("Sqan QR"),
+      ),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            const Text(
+              'Scanner',
+            ),
+            MobileScanner(
+              allowDuplicates: false,
+              controller: MobileScannerController(
+                facing: CameraFacing.back, torchEnabled: true),
+              onDetect: (barcode, args) {
+                if (barcode.rawValue == null) {
+                  debugPrint('Failed to scan Barcode');
+                } else {
+                  final String code = barcode.rawValue!;
+                  debugPrint('Barcode found! $code');
+                }
+              },
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
 class MyHomePage extends StatefulWidget {
   const MyHomePage({Key? key, required this.title}) : super(key: key);
   final String title;
@@ -85,20 +127,18 @@ class _MyHomePageState extends State<MyHomePage> {
               '$_counter',
               style: Theme.of(context).textTheme.headline4,
             ),
-            // QrImage(data: "teststring"),
-            MobileScanner(
-              allowDuplicates: false,
-              controller: MobileScannerController(
-                facing: CameraFacing.back, torchEnabled: true),
-              onDetect: (barcode, args) {
-                if (barcode.rawValue == null) {
-                  debugPrint('Failed to scan Barcode');
-                } else {
-                  final String code = barcode.rawValue!;
-                  debugPrint('Barcode found! $code');
-                }
+            FlatButton(
+              padding: EdgeInsets.all(15),
+              onPressed: () async {
+                Navigator.of(context).push(MaterialPageRoute(builder: (context)=> ScanQR(title: "Purpose")));
               },
+              child: Text("Scan QR", style: TextStyle(color: Colors.indigo),),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(20),
+                side: BorderSide(color: Colors.indigo),
+              ),
             ),
+            // QrImage(data: "teststring"),
           ],
         ),
       ),
