@@ -6,6 +6,13 @@ void main() {
   runApp(const MyApp());
 }
 
+void scanQRCode(String purpose, BuildContext context, Function(String) onScanned) {
+  debugPrint('Scan QR Code');
+  Navigator.of(context).push(MaterialPageRoute(builder: (c) => ScanQR(title: "Purpose", onScanned: onScanned)));
+  // Navigator pop should happen here, wrap onScanned
+  debugPrint('after scan');
+}
+
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
 
@@ -17,6 +24,41 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.grey,
       ),
       home: const MyHomePage(title: 'Simon App'),
+    );
+  }
+}
+
+class ShowScanResult extends StatefulWidget {
+  const ShowScanResult({Key? key, required this.title, required this.result}) : super(key: key);
+  final String title;
+  final String result;
+
+  @override
+  State<ShowScanResult> createState() => ShowScanResultState();
+}
+
+class ShowScanResultState extends State<ShowScanResult> {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("QR Result"),
+      ),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            const Text(
+              'Scanned:',
+            ),
+            // QrImage(data: "teststring"),
+            const Text(
+              // widget.result,
+              'text',
+            ),
+          ],
+        ),
+      ),
     );
   }
 }
@@ -129,10 +171,14 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
             FlatButton(
               padding: EdgeInsets.all(15),
-              onPressed: () async {
-                debugPrint('before scan');
-                Navigator.of(context).push(MaterialPageRoute(builder: (context) => ScanQR(title: "Purpose", onScanned: (s) => {})));
-                debugPrint('after scan');
+              onPressed: () {
+                scanQRCode("to add", context, (s) {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (c) => ShowScanResult(title: 'ResTitle', result: s),
+                    ),
+                  );
+                });
               },
               child: Text("Scan QR", style: TextStyle(color: Colors.indigo),),
               shape: RoundedRectangleBorder(
