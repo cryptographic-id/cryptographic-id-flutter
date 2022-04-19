@@ -41,7 +41,7 @@ class ScanQR extends StatelessWidget {
             MobileScanner(
               allowDuplicates: false,
               controller: MobileScannerController(
-                facing: CameraFacing.back, torchEnabled: true),
+                facing: CameraFacing.back, torchEnabled: false),
               onDetect: (barcode, args) {
                 if (barcode.rawValue == null) {
                   debugPrint('Failed to scan Barcode');
