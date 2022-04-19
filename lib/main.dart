@@ -28,16 +28,11 @@ class MyApp extends StatelessWidget {
   }
 }
 
-class ShowScanResult extends StatefulWidget {
+class ShowScanResult extends StatelessWidget {
   const ShowScanResult({Key? key, required this.title, required this.result}) : super(key: key);
   final String title;
   final String result;
 
-  @override
-  State<ShowScanResult> createState() => ShowScanResultState();
-}
-
-class ShowScanResultState extends State<ShowScanResult> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -51,11 +46,8 @@ class ShowScanResultState extends State<ShowScanResult> {
             const Text(
               'Scanned:',
             ),
-            // QrImage(data: "teststring"),
-            const Text(
-              // widget.result,
-              'text',
-            ),
+            Text(result),
+            QrImage(data: result),
           ],
         ),
       ),
@@ -186,7 +178,6 @@ class _MyHomePageState extends State<MyHomePage> {
                 side: BorderSide(color: Colors.indigo),
               ),
             ),
-            // QrImage(data: "teststring"),
           ],
         ),
       ),
