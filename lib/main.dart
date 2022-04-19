@@ -8,9 +8,15 @@ void main() {
 
 void scanQRCode(String purpose, BuildContext context, Function(String) onScanned) {
   debugPrint('Scan QR Code');
-  Navigator.of(context).push(MaterialPageRoute(builder: (c) => ScanQR(title: "Purpose", onScanned: onScanned)));
-  // Navigator pop should happen here, wrap onScanned
-  debugPrint('after scan');
+  Navigator.of(context).push(
+    MaterialPageRoute(
+      builder: (c) => ScanQR(title: "Purpose", onScanned: (s) {
+        Navigator.of(context).pop();
+        debugPrint('after scan');
+        onScanned(s);
+      })
+    )
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -85,7 +91,6 @@ class ScanQRState extends State<ScanQR> {
                 } else {
                   final String code = barcode.rawValue!;
                   debugPrint('Barcode found! $code');
-                  Navigator.of(context).pop();
                   widget.onScanned(code);
                 }
               },
