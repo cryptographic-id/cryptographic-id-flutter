@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
+import 'dart:async';
 
 void main() {
   runApp(const MyApp());
@@ -17,6 +18,14 @@ void scanQRCode(String purpose, BuildContext context, Function(String) onScanned
       })
     )
   );
+}
+
+Future<String> scanQRCodeAsync(String purpose, BuildContext context) {
+  var completer = new Completer<String>();
+  scanQRCode(purpose, context, (s) {
+    completer.complete(s);
+  });
+  return completer.future;
 }
 
 class MyApp extends StatelessWidget {
@@ -168,14 +177,13 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
             FlatButton(
               padding: EdgeInsets.all(15),
-              onPressed: () {
-                scanQRCode("to add", context, (s) {
-                  Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (c) => ShowScanResult(title: 'ResTitle', result: s),
-                    ),
-                  );
-                });
+              onPressed: () async {
+                var qr = await scanQRCodeAsync("to add", context);
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (c) => ShowScanResult(title: 'ResTitle', result: qr),
+                  ),
+                );
               },
               child: Text("Scan QR", style: TextStyle(color: Colors.indigo),),
               shape: RoundedRectangleBorder(
