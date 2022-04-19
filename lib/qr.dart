@@ -23,21 +23,16 @@ Future<String> scanQRCodeAsync(String purpose, BuildContext context) {
   return completer.future;
 }
 
-class ScanQR extends StatefulWidget {
+class ScanQR extends StatelessWidget {
   const ScanQR({Key? key, required this.title, required this.onScanned}) : super(key: key);
   final String title;
   final Function(String) onScanned;
 
   @override
-  State<ScanQR> createState() => ScanQRState();
-}
-
-class ScanQRState extends State<ScanQR> {
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Scan QR-Code ' + widget.title),
+        title: Text('Scan QR-Code ' + this.title),
       ),
       body: SingleChildScrollView(
         child: Column(
@@ -53,7 +48,7 @@ class ScanQRState extends State<ScanQR> {
                 } else {
                   final String code = barcode.rawValue!;
                   debugPrint('Barcode found! $code');
-                  widget.onScanned(code);
+                  this.onScanned(code);
                 }
               },
             ),
