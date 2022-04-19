@@ -22,8 +22,9 @@ class MyApp extends StatelessWidget {
 }
 
 class ScanQR extends StatefulWidget {
-  const ScanQR({Key? key, required this.title}) : super(key: key);
+  const ScanQR({Key? key, required this.title, required this.onScanned}) : super(key: key);
   final String title;
+  final Function(String) onScanned;
 
   @override
   State<ScanQR> createState() => ScanQRState();
@@ -34,15 +35,12 @@ class ScanQRState extends State<ScanQR> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Sqan QR"),
+        title: Text('Scan QR-Code ' + widget.title),
       ),
-      body: Center(
+      body: SingleChildScrollView(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            const Text(
-              'Scanner',
-            ),
             MobileScanner(
               allowDuplicates: false,
               controller: MobileScannerController(
@@ -53,6 +51,8 @@ class ScanQRState extends State<ScanQR> {
                 } else {
                   final String code = barcode.rawValue!;
                   debugPrint('Barcode found! $code');
+                  Navigator.of(context).pop();
+                  widget.onScanned(code);
                 }
               },
             ),
@@ -130,7 +130,9 @@ class _MyHomePageState extends State<MyHomePage> {
             FlatButton(
               padding: EdgeInsets.all(15),
               onPressed: () async {
-                Navigator.of(context).push(MaterialPageRoute(builder: (context)=> ScanQR(title: "Purpose")));
+                debugPrint('before scan');
+                Navigator.of(context).push(MaterialPageRoute(builder: (context) => ScanQR(title: "Purpose", onScanned: (s) => {})));
+                debugPrint('after scan');
               },
               child: Text("Scan QR", style: TextStyle(color: Colors.indigo),),
               shape: RoundedRectangleBorder(
