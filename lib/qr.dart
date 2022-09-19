@@ -1,24 +1,31 @@
 import 'package:flutter/material.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 import 'dart:async';
+import 'dart:typed_data';
 
-void scanQRCode(String purpose, BuildContext context, Function(String) onScanned) {
+void scanQRCode(String purpose, BuildContext context, Function(Uint8List) onScanned) {
   debugPrint('Scan QR Code');
+  var fired = false;
   Navigator.of(context).push(
     MaterialPageRoute(
       builder: (c) => ScanQR(title: "Purpose", onScanned: (s) {
-        Navigator.of(context).pop();
         debugPrint('after scan');
+        if (!fired) {
+          Navigator.of(context).pop();
+          fired = true;
+        }
         onScanned(s);
       })
     )
   );
 }
 
-Future<String> scanQRCodeAsync(String purpose, BuildContext context) {
-  var completer = new Completer<String>();
+Future<Uint8List> scanQRCodeAsync(String purpose, BuildContext context) {
+  var completer = new Completer<Uint8List>();
   scanQRCode(purpose, context, (s) {
-    completer.complete(s);
+    if (!completer.isCompleted) {
+      completer.complete(s);
+    }
   });
   return completer.future;
 }
@@ -26,10 +33,13 @@ Future<String> scanQRCodeAsync(String purpose, BuildContext context) {
 class ScanQR extends StatelessWidget {
   const ScanQR({Key? key, required this.title, required this.onScanned}) : super(key: key);
   final String title;
-  final Function(String) onScanned;
+  final Function(Uint8List) onScanned;
 
   @override
   Widget build(BuildContext context) {
+    final controller = MobileScannerController(
+      facing: CameraFacing.back,
+      torchEnabled: false);
     return Scaffold(
       appBar: AppBar(
         title: Text('Scan QR-Code ' + this.title),
@@ -39,15 +49,15 @@ class ScanQR extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             MobileScanner(
-              allowDuplicates: false,
-              controller: MobileScannerController(
-                facing: CameraFacing.back, torchEnabled: false),
+              allowDuplicates: true, // otherwise binary qr code did not scan
+              controller: controller,
               onDetect: (barcode, args) {
-                if (barcode.rawValue == null) {
+                if (barcode.rawBytes == null) {
                   debugPrint('Failed to scan Barcode');
                 } else {
-                  final String code = barcode.rawValue!;
+                  final Uint8List code = barcode.rawBytes!;
                   debugPrint('Barcode found! $code');
+                  controller.stop();
                   this.onScanned(code);
                 }
               },
