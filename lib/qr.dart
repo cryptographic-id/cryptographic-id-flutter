@@ -57,7 +57,6 @@ class ScanQR extends StatelessWidget {
                 } else {
                   final Uint8List code = barcode.rawBytes!;
                   debugPrint('Barcode found! $code');
-                  controller.stop();
                   this.onScanned(code);
                 }
               },
