@@ -1,3 +1,4 @@
+import 'dart:isolate';
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
@@ -5,8 +6,25 @@ import 'package:flutter/scheduler.dart';
 import '../crypto.dart' as crypto;
 import '../protocol/cryptograhic_id.pb.dart';
 import '../qr_show.dart';
+import '../tuple.dart';
 import './loading_screen.dart';
 
+
+Widget scanErrorMsg(String error) {
+  return Scaffold(
+    appBar: AppBar(
+      title: const Text("Scan failed"),
+    ),
+    body: Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          Text(error),
+        ],
+      ),
+    ),
+  );
+}
 
 class ScanResult extends StatefulWidget {
   const ScanResult({Key? key, required this.idBytes}) : super(key: key);
@@ -16,29 +34,46 @@ class ScanResult extends StatefulWidget {
   State<ScanResult> createState() => _ScanResultState();
 }
 
+Future<void> _backgroundVerify(Tuple<SendPort, CryptographicId> params) async {
+  final p = params.item1;
+  final result = await crypto.verifyCryptographicId(params.item2);
+  Isolate.exit(p, result);
+}
+
 class _ScanResultState extends State<ScanResult> {
   bool loaded = false;
   bool verified = false;
+  String error = "";
   CryptographicId id = CryptographicId();
 
-  void evaluateScan() async {
-    final tmp_id = CryptographicId.fromBuffer(widget.idBytes);
-    final result = await crypto.verifyCryptographicId(tmp_id);
 
-    setState(() {
-      verified = result;
-      id = tmp_id;
-      loaded = true;
-    });
+  void _evaluateScan() async {
+    try {
+      final tmp_id = CryptographicId.fromBuffer(widget.idBytes);
+      final p = ReceivePort();
+      await Isolate.spawn(_backgroundVerify, Tuple(item1: p.sendPort,
+                                                   item2: tmp_id));
+      final result = await p.first;
+
+      setState(() {
+        verified = result;
+        id = tmp_id;
+        loaded = true;
+      });
+    } catch (e, trace) {
+      setState(() {
+        verified = false;
+        loaded = true;
+        error = e.toString();
+      });
+    }
   }
 
   @override
   void initState() {
     super.initState();
     SchedulerBinding.instance.addPostFrameCallback((_) {
-      SchedulerBinding.instance.addPostFrameCallback((_) {
-        evaluateScan();
-      });
+      _evaluateScan();
     });
   }
 
@@ -47,10 +82,12 @@ class _ScanResultState extends State<ScanResult> {
     if (!loaded) {
       return loadingScreen("Verifying");
     }
-    final title = verified ? "valid" : "invalid";
+    if (!verified) {
+      return scanErrorMsg(error);
+    }
     return Scaffold(
       appBar: AppBar(
-        title: Text("Result: " + title),
+        title: const Text("Result: valid"),
       ),
       body: Center(
         child: Column(
