@@ -1,5 +1,7 @@
 import 'package:cryptography/cryptography.dart';
 import './tuple.dart';
+import './protocol/cryptograhic_id.pb.dart';
+import 'dart:typed_data';
 
 Future<Tuple<List<int>, List<int>>> createKey() async {
   final algorithm = Ed25519();
@@ -29,4 +31,15 @@ Future<List<int>> sign(List<int> message, List<int> key) async {
     keyPair: keyPair,
   );
   return signature.bytes;
+}
+
+Future<bool> verifyCryptographicId(CryptographicId id) async {
+  final sig = id.signature;
+  final date = id.timestamp;
+  final key = id.publicKey;
+  final verifyList = Uint8List(8 + key.length);
+  final dataToVerify = ByteData.sublistView(verifyList);
+  dataToVerify.setUint64(0, date.toInt(), Endian.big);
+  verifyList.setAll(8, key);
+  return await verify(verifyList, sig, key);
 }
