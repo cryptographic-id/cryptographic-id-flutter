@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:qr_flutter/qr_flutter.dart';
-import './qr.dart';
+import './qr_scan.dart';
+import './ui/scan_result.dart';
+
 
 void main() {
   runApp(const MyApp());
@@ -17,33 +18,6 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.grey,
       ),
       home: const MyHomePage(title: 'Simon App'),
-    );
-  }
-}
-
-class ShowScanResult extends StatelessWidget {
-  const ShowScanResult({Key? key, required this.title, required this.result}) : super(key: key);
-  final String title;
-  final String result;
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text("QR Result"),
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            const Text(
-              'Scanned:',
-            ),
-            Text(result),
-            QrImage(data: result),
-          ],
-        ),
-      ),
     );
   }
 }
@@ -77,27 +51,29 @@ class _MyHomePageState extends State<MyHomePage> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             const Text(
-              'Liebescounter:',
+              'Test:',
             ),
             Text(
               '$_counter',
               style: Theme.of(context).textTheme.headline4,
             ),
-            FlatButton(
-              padding: EdgeInsets.all(15),
+            TextButton(
+              style: TextButton.styleFrom(
+                padding: EdgeInsets.all(15),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20),
+                  side: BorderSide(color: Colors.indigo),
+                ),
+              ),
               onPressed: () async {
-                var qr = await scanQRCodeAsync("to add", context);
+                final qr = await scanQRCodeAsync("to add", context);
                 Navigator.of(context).push(
                   MaterialPageRoute(
-                    builder: (c) => ShowScanResult(title: 'ResTitle', result: qr),
+                    builder: (c) => ScanResult(idBytes: qr),
                   ),
                 );
               },
               child: Text("Scan QR", style: TextStyle(color: Colors.indigo),),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(20),
-                side: BorderSide(color: Colors.indigo),
-              ),
             ),
           ],
         ),
