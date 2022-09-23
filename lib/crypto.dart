@@ -41,5 +41,18 @@ Future<bool> verifyCryptographicId(CryptographicId id) async {
   final dataToVerify = ByteData.sublistView(verifyList);
   dataToVerify.setUint64(0, date.toInt(), Endian.big);
   verifyList.setAll(8, key);
-  return await verify(verifyList, sig, key);
+  if (!await verify(verifyList, sig, key)) {
+    return false;
+  }
+  for (final entry in id.personalInformation) {
+    final verifyEntryList = Uint8List(8 + 4 + entry.content.length);
+    final entryDataToVerify = ByteData.sublistView(verifyEntryList);
+    entryDataToVerify.setUint64(0, date.toInt(), Endian.big);
+    entryDataToVerify.setInt32(8, entry.type.value, Endian.big);
+    verifyEntryList.setAll(12, entry.content.codeUnits);
+    if (!await verify(verifyEntryList, entry.signature, key)) {
+      return false;
+    }
+  }
+  return true;
 }
