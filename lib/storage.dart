@@ -41,7 +41,7 @@ class PublicKey {
   }
 }
 
-PublicKey fromMapEntry(Storage storage, Map<String, dynamic> entry) {
+Future<PublicKey> publicKeyFromMap(Storage storage, Map<String, dynamic> entry) async {
   return PublicKey(
     id: entry["id"],
     name: entry["name"],
@@ -81,16 +81,16 @@ class Storage {
 
   Future<List<PublicKey>> fetchPublicKeys() async {
     final List<Map<String, dynamic>> maps = await database.query('PublicKeys');
-    return List.generate(maps.length, (i) {
-      return fromMapEntry(this, maps[i]);
-    });
+    return await Future.wait(List.generate(maps.length, (i) async {
+      return await publicKeyFromMap(this, maps[i]);
+    }));
   }
 
   Future<PublicKey?> fetchPublicKey(String name) async {
     final List<Map<String, dynamic>> maps = await database.query(
       'PublicKeys', where: 'name = ?', whereArgs: [name]);
     if (maps.length > 0) {
-      return fromMapEntry(this, maps.first);
+      return await publicKeyFromMap(this, maps.first);
     }
     return null;
   }
