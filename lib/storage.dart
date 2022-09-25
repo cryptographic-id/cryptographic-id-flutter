@@ -41,6 +41,15 @@ class PublicKey {
   }
 }
 
+PublicKey fromMapEntry(Storage storage, Map<String, dynamic> entry) {
+  return PublicKey(
+    id: entry["id"],
+    name: entry["name"],
+    publicKey: entry["key"].split(",").map(
+      int.parse).toList().cast<int>(),
+  );
+}
+
 class Storage {
   final AndroidOptions aOptions = const AndroidOptions(
     encryptedSharedPreferences: true,
@@ -70,16 +79,20 @@ class Storage {
     return PublicKey(id: id, name: key.name, publicKey: key.publicKey);
   }
 
-  Future<List<PublicKey>> fetchPubKeys() async {
+  Future<List<PublicKey>> fetchPublicKeys() async {
     final List<Map<String, dynamic>> maps = await database.query('PublicKeys');
     return List.generate(maps.length, (i) {
-      return PublicKey(
-        id: maps[i]["id"],
-        name: maps[i]["name"],
-        publicKey: maps[i]["key"].split(",").map(
-          int.parse).toList().cast<int>(),
-      );
+      return fromMapEntry(this, maps[i]);
     });
+  }
+
+  Future<PublicKey?> fetchPublicKey(String name) async {
+    final List<Map<String, dynamic>> maps = await database.query(
+      'PublicKeys', where: 'name = ?', whereArgs: [name]);
+    if (maps.length > 0) {
+      return fromMapEntry(this, maps.first);
+    }
+    return null;
   }
 }
 
