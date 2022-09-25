@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import './qr_scan.dart';
+import './storage.dart';
 import './ui/scan_result.dart';
 
 
@@ -69,7 +70,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 final qr = await scanQRCodeAsync("to add", context);
                 Navigator.of(context).push(
                   MaterialPageRoute(
-                    builder: (c) => ScanResult(idBytes: qr),
+                    builder: (c) => ScanResult(idBytes: qr, check: null),
                   ),
                 );
               },

@@ -5,7 +5,7 @@ import 'package:flutter/scheduler.dart';
 
 import '../crypto.dart' as crypto;
 import '../protocol/cryptograhic_id.pb.dart';
-import '../qr_show.dart';
+import '../storage.dart';
 import '../tuple.dart';
 import './loading_screen.dart';
 
@@ -27,8 +27,9 @@ Widget scanErrorMsg(String error) {
 }
 
 class ScanResult extends StatefulWidget {
-  const ScanResult({Key? key, required this.idBytes}) : super(key: key);
+  const ScanResult({Key? key, required this.idBytes, required this.check}) : super(key: key);
   final Uint8List idBytes;
+  final PublicKey? check;
 
   @override
   State<ScanResult> createState() => _ScanResultState();
@@ -42,10 +43,8 @@ Future<void> _backgroundVerify(Tuple<SendPort, CryptographicId> params) async {
 
 class _ScanResultState extends State<ScanResult> {
   bool loaded = false;
-  bool verified = false;
-  String error = "";
+  String? error = "";
   CryptographicId id = CryptographicId();
-
 
   void _evaluateScan() async {
     try {
@@ -54,15 +53,25 @@ class _ScanResultState extends State<ScanResult> {
       await Isolate.spawn(_backgroundVerify, Tuple(item1: p.sendPort,
                                                    item2: tmp_id));
       final result = await p.first;
+      var verified = null;
+      var errMsg = null;
+      if (result) {
+        if (widget.check != null) {
+          if (widget.check!.publicKey != tmp_id.publicKey) {
+            errMsg = "Signature does not belong to user " + widget.check!.name!;
+          }
+        }
+      } else {
+        errMsg = "Signature is not correct";
+      }
 
       setState(() {
-        verified = result;
-        id = tmp_id;
         loaded = true;
+        id = tmp_id;
+        error = errMsg;
       });
     } catch (e, trace) {
       setState(() {
-        verified = false;
         loaded = true;
         error = e.toString();
       });
@@ -82,8 +91,8 @@ class _ScanResultState extends State<ScanResult> {
     if (!loaded) {
       return loadingScreen("Verifying");
     }
-    if (!verified) {
-      return scanErrorMsg(error);
+    if (error != null) {
+      return scanErrorMsg(error!);
     }
     return Scaffold(
       appBar: AppBar(
@@ -97,7 +106,6 @@ class _ScanResultState extends State<ScanResult> {
               'Scanned:',
             ),
             Text("Length: " + widget.idBytes.length.toString()),
-            showQRCode(widget.idBytes),
           ],
         ),
       ),
