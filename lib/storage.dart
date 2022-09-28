@@ -1,3 +1,4 @@
+import 'dart:typed_data';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:sqflite/sqflite.dart';
@@ -50,6 +51,10 @@ Future<PublicKey> publicKeyFromMap(Storage storage, Map<String, dynamic> entry) 
   );
 }
 
+String publicKeyToString(List<int> key) {
+  return key.join(",");
+}
+
 class Storage {
   final AndroidOptions aOptions = const AndroidOptions(
     encryptedSharedPreferences: true,
@@ -75,7 +80,7 @@ class Storage {
   Future<PublicKey> insertPubKey(PublicKey key) async {
     final id = await database.rawInsert(
       await insertPubKeySQL,
-      [key.name, key.publicKey.join(",")]);
+      [key.name, publicKeyToString(key.publicKey)]);
     return PublicKey(id: id, name: key.name, publicKey: key.publicKey);
   }
 
@@ -89,6 +94,15 @@ class Storage {
   Future<PublicKey?> fetchPublicKey(String name) async {
     final List<Map<String, dynamic>> maps = await database.query(
       'PublicKeys', where: 'name = ?', whereArgs: [name]);
+    if (maps.length > 0) {
+      return await publicKeyFromMap(this, maps.first);
+    }
+    return null;
+  }
+
+  Future<PublicKey?> fetchPublicKeyFromKey(Uint8List key) async {
+    final List<Map<String, dynamic>> maps = await database.query(
+      'PublicKeys', where: 'key = ?', whereArgs: [publicKeyToString(key)]);
     if (maps.length > 0) {
       return await publicKeyFromMap(this, maps.first);
     }
