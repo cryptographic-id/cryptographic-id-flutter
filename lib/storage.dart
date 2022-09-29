@@ -27,32 +27,38 @@ Future<Database> openOrCreateDatabase() async {
 }
 
 class PublicKey {
-  final int? id;
   final String name;
   final List<int> publicKey;
+  final List<int> signature;
+  final int date;
 
   PublicKey({
     required this.name,
     required this.publicKey,
-    this.id,
+    required this.date,
+    required this.signature,
   });
 
   String toString() {
-    return '$id: $name: $publicKey';
+    return '$name: $publicKey';
   }
+}
+
+List<int> stringToIntList(String s) {
+  return s.split(",").map(int.parse).toList().cast<int>();
+}
+
+String intListToString(List<int> key) {
+  return key.join(",");
 }
 
 Future<PublicKey> publicKeyFromMap(Storage storage, Map<String, dynamic> entry) async {
   return PublicKey(
-    id: entry["id"],
     name: entry["name"],
-    publicKey: entry["key"].split(",").map(
-      int.parse).toList().cast<int>(),
+    date: entry["date"],
+    publicKey: stringToIntList(entry["public_key"]),
+    signature: stringToIntList(entry["signature"]),
   );
-}
-
-String publicKeyToString(List<int> key) {
-  return key.join(",");
 }
 
 class Storage {
@@ -78,10 +84,10 @@ class Storage {
   }
 
   Future<PublicKey> insertPubKey(PublicKey key) async {
-    final id = await database.rawInsert(
+    await database.rawInsert(
       await insertPubKeySQL,
-      [key.name, publicKeyToString(key.publicKey)]);
-    return PublicKey(id: id, name: key.name, publicKey: key.publicKey);
+      [key.name, intListToString(key.publicKey)]);
+    return key;
   }
 
   Future<List<PublicKey>> fetchPublicKeys() async {
@@ -93,16 +99,20 @@ class Storage {
 
   Future<PublicKey?> fetchPublicKey(String name) async {
     final List<Map<String, dynamic>> maps = await database.query(
-      'PublicKeys', where: 'name = ?', whereArgs: [name]);
+      'PublicKeys',
+      where: 'name = ? AND NOT deleted',
+      whereArgs: [name]);
     if (maps.length > 0) {
       return await publicKeyFromMap(this, maps.first);
     }
     return null;
   }
 
-  Future<PublicKey?> fetchPublicKeyFromKey(Uint8List key) async {
+  Future<PublicKey?> fetchPublicKeyFromKey(List<int> key) async {
     final List<Map<String, dynamic>> maps = await database.query(
-      'PublicKeys', where: 'key = ?', whereArgs: [publicKeyToString(key)]);
+      'PublicKeys',
+      where: 'key = ? AND NOT deleted',
+      whereArgs: [intListToString(key)]);
     if (maps.length > 0) {
       return await publicKeyFromMap(this, maps.first);
     }
