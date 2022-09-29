@@ -47,7 +47,7 @@ Future<bool> verifyCryptographicId(CryptographicId id) async {
   for (final entry in id.personalInformation) {
     final verifyEntryList = Uint8List(8 + 4 + entry.content.length);
     final entryDataToVerify = ByteData.sublistView(verifyEntryList);
-    entryDataToVerify.setUint64(0, date.toInt(), Endian.big);
+    entryDataToVerify.setUint64(0, entry.timestamp.toInt(), Endian.big);
     entryDataToVerify.setInt32(8, entry.type.value, Endian.big);
     verifyEntryList.setAll(12, entry.content.codeUnits);
     if (!await verify(verifyEntryList, entry.signature, key)) {
@@ -55,4 +55,15 @@ Future<bool> verifyCryptographicId(CryptographicId id) async {
     }
   }
   return true;
+}
+
+int TIMESTAMP_RECENT_DIFF = 60;
+bool isSignatureRecent(CryptographicId id) {
+  final int timestamp = (DateTime.now().millisecondsSinceEpoch / 1000).round();
+  for (final entry in id.personalInformation) {
+    if (entry.timestamp < timestamp - TIMESTAMP_RECENT_DIFF) {
+      return false;
+    }
+  }
+  return id.timestamp < timestamp - TIMESTAMP_RECENT_DIFF;
 }
