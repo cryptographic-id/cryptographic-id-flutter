@@ -86,7 +86,8 @@ class Storage {
   Future<PublicKey> insertPubKey(PublicKey key) async {
     await database.rawInsert(
       await insertPubKeySQL,
-      [key.name, intListToString(key.publicKey)]);
+      [key.name, intListToString(key.publicKey),
+       key.date, intListToString(key.signature)]);
     return key;
   }
 
