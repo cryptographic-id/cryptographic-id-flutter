@@ -28,15 +28,19 @@ Future<Database> openOrCreateDatabase() async {
 
 class PublicKey {
   final String name;
+  final int? slot;
   final List<int> publicKey;
   final List<int> signature;
   final int date;
+  final Map<String, String> personalInformation;
 
   PublicKey({
     required this.name,
+    this.slot,
     required this.publicKey,
     required this.date,
     required this.signature,
+    required this.personalInformation,
   });
 
   String toString() {
@@ -53,11 +57,14 @@ String intListToString(List<int> key) {
 }
 
 Future<PublicKey> publicKeyFromMap(Storage storage, Map<String, dynamic> entry) async {
+  final pi = await storage.fetchPersonalInformation(entry["name"]);
   return PublicKey(
     name: entry["name"],
     date: entry["date"],
+    slot: entry["slot"],
     publicKey: stringToIntList(entry["public_key"]),
     signature: stringToIntList(entry["signature"]),
+    personalInformation: pi,
   );
 }
 
@@ -67,6 +74,7 @@ class Storage {
   );
   final FlutterSecureStorage storage = new FlutterSecureStorage();
   final Database database;
+  final int slot = 0;
 
   Storage._create(this.database);
 
@@ -83,16 +91,33 @@ class Storage {
     await storage.write(key: s.name, value: val, aOptions: aOptions);
   }
 
-  Future<PublicKey> insertPubKey(PublicKey key) async {
+  Future<PublicKey> insertPublicKey(PublicKey key) async {
     await database.rawInsert(
       await insertPubKeySQL,
-      [key.name, intListToString(key.publicKey),
-       key.date, intListToString(key.signature)]);
+      [key.name,
+       slot,
+       intListToString(key.publicKey),
+       key.date,
+       intListToString(key.signature)]);
     return key;
   }
 
+  Future<Map<String, String>> fetchPersonalInformation(String name) async {
+    final List<Map<String, dynamic>> maps = await database.query(
+      'PersonalInformation',
+      where: 'slot = ? AND public_key_name = ?',
+      whereArgs: [slot, name]);
+    return {
+      for (final e in maps)
+        e["property"]: e["value"]
+    };
+  }
+
   Future<List<PublicKey>> fetchPublicKeys() async {
-    final List<Map<String, dynamic>> maps = await database.query('PublicKeys');
+    final List<Map<String, dynamic>> maps = await database.query(
+      'PublicKeys',
+      where: 'slot = ?',
+      whereArgs: [slot]);
     return await Future.wait(List.generate(maps.length, (i) async {
       return await publicKeyFromMap(this, maps[i]);
     }));
@@ -101,8 +126,8 @@ class Storage {
   Future<PublicKey?> fetchPublicKey(String name) async {
     final List<Map<String, dynamic>> maps = await database.query(
       'PublicKeys',
-      where: 'name = ? AND NOT deleted',
-      whereArgs: [name]);
+      where: 'name = ? AND slot = ? AND NOT deleted',
+      whereArgs: [name, slot]);
     if (maps.length > 0) {
       return await publicKeyFromMap(this, maps.first);
     }
@@ -112,8 +137,8 @@ class Storage {
   Future<PublicKey?> fetchPublicKeyFromKey(List<int> key) async {
     final List<Map<String, dynamic>> maps = await database.query(
       'PublicKeys',
-      where: 'key = ? AND NOT deleted',
-      whereArgs: [intListToString(key)]);
+      where: 'key = ? AND slot = ? AND NOT deleted',
+      whereArgs: [intListToString(key), slot]);
     if (maps.length > 0) {
       return await publicKeyFromMap(this, maps.first);
     }
