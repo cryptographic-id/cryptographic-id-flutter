@@ -1,1 +1,2 @@
-INSERT INTO PublicKeys (name, public_key, date, signature) VALUES (?, ?, ?, ?);
+INSERT INTO PublicKeys (name, slot, public_key, date, signature)
+VALUES (?, ?, ?, ?, ?)
