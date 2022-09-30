@@ -3,16 +3,16 @@ import './tuple.dart';
 import './protocol/cryptograhic_id.pb.dart';
 import 'dart:typed_data';
 
-Future<Tuple<List<int>, List<int>>> createKey() async {
+Future<Tuple<Uint8List, Uint8List>> createKey() async {
   final algorithm = Ed25519();
   final key = await algorithm.newKeyPair();
   final pubKey = await key.extractPublicKey();
-  final publicBytes = pubKey.bytes;
-  final privateBytes = await key.extractPrivateKeyBytes();
+  final publicBytes = Uint8List.fromList(pubKey.bytes);
+  final privateBytes = Uint8List.fromList(await key.extractPrivateKeyBytes());
   return Tuple(item1: privateBytes, item2: publicBytes);
 }
 
-Future<bool> verify(List<int> message, List<int> signature, List<int> publicKey) async {
+Future<bool> verify(Uint8List message, Uint8List signature, Uint8List publicKey) async {
   final algorithm = Ed25519();
   final pubkey = SimplePublicKey(publicKey, type: KeyPairType.ed25519);
   final sig = Signature(signature, publicKey: pubkey);
@@ -23,20 +23,20 @@ Future<bool> verify(List<int> message, List<int> signature, List<int> publicKey)
   return isSignatureCorrect;
 }
 
-Future<List<int>> sign(List<int> message, List<int> key) async {
+Future<Uint8List> sign(Uint8List message, Uint8List key) async {
   final algorithm = Ed25519();
   final keyPair = await algorithm.newKeyPairFromSeed(key);
   final signature = await algorithm.sign(
     message,
     keyPair: keyPair,
   );
-  return signature.bytes;
+  return Uint8List.fromList(signature.bytes);
 }
 
 Future<bool> verifyCryptographicId(CryptographicId id) async {
-  final sig = id.signature;
+  final sig = Uint8List.fromList(id.signature);
   final date = id.timestamp;
-  final key = id.publicKey;
+  final key = Uint8List.fromList(id.publicKey);
   final verifyList = Uint8List(8 + key.length);
   final dataToVerify = ByteData.sublistView(verifyList);
   dataToVerify.setUint64(0, date.toInt(), Endian.big);
@@ -50,7 +50,8 @@ Future<bool> verifyCryptographicId(CryptographicId id) async {
     entryDataToVerify.setUint64(0, entry.timestamp.toInt(), Endian.big);
     entryDataToVerify.setInt32(8, entry.type.value, Endian.big);
     verifyEntryList.setAll(12, entry.content.codeUnits);
-    if (!await verify(verifyEntryList, entry.signature, key)) {
+    final signature = Uint8List.fromList(entry.signature);
+    if (!await verify(verifyEntryList, signature, key)) {
       return false;
     }
   }
