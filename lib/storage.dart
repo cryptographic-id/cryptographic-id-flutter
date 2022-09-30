@@ -14,17 +14,28 @@ Future<String> loadSQL(String file) async {
 }
 
 Future<String> createTableSQL = loadSQL("create_tables");
-Future<String> insertPubKeySQL = loadSQL("insert_publickey");
-Future<String> upsertPersonalInfoSQL = loadSQL("upsert_personal_information");
 
 Future<Database> openOrCreateDatabase() async {
   var databasesPath = await getDatabasesPath();
   var path = databasesPath + '/main.db';
   return await openDatabase(path, version: 1,
     onCreate: (Database db, int version) async {
-      await db.execute(await createTableSQL);
+      final sql = await createTableSQL;
+      for (final query in sql.split(";\n")) {
+        if (query.trim() != "") {
+          await db.execute(query);
+        }
+      }
     }
   );
+}
+
+List<int> stringToIntList(String s) {
+  return s.split(",").map(int.parse).toList().cast<int>();
+}
+
+String intListToString(List<int> key) {
+  return key.join(",");
 }
 
 class PersonalInformation {
@@ -40,15 +51,22 @@ class PersonalInformation {
     required this.signature
   });
 
+  Map<String, Object> toMap() {
+    return <String, Object>{
+      "property": property,
+      "value": value,
+      "date": date,
+      "signature": intListToString(signature),
+    };
+  }
+
   String toString() {
     return '$property: $value';
   }
 }
 
-
 class PublicKey {
   final String name;
-  final int? slot;
   final List<int> publicKey;
   final List<int> signature;
   final int date;
@@ -56,32 +74,32 @@ class PublicKey {
 
   PublicKey({
     required this.name,
-    this.slot,
     required this.publicKey,
     required this.date,
     required this.signature,
     required this.personalInformation,
   });
 
+  Map<String, Object> toMap() {
+    return <String, Object>{
+      "name": name,
+      "public_key": intListToString(publicKey),
+      "date": date,
+      "signature": intListToString(signature),
+    };
+  }
+
   String toString() {
     return '$name: $publicKey ( ' + personalInformation.toString() + ' )';
   }
 }
 
-List<int> stringToIntList(String s) {
-  return s.split(",").map(int.parse).toList().cast<int>();
-}
-
-String intListToString(List<int> key) {
-  return key.join(",");
-}
 
 Future<PublicKey> publicKeyFromMap(Storage storage, Map<String, dynamic> entry) async {
   final pi = await storage.fetchPersonalInformation(entry["name"]);
   return PublicKey(
     name: entry["name"],
     date: entry["date"],
-    slot: entry["slot"],
     publicKey: stringToIntList(entry["public_key"]),
     signature: stringToIntList(entry["signature"]),
     personalInformation: pi,
@@ -115,26 +133,19 @@ class Storage {
       String name, Map<String, PersonalInformation> piMap) async {
     final batch = database.batch();
     for (final entry in piMap.entries) {
-      final pi = entry.value;
-      batch.rawInsert(
-        await upsertPersonalInfoSQL,
-        [name,
-         pi.property,
-         pi.value,
-         pi.date,
-         intListToString(pi.signature)]);
+      final map = entry.value.toMap();
+      map["public_key_name"] = name;
+      batch.insert("PersonalInformation",
+                   map,
+                   conflictAlgorithm: ConflictAlgorithm.replace);
     }
     await batch.commit();
   }
 
   Future<PublicKey> insertPublicKey(PublicKey key) async {
-    await database.rawInsert(
-      await insertPubKeySQL,
-      [key.name,
-       slot,
-       intListToString(key.publicKey),
-       key.date,
-       intListToString(key.signature)]);
+    var map = key.toMap();
+    map["slot"] = slot;
+    await database.insert("PublicKeys", map);
     await upsertPersonalInfo(key.name, key.personalInformation);
     return key;
   }
@@ -143,8 +154,8 @@ class Storage {
       String name) async {
     final List<Map<String, dynamic>> maps = await database.query(
       'PersonalInformation',
-      where: 'slot = ? AND public_key_name = ?',
-      whereArgs: [slot, name]);
+      where: 'public_key_name = ?',
+      whereArgs: [name]);
     return {
       for (final e in maps)
         e["property"]: PersonalInformation(
