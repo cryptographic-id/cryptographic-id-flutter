@@ -15,6 +15,7 @@ Future<String> loadSQL(String file) async {
 
 Future<String> createTableSQL = loadSQL("create_tables");
 Future<String> insertPubKeySQL = loadSQL("insert_publickey");
+Future<String> upsertPersonalInfoSQL = loadSQL("upsert_personal_information");
 
 Future<Database> openOrCreateDatabase() async {
   var databasesPath = await getDatabasesPath();
@@ -26,13 +27,32 @@ Future<Database> openOrCreateDatabase() async {
   );
 }
 
+class PersonalInformation {
+  final String property;
+  final String value;
+  final int date;
+  final List<int> signature;
+
+  PersonalInformation({
+    required this.property,
+    required this.value,
+    required this.date,
+    required this.signature
+  });
+
+  String toString() {
+    return '$property: $value';
+  }
+}
+
+
 class PublicKey {
   final String name;
   final int? slot;
   final List<int> publicKey;
   final List<int> signature;
   final int date;
-  final Map<String, String> personalInformation;
+  final Map<String, PersonalInformation> personalInformation;
 
   PublicKey({
     required this.name,
@@ -44,7 +64,7 @@ class PublicKey {
   });
 
   String toString() {
-    return '$name: $publicKey';
+    return '$name: $publicKey ( ' + personalInformation.toString() + ' )';
   }
 }
 
@@ -91,6 +111,22 @@ class Storage {
     await storage.write(key: s.name, value: val, aOptions: aOptions);
   }
 
+  Future<void> upsertPersonalInfo(
+      String name, Map<String, PersonalInformation> piMap) async {
+    final batch = database.batch();
+    for (final entry in piMap.entries) {
+      final pi = entry.value;
+      batch.rawInsert(
+        await upsertPersonalInfoSQL,
+        [name,
+         pi.property,
+         pi.value,
+         pi.date,
+         intListToString(pi.signature)]);
+    }
+    await batch.commit();
+  }
+
   Future<PublicKey> insertPublicKey(PublicKey key) async {
     await database.rawInsert(
       await insertPubKeySQL,
@@ -99,17 +135,24 @@ class Storage {
        intListToString(key.publicKey),
        key.date,
        intListToString(key.signature)]);
+    await upsertPersonalInfo(key.name, key.personalInformation);
     return key;
   }
 
-  Future<Map<String, String>> fetchPersonalInformation(String name) async {
+  Future<Map<String, PersonalInformation>> fetchPersonalInformation(
+      String name) async {
     final List<Map<String, dynamic>> maps = await database.query(
       'PersonalInformation',
       where: 'slot = ? AND public_key_name = ?',
       whereArgs: [slot, name]);
     return {
       for (final e in maps)
-        e["property"]: e["value"]
+        e["property"]: PersonalInformation(
+          property: e["property"],
+          value: e["value"],
+          date: e["date"],
+          signature: stringToIntList(e["signature"])
+        )
     };
   }
 
