@@ -2,7 +2,7 @@ import 'dart:typed_data';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:sqflite/sqflite.dart';
-
+import 'package:sqflite_common/utils/utils.dart' as utils;
 
 enum Secure {
   publicKey,
@@ -30,19 +30,11 @@ Future<Database> openOrCreateDatabase() async {
   );
 }
 
-List<int> stringToIntList(String s) {
-  return s.split(",").map(int.parse).toList().cast<int>();
-}
-
-String intListToString(List<int> key) {
-  return key.join(",");
-}
-
 class PersonalInformation {
   final String property;
   final String value;
   final int date;
-  final List<int> signature;
+  final Uint8List signature;
 
   PersonalInformation({
     required this.property,
@@ -56,7 +48,7 @@ class PersonalInformation {
       "property": property,
       "value": value,
       "date": date,
-      "signature": intListToString(signature),
+      "signature": signature,
     };
   }
 
@@ -67,8 +59,8 @@ class PersonalInformation {
 
 class PublicKey {
   final String name;
-  final List<int> publicKey;
-  final List<int> signature;
+  final Uint8List publicKey;
+  final Uint8List signature;
   final int date;
   final Map<String, PersonalInformation> personalInformation;
 
@@ -83,9 +75,9 @@ class PublicKey {
   Map<String, Object> toMap() {
     return <String, Object>{
       "name": name,
-      "public_key": intListToString(publicKey),
+      "public_key": publicKey,
       "date": date,
-      "signature": intListToString(signature),
+      "signature": signature,
     };
   }
 
@@ -100,8 +92,8 @@ Future<PublicKey> publicKeyFromMap(Storage storage, Map<String, dynamic> entry) 
   return PublicKey(
     name: entry["name"],
     date: entry["date"],
-    publicKey: stringToIntList(entry["public_key"]),
-    signature: stringToIntList(entry["signature"]),
+    publicKey: entry["public_key"],
+    signature: entry["signature"],
     personalInformation: pi,
   );
 }
@@ -162,7 +154,7 @@ class Storage {
           property: e["property"],
           value: e["value"],
           date: e["date"],
-          signature: stringToIntList(e["signature"])
+          signature: e["signature"],
         )
     };
   }
@@ -188,11 +180,11 @@ class Storage {
     return null;
   }
 
-  Future<PublicKey?> fetchPublicKeyFromKey(List<int> key) async {
+  Future<PublicKey?> fetchPublicKeyFromKey(Uint8List key) async {
     final List<Map<String, dynamic>> maps = await database.query(
       'PublicKeys',
-      where: 'key = ? AND slot = ? AND NOT deleted',
-      whereArgs: [intListToString(key), slot]);
+      where: 'hex(key) = ? AND slot = ? AND NOT deleted',
+      whereArgs: [utils.hex(key), slot]);
     if (maps.length > 0) {
       return await publicKeyFromMap(this, maps.first);
     }
