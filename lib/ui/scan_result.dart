@@ -190,6 +190,10 @@ class _ScanResultState extends State<ScanResult> {
       background = Colors.yellow;
       // Text: not recent
     }
+    final List<Text> showName = [];
+    if (dbID != null) {
+      showName.add(new Text("ID: " + dbID!.name));
+    }
 
     return Scaffold(
       appBar: AppBar(
@@ -203,6 +207,7 @@ class _ScanResultState extends State<ScanResult> {
             const Text(
               "Signatures correct",
               style: TextStyle(fontWeight: FontWeight.w900)),
+            ...showName,
             new Text("Signed on " + formatTimestamp(id.timestamp.toInt())),
             const Text(""),
             new Text(
