@@ -68,11 +68,3 @@ bool isSignatureRecent(CryptographicId id) {
   }
   return id.timestamp >= timestamp - TIMESTAMP_RECENT_DIFF;
 }
-
-Map<String, Tuple<String, int>> idToPersonalInfo(CryptographicId id) {
-  Map<String, Tuple<String, int>> result = {
-    for (final e in id.personalInformation)
-      e.type.toString() : Tuple(item1: e.content, item2: e.timestamp.toInt())
-  };
-  return result;
-}
