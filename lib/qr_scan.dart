@@ -8,7 +8,7 @@ void scanQRCode(String purpose, BuildContext context, Function(Uint8List) onScan
   var fired = false;
   Navigator.of(context).push(
     MaterialPageRoute(
-      builder: (c) => ScanQR(title: "Purpose", onScanned: (s) {
+      builder: (c) => ScanQR(title: purpose, onScanned: (s) {
         debugPrint('after scan');
         if (!fired) {
           Navigator.of(context).pop();
