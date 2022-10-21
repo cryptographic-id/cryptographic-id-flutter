@@ -66,7 +66,7 @@ bool isSignatureRecent(CryptographicId id) {
       return false;
     }
   }
-  return id.timestamp < timestamp - TIMESTAMP_RECENT_DIFF;
+  return id.timestamp >= timestamp - TIMESTAMP_RECENT_DIFF;
 }
 
 Map<String, Tuple<String, int>> idToPersonalInfo(CryptographicId id) {
