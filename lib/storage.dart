@@ -183,7 +183,7 @@ class Storage {
   Future<PublicKey?> fetchPublicKeyFromKey(Uint8List key) async {
     final List<Map<String, dynamic>> maps = await database.query(
       'PublicKeys',
-      where: 'hex(key) = ? AND slot = ? AND NOT deleted',
+      where: 'hex(public_key) = ? AND slot = ? AND NOT deleted',
       whereArgs: [utils.hex(key), slot]);
     if (maps.length > 0) {
       return await publicKeyFromMap(this, maps.first);
