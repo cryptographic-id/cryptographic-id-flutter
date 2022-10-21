@@ -1,11 +1,29 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import './qr_scan.dart';
 import './storage.dart';
+import './ui/loading_screen.dart';
 import './ui/scan_result.dart';
 
 
 void main() {
   runApp(const MyApp());
+}
+
+Widget showError(String error) {
+  return Scaffold(
+    appBar: AppBar(
+      title: const Text("Failed to initialize"),
+    ),
+    body: Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          Text(error),
+        ],
+      ),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -14,11 +32,11 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'Cryptograhpic ID',
       theme: ThemeData(
-        primarySwatch: Colors.grey,
+        primarySwatch: Colors.indigo,
       ),
-      home: const MyHomePage(title: 'Simon App'),
+      home: const MyHomePage(title: 'Cryptograhpic ID'),
     );
   }
 }
@@ -32,58 +50,80 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
+  bool loaded = false;
+  String? error;
+  List<PublicKey> keys = [];
 
-  void _incrementCounter() {
-    setState(() {
-      _counter++;
+  Future<void> scan(PublicKey? compare) async {
+    String text = "";
+    if (compare != null) {
+      text = " (" + compare.name + ")";
+    }
+    final qr = await scanQRCodeAsync(text, context);
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (c) => ScanResult(idBytes: qr, check: compare),
+      ),
+    ).then((flag) => _loadData());
+  }
 
+  void _loadData() async {
+    try {
+      final storage = await getStorage();
+      final dBkeys = await storage.fetchPublicKeys();
+      setState(() {
+        loaded = true;
+        keys = dBkeys;
+        error = null;
+      });
+    } catch (e) {
+      setState(() {
+        loaded = true;
+        keys = [];
+        error = e.toString();
+      });
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    SchedulerBinding.instance.addPostFrameCallback((_) {
+      _loadData();
     });
   }
 
   @override
   Widget build(BuildContext context) {
+    if (!loaded) {
+      return loadingScreen("Starting");
+    }
+    if (error != null) {
+      return showError(error!);
+    }
+    final children = ListView.builder(
+      itemCount: keys.length,
+      itemBuilder: (context, i) =>
+        new TextButton(
+          onPressed: () async {
+            await scan(keys[i]);
+          },
+          child: Text("Name: " + keys[i].name)));
+
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.title),
       ),
       body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            const Text(
-              'Test:',
-            ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headline4,
-            ),
-            TextButton(
-              style: TextButton.styleFrom(
-                padding: EdgeInsets.all(15),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(20),
-                  side: BorderSide(color: Colors.indigo),
-                ),
-              ),
-              onPressed: () async {
-                final qr = await scanQRCodeAsync("to add", context);
-                Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (c) => ScanResult(idBytes: qr, check: null),
-                  ),
-                );
-              },
-              child: Text("Scan QR", style: TextStyle(color: Colors.indigo),),
-            ),
-          ],
-        ),
+        child: children,
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
+        onPressed: () async {
+          await scan(null);
+        },
+        tooltip: 'Add new id',
+        child: const Icon(Icons.qr_code_scanner_outlined),
+      ),
     );
   }
 }
