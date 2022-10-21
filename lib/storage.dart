@@ -121,12 +121,11 @@ class Storage {
     await storage.write(key: s.name, value: val, aOptions: aOptions);
   }
 
-  Future<void> upsertPersonalInfo(
-      String name, Map<String, PersonalInformation> piMap) async {
+  Future<void> upsertPersonalInfo(PublicKey key) async {
     final batch = database.batch();
-    for (final entry in piMap.entries) {
+    for (final entry in key.personalInformation.entries) {
       final map = entry.value.toMap();
-      map["public_key_name"] = name;
+      map["public_key_name"] = key.name;
       batch.insert("PersonalInformation",
                    map,
                    conflictAlgorithm: ConflictAlgorithm.replace);
@@ -138,7 +137,7 @@ class Storage {
     var map = key.toMap();
     map["slot"] = slot;
     await database.insert("PublicKeys", map);
-    await upsertPersonalInfo(key.name, key.personalInformation);
+    await upsertPersonalInfo(key);
     return key;
   }
 
