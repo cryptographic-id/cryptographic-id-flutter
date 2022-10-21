@@ -94,6 +94,36 @@ List<ValueAddUpdate> createAddUpdateList(CryptographicId id, PublicKey? dbKey) {
   return curr.entries.map((e) => e.value).toList();
 }
 
+PublicKey createDatabaseObject(String name,
+                               CryptographicId id,
+                               List<ValueAddUpdate> values,
+                               PublicKey? dbKey) {
+  final Map<String, PersonalInformation> updateInfo = {
+    for (final v in values)
+      if (v.checked)
+        v.property: new PersonalInformation(
+          property: v.property,
+          value: v.value,
+          date: v.timestamp,
+          signature: Uint8List.fromList(v.signature),
+        )
+  };
+  if (dbKey == null) {
+    return PublicKey(
+      name: name,
+      publicKey: Uint8List.fromList(id.publicKey),
+      date: id.timestamp.toInt(),
+      signature: Uint8List.fromList(id.signature),
+      personalInformation: updateInfo,
+    );
+  }
+  final useKey = dbKey!;
+  for (final e in updateInfo.entries) {
+    useKey.personalInformation[e.value.property] = e.value;
+  }
+  return useKey;
+}
+
 class _ScanResultState extends State<ScanResult> {
   bool loaded = false;
   String? error;
