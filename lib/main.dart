@@ -103,12 +103,15 @@ class _MyHomePageState extends State<MyHomePage> {
     }
     final children = ListView.builder(
       itemCount: keys.length,
-      itemBuilder: (context, i) =>
-        new TextButton(
+      itemBuilder: (context, i) {
+        final pos = i;
+        return new TextButton(
           onPressed: () async {
-            await scan(keys[i]);
+            await scan(keys[pos]);
           },
-          child: Text("Name: " + keys[i].name)));
+          child: Text("Name: " + keys[pos].name));
+      },
+    );
 
     return Scaffold(
       appBar: AppBar(
