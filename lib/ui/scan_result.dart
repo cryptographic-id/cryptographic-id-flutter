@@ -212,17 +212,16 @@ class _ScanResultState extends State<ScanResult> {
     }).toList();
     Color background = Colors.green;
     String status = "Sigatues correct";
+    var showName = new Text("Key unknown");
     if (dbID == null) {
       background = Colors.orange;
-      // Text: not known
+    } else {
+      showName = new Text("ID: " + dbID!.name);
     }
+    var showIsRecent = new Text("Signature is recent");
     if (!isRecent) {
       background = Colors.yellow;
-      // Text: not recent
-    }
-    final List<Text> showName = [];
-    if (dbID != null) {
-      showName.add(new Text("ID: " + dbID!.name));
+      showIsRecent = new Text("Signature is old");
     }
 
     return Scaffold(
@@ -237,7 +236,8 @@ class _ScanResultState extends State<ScanResult> {
             const Text(
               "Signatures correct",
               style: TextStyle(fontWeight: FontWeight.w900)),
-            ...showName,
+            showName,
+            showIsRecent,
             new Text("Signed on " + formatTimestamp(id.timestamp.toInt())),
             const Text(""),
             new Text(
