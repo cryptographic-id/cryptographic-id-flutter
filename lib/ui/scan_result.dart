@@ -1,5 +1,6 @@
 import 'dart:isolate';
 import 'dart:typed_data';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 
@@ -145,7 +146,7 @@ class _ScanResultState extends State<ScanResult> {
       var errMsg = null;
       if (result) {
         if (widget.check != null) {
-          if (widget.check!.publicKey != tmp_id.publicKey) {
+          if (!listEquals(widget.check!.publicKey, tmp_id.publicKey)) {
             errMsg = "Signature does not belong to user " + widget.check!.name!;
           } else {
             if (keyFromDB != null) {
