@@ -39,8 +39,12 @@ class ScanResult extends StatefulWidget {
 
 Future<void> _backgroundVerify(Tuple<SendPort, CryptographicId> params) async {
   final p = params.item1;
-  final result = await crypto.verifyCryptographicId(params.item2);
-  Isolate.exit(p, result);
+  try {
+    final result = await crypto.verifyCryptographicId(params.item2);
+    Isolate.exit(p, Tuple(item1: result, item2: null));
+  } catch (e, trace) {
+    Isolate.exit(p, Tuple(item1: false, item2: e));
+  }
 }
 
 String formatTimestamp(int ts) {
@@ -144,7 +148,7 @@ class _ScanResultState extends State<ScanResult> {
       final result = await p.first;
       var verified = null;
       var errMsg = null;
-      if (result) {
+      if (result.item1) {
         if (widget.check != null) {
           if (!listEquals(widget.check!.publicKey, tmp_id.publicKey)) {
             errMsg = "Signature does not belong to user " + widget.check!.name!;
@@ -157,7 +161,11 @@ class _ScanResultState extends State<ScanResult> {
           }
         }
       } else {
-        errMsg = "Signature is not correct";
+        if (result.item2 != null) {
+          errMsg = result.item2.toString();
+        } else {
+          errMsg = "Signature is not correct";
+        }
       }
       List<ValueAddUpdate> valuesToAdd = [];
       if (errMsg == null) {
