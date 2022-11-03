@@ -22,10 +22,10 @@ class ValueAddUpdate {
   });
 }
 
-PublicKey createDatabaseObject(String name,
+DBKeyInfo createDatabaseObject(String name,
                                CryptographicId id,
                                List<ValueAddUpdate> values,
-                               PublicKey? dbKey) {
+                               DBKeyInfo? dbKey) {
   final Map<String, PersonalInformation> updateInfo = {
     for (final v in values)
       if (v.checked)
@@ -37,7 +37,7 @@ PublicKey createDatabaseObject(String name,
         )
   };
   if (dbKey == null) {
-    return PublicKey(
+    return DBKeyInfo(
       name: name,
       publicKey: Uint8List.fromList(id.publicKey),
       date: id.timestamp.toInt(),
@@ -55,10 +55,10 @@ PublicKey createDatabaseObject(String name,
 class AddOrUpdate extends StatefulWidget {
   const AddOrUpdate({
     Key? key,
-    required this.dbPublicKey,
+    required this.dbKeyInfo,
     required this.values,
     required this.id}) : super(key: key);
-  final PublicKey? dbPublicKey;
+  final DBKeyInfo? dbKeyInfo;
   final List<ValueAddUpdate> values;
   final CryptographicId id;
 
@@ -88,8 +88,8 @@ class _AddOrUpdateState extends State<AddOrUpdate> {
       );
     }).toList();
     final elements = <Widget>[];
-    if (widget.dbPublicKey != null) {
-      elements.add(new Text("ID: " + widget.dbPublicKey!.name));
+    if (widget.dbKeyInfo != null) {
+      elements.add(new Text("ID: " + widget.dbKeyInfo!.name));
       elements.add(const Text(""));
       nameValid = true;
     } else {
@@ -97,7 +97,7 @@ class _AddOrUpdateState extends State<AddOrUpdate> {
       elements.add(IntrinsicWidth(child: TextField(
         onChanged: (text) async {
           final storage = await getStorage();
-          final exists = await storage.existsPublicKeyWithName(text);
+          final exists = await storage.existsKeyInfoWithName(text);
           setState(() {
             nameValid = text != "" && !exists;
             currName = text;
@@ -133,9 +133,9 @@ class _AddOrUpdateState extends State<AddOrUpdate> {
         // error handling?
         final storage = await getStorage();
         final dbObj = createDatabaseObject(
-          currName, widget.id, widget.values, widget.dbPublicKey);
-        if (widget.dbPublicKey == null) {
-          await storage.insertPublicKey(dbObj);
+          currName, widget.id, widget.values, widget.dbKeyInfo);
+        if (widget.dbKeyInfo == null) {
+          await storage.insertKeyInfo(dbObj);
         } else {
           await storage.upsertPersonalInfo(dbObj);
         }
