@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 
 import '../protocol/cryptograhic_id.pb.dart';
 import '../storage.dart';
+import './error_screen.dart';
 
 class ValueAddUpdate {
   bool checked = false;
@@ -130,16 +131,23 @@ class _AddOrUpdateState extends State<AddOrUpdate> {
         backgroundColor: !nameValid ? Colors.grey : null,
       ),
       onPressed: !nameValid ? null : () async {
-        // error handling?
-        final storage = await getStorage();
-        final dbObj = createDatabaseObject(
-          currName, widget.id, widget.values, widget.dbKeyInfo);
-        if (widget.dbKeyInfo == null) {
-          await storage.insertKeyInfo(dbObj);
-        } else {
-          await storage.upsertPersonalInfo(dbObj);
+        try {
+          final storage = await getStorage();
+          final dbObj = createDatabaseObject(
+            currName, widget.id, widget.values, widget.dbKeyInfo);
+          if (widget.dbKeyInfo == null) {
+            await storage.insertKeyInfo(dbObj);
+          } else {
+            await storage.upsertPersonalInfo(dbObj);
+          }
+          Navigator.of(context).pop();
+        } catch (e) {
+          Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (c) => showError("Error", e.toString()),
+            ),
+          );
         }
-        Navigator.of(context).pop();
       },
       child: Text(
         "Add or update",
