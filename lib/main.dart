@@ -52,9 +52,9 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   bool loaded = false;
   String? error;
-  List<PublicKey> keys = [];
+  List<DBKeyInfo> keys = [];
 
-  Future<void> scan(PublicKey? compare) async {
+  Future<void> scan(DBKeyInfo? compare) async {
     String text = "";
     if (compare != null) {
       text = " (" + compare.name + ")";
@@ -70,7 +70,7 @@ class _MyHomePageState extends State<MyHomePage> {
   void _loadData() async {
     try {
       final storage = await getStorage();
-      final dBkeys = await storage.fetchPublicKeys();
+      final dBkeys = await storage.fetchKeyInfos();
       setState(() {
         loaded = true;
         keys = dBkeys;

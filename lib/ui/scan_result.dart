@@ -30,7 +30,7 @@ Widget showScanError(String error) {
 class ScanResult extends StatefulWidget {
   const ScanResult({Key? key, required this.idBytes, required this.check}) : super(key: key);
   final Uint8List idBytes;
-  final PublicKey? check;
+  final DBKeyInfo? check;
 
   @override
   State<ScanResult> createState() => _ScanResultState();
@@ -62,7 +62,7 @@ Map<String, ValueAddUpdate> idToPersonalInfoMap(CryptographicId id) {
       signature: e.signature));
 }
 
-List<ValueAddUpdate> createAddUpdateList(CryptographicId id, PublicKey? dbKey) {
+List<ValueAddUpdate> createAddUpdateList(CryptographicId id, DBKeyInfo? dbKey) {
   var curr = idToPersonalInfoMap(id);
   if (dbKey != null) {
     for (final i in dbKey!.personalInformation.entries) {
@@ -83,7 +83,7 @@ List<ValueAddUpdate> createAddUpdateList(CryptographicId id, PublicKey? dbKey) {
 class _ScanResultState extends State<ScanResult> {
   bool loaded = false;
   String? error;
-  PublicKey? dbID;
+  DBKeyInfo? dbKeyInfo;
   CryptographicId id = CryptographicId();
   List<ValueAddUpdate> values = [];
 
@@ -95,7 +95,7 @@ class _ScanResultState extends State<ScanResult> {
                                                    item2: tmp_id));
       final storage = await getStorage();
       final pubKey = Uint8List.fromList(tmp_id.publicKey);
-      final keyFromDB = await storage.fetchPublicKeyFromKey(pubKey);
+      final keyFromDB = await storage.fetchKeyInfoFromKey(pubKey);
       final result = await p.first;
       var verified = null;
       var errMsg = null;
@@ -126,7 +126,7 @@ class _ScanResultState extends State<ScanResult> {
       setState(() {
         loaded = true;
         id = tmp_id;
-        dbID = keyFromDB;
+        dbKeyInfo = keyFromDB;
         error = errMsg;
         values = valuesToAdd;
       });
@@ -163,12 +163,12 @@ class _ScanResultState extends State<ScanResult> {
       background = Colors.yellow;
       showIsRecent = new Text("Signature is old");
     }
-    if (dbID == null) {
+    if (dbKeyInfo == null) {
       background = Colors.orange;
     } else {
-      showName = new Text("ID: " + dbID!.name);
+      showName = new Text("ID: " + dbKeyInfo!.name);
     }
-    bool showAddUpdate = (dbID == null) || (values.length > 0);
+    bool showAddUpdate = (dbKeyInfo == null) || (values.length > 0);
 
     return Scaffold(
       appBar: AppBar(
@@ -199,14 +199,14 @@ class _ScanResultState extends State<ScanResult> {
                 Navigator.of(context).push(
                   MaterialPageRoute(
                     builder: (c) => AddOrUpdate(
-                      dbPublicKey: dbID,
+                      dbKeyInfo: dbKeyInfo,
                       id: id,
                       values: values),
                   ),
                 );
               },
               child: Text(
-                dbID == null ? "Add" : "Update",
+                dbKeyInfo == null ? "Add" : "Update",
                 style: TextStyle(color: Colors.indigo)),
             ),
           ],

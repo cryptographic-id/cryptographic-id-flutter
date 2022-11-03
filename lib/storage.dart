@@ -57,14 +57,14 @@ class PersonalInformation {
   }
 }
 
-class PublicKey {
+class DBKeyInfo {
   final String name;
   final Uint8List publicKey;
   final Uint8List signature;
   final int date;
   final Map<String, PersonalInformation> personalInformation;
 
-  PublicKey({
+  DBKeyInfo({
     required this.name,
     required this.publicKey,
     required this.date,
@@ -87,9 +87,9 @@ class PublicKey {
 }
 
 
-Future<PublicKey> publicKeyFromMap(Storage storage, Map<String, dynamic> entry) async {
+Future<DBKeyInfo> publicKeyFromMap(Storage storage, Map<String, dynamic> entry) async {
   final pi = await storage.fetchPersonalInformation(entry["name"]);
-  return PublicKey(
+  return DBKeyInfo(
     name: entry["name"],
     date: entry["date"],
     publicKey: entry["public_key"],
@@ -121,7 +121,7 @@ class Storage {
     await storage.write(key: s.name, value: val, aOptions: aOptions);
   }
 
-  Future<void> upsertPersonalInfo(PublicKey key) async {
+  Future<void> upsertPersonalInfo(DBKeyInfo key) async {
     final batch = database.batch();
     for (final entry in key.personalInformation.entries) {
       final map = entry.value.toMap();
@@ -133,10 +133,10 @@ class Storage {
     await batch.commit();
   }
 
-  Future<PublicKey> insertPublicKey(PublicKey key) async {
+  Future<DBKeyInfo> insertKeyInfo(DBKeyInfo key) async {
     var map = key.toMap();
     map["slot"] = slot;
-    await database.insert("PublicKeys", map);
+    await database.insert("dbkeyinfos", map);
     await upsertPersonalInfo(key);
     return key;
   }
@@ -158,9 +158,9 @@ class Storage {
     };
   }
 
-  Future<List<PublicKey>> fetchPublicKeys() async {
+  Future<List<DBKeyInfo>> fetchKeyInfos() async {
     final List<Map<String, dynamic>> maps = await database.query(
-      'PublicKeys',
+      'dbkeyInfos',
       where: 'slot = ?',
       whereArgs: [slot]);
     return await Future.wait(List.generate(maps.length, (i) async {
@@ -168,9 +168,9 @@ class Storage {
     }));
   }
 
-  Future<bool> existsPublicKeyWithName(String name) async {
+  Future<bool> existsKeyInfoWithName(String name) async {
     final List<Map<String, dynamic>> maps = await database.query(
-      'PublicKeys',
+      'dbkeyinfos',
       where: 'name = ? AND slot = ?',
       whereArgs: [name, slot]);
     if (maps.length > 0) {
@@ -179,9 +179,9 @@ class Storage {
     return false;
   }
 
-  Future<PublicKey?> fetchPublicKey(String name) async {
+  Future<DBKeyInfo?> fetchKeyInfo(String name) async {
     final List<Map<String, dynamic>> maps = await database.query(
-      'PublicKeys',
+      'dbkeyinfos',
       where: 'name = ? AND slot = ? AND NOT deleted',
       whereArgs: [name, slot]);
     if (maps.length > 0) {
@@ -190,9 +190,9 @@ class Storage {
     return null;
   }
 
-  Future<PublicKey?> fetchPublicKeyFromKey(Uint8List key) async {
+  Future<DBKeyInfo?> fetchKeyInfoFromKey(Uint8List key) async {
     final List<Map<String, dynamic>> maps = await database.query(
-      'PublicKeys',
+      'dbkeyinfos',
       where: 'hex(public_key) = ? AND slot = ? AND NOT deleted',
       whereArgs: [utils.hex(key), slot]);
     if (maps.length > 0) {

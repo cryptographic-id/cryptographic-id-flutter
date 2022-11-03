@@ -1,4 +1,4 @@
-CREATE TABLE PublicKeys (
+CREATE TABLE DBKeyInfos (
 	name TEXT PRIMARY KEY,
 	slot INT NOT NULL,
 	public_key BLOB UNIQUE NOT NULL,
@@ -8,7 +8,7 @@ CREATE TABLE PublicKeys (
 );
 
 CREATE TABLE PersonalInformation (
-	public_key_name TEXT REFERENCES PublicKeys(name),
+	public_key_name TEXT REFERENCES DBKeyInfos(name),
 	property TEXT NOT NULL,
 	value TEXT NOT NULL,
 	date TIMESTAMP NOT NULL,
