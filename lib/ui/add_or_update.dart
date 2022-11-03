@@ -7,7 +7,7 @@ import '../storage.dart';
 import './error_screen.dart';
 
 class ValueAddUpdate {
-  bool checked = false;
+  bool update = false;
   final String property;
   final String value;
   String? oldValue;
@@ -29,7 +29,7 @@ DBKeyInfo createDatabaseObject(String name,
                                DBKeyInfo? dbKey) {
   final Map<String, PersonalInformation> updateInfo = {
     for (final v in values)
-      if (v.checked)
+      if (v.update)
         v.property: new PersonalInformation(
           property: v.property,
           value: v.value,
@@ -77,13 +77,13 @@ class _AddOrUpdateState extends State<AddOrUpdate> {
       String old = (val.oldValue != null ? " (was " + val.oldValue! + ")" : "");
       return new CheckboxListTile(
         title: new Text(val.property + ": " + val.value + old),
-        value: val.checked,
+        value: val.update,
         onChanged: (bool? value) {
           if (value == null) {
             return;
           }
           setState(() {
-            val.checked = value!;
+            val.update = value!;
           });
         },
       );
