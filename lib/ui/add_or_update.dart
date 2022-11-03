@@ -150,7 +150,7 @@ class _AddOrUpdateState extends State<AddOrUpdate> {
         }
       },
       child: Text(
-        "Add or update",
+        widget.dbKeyInfo == null ? "Add" : "Update",
         style: TextStyle(color: Colors.indigo)),
     ));
 
