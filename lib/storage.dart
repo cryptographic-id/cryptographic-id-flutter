@@ -168,6 +168,17 @@ class Storage {
     }));
   }
 
+  Future<bool> existsPublicKeyWithName(String name) async {
+    final List<Map<String, dynamic>> maps = await database.query(
+      'PublicKeys',
+      where: 'name = ? AND slot = ?',
+      whereArgs: [name, slot]);
+    if (maps.length > 0) {
+      return true;
+    }
+    return false;
+  }
+
   Future<PublicKey?> fetchPublicKey(String name) async {
     final List<Map<String, dynamic>> maps = await database.query(
       'PublicKeys',

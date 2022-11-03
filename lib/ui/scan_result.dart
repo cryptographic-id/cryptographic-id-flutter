@@ -1,5 +1,4 @@
 import 'dart:isolate';
-import 'dart:typed_data';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
@@ -8,8 +7,8 @@ import '../crypto.dart' as crypto;
 import '../protocol/cryptograhic_id.pb.dart';
 import '../storage.dart';
 import '../tuple.dart';
+import './add_or_update.dart';
 import './loading_screen.dart';
-
 
 Widget showScanError(String error) {
   return Scaffold(
@@ -52,23 +51,6 @@ String formatTimestamp(int ts) {
   return date.toString();
 }
 
-class ValueAddUpdate {
-  bool checked = false;
-  final String property;
-  final String value;
-  String? oldValue;
-  int timestamp;
-  Uint8List signature;
-
-  ValueAddUpdate({
-    required this.property,
-    required this.value,
-    this.oldValue,
-    required this.timestamp,
-    required this.signature,
-  });
-}
-
 Map<String, ValueAddUpdate> idToPersonalInfoMap(CryptographicId id) {
   return Map.fromIterable(
     id.personalInformation,
@@ -87,46 +69,15 @@ List<ValueAddUpdate> createAddUpdateList(CryptographicId id, PublicKey? dbKey) {
       final e = i.value;
       if (curr.containsKey(e.property)) {
         final elem = curr[e.property]!;
-        final val = elem.value;
-        if (val == e.value) {
+        if (elem.value == e.value) {
           curr.remove(e.property);
         } else {
-          elem.oldValue = elem.value;
+          elem.oldValue = e.value;
         }
       }
     }
   }
   return curr.entries.map((e) => e.value).toList();
-}
-
-PublicKey createDatabaseObject(String name,
-                               CryptographicId id,
-                               List<ValueAddUpdate> values,
-                               PublicKey? dbKey) {
-  final Map<String, PersonalInformation> updateInfo = {
-    for (final v in values)
-      if (v.checked)
-        v.property: new PersonalInformation(
-          property: v.property,
-          value: v.value,
-          date: v.timestamp,
-          signature: Uint8List.fromList(v.signature),
-        )
-  };
-  if (dbKey == null) {
-    return PublicKey(
-      name: name,
-      publicKey: Uint8List.fromList(id.publicKey),
-      date: id.timestamp.toInt(),
-      signature: Uint8List.fromList(id.signature),
-      personalInformation: updateInfo,
-    );
-  }
-  final useKey = dbKey!;
-  for (final e in updateInfo.entries) {
-    useKey.personalInformation[e.value.property] = e.value;
-  }
-  return useKey;
 }
 
 class _ScanResultState extends State<ScanResult> {
@@ -204,34 +155,20 @@ class _ScanResultState extends State<ScanResult> {
       return showScanError(error!);
     }
     final isRecent = crypto.isSignatureRecent(id);
-    final missingDetails = values.map((ValueAddUpdate val) {
-      return new CheckboxListTile(
-        title: new Text(val.property + ": " + val.value),
-        // oldValue
-        value: val.checked,
-        onChanged: (bool? value) {
-          if (value == null) {
-            return;
-          }
-          setState(() {
-            val.checked = value!;
-          });
-        },
-      );
-    }).toList();
     Color background = Colors.green;
     String status = "Sigatues correct";
     var showName = new Text("Key unknown");
-    if (dbID == null) {
-      background = Colors.orange;
-    } else {
-      showName = new Text("ID: " + dbID!.name);
-    }
     var showIsRecent = new Text("Signature is recent");
     if (!isRecent) {
       background = Colors.yellow;
       showIsRecent = new Text("Signature is old");
     }
+    if (dbID == null) {
+      background = Colors.orange;
+    } else {
+      showName = new Text("ID: " + dbID!.name);
+    }
+    bool showAddUpdate = (dbID == null) || (values.length > 0);
 
     return Scaffold(
       appBar: AppBar(
@@ -249,11 +186,30 @@ class _ScanResultState extends State<ScanResult> {
             showIsRecent,
             new Text("Signed on " + formatTimestamp(id.timestamp.toInt())),
             const Text(""),
-            new Text(
-              "Add or update values",
-              style: TextStyle(fontWeight: FontWeight.w900)),
-            ...missingDetails],
-          // dynamic Button to update / add
+            if (showAddUpdate) TextButton(
+              style: TextButton.styleFrom(
+                padding: EdgeInsets.all(15),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20),
+                  side: BorderSide(color: Colors.indigo),
+                ),
+              ),
+              onPressed: () async {
+                Navigator.of(context).pop();
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (c) => AddOrUpdate(
+                      dbPublicKey: dbID,
+                      id: id,
+                      values: values),
+                  ),
+                );
+              },
+              child: Text(
+                dbID == null ? "Add" : "Update",
+                style: TextStyle(color: Colors.indigo)),
+            ),
+          ],
         ),
       ),
     );
