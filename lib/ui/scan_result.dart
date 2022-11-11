@@ -11,6 +11,13 @@ import '../tuple.dart';
 import './add_or_update.dart';
 import './loading_screen.dart';
 
+// black is viewable on green/red/yellow screen in dark and light mode
+final textColor = Colors.black;
+
+Text darkText(String text) {
+  return new Text(text, style:TextStyle(color: textColor));
+}
+
 Widget showValidationError(String title, String error) {
   return Scaffold(
     appBar: AppBar(
@@ -21,7 +28,7 @@ Widget showValidationError(String title, String error) {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
-          Text(error),
+          darkText(error),
         ],
       ),
     ),
@@ -160,21 +167,22 @@ class _ScanResultState extends State<ScanResult> {
     }
     final isRecent = crypto.isSignatureRecent(id);
     Color background = Colors.green;
-    var showName = new Text(localization.unkownKey);
-    var showIsRecent = new Text(localization.recentSignature);
+    var showName = darkText(localization.unkownKey);
+    var showIsRecent = darkText(localization.recentSignature);
     if (!isRecent) {
       background = Colors.yellow;
-      showIsRecent = new Text(localization.oldSignature);
+      showIsRecent = darkText(localization.oldSignature);
     }
     if (dbKeyInfo == null) {
       background = Colors.orange;
     } else {
-      showName = new Text(localization.showName(dbKeyInfo!.name));
+      showName = darkText(localization.showName(dbKeyInfo!.name));
     }
     bool showAddUpdate = (dbKeyInfo == null) || (values.length > 0);
 
     return Scaffold(
       appBar: AppBar(
+        // no darkText, since title background is not changed
         title: new Text(localization.validResult),
       ),
       backgroundColor: background,
@@ -182,16 +190,17 @@ class _ScanResultState extends State<ScanResult> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            new Text(
+            Text(
               localization.signatureCorrect,
-              style: TextStyle(fontWeight: FontWeight.w900)),
+              style: TextStyle(fontWeight: FontWeight.w900, color: textColor)),
             showName,
             showIsRecent,
-            new Text(localization.signedDate(formatTimestamp(id.timestamp.toInt()))),
-            const Text(""),
+            darkText(localization.signedDate(formatTimestamp(id.timestamp.toInt()))),
+            darkText(""),
             if (showAddUpdate) TextButton(
               style: TextButton.styleFrom(
                 padding: EdgeInsets.all(15),
+                foregroundColor: textColor,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(20),
                   side: BorderSide(color: Colors.indigo),
