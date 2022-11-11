@@ -1,29 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import './qr_scan.dart';
 import './storage.dart';
 import './ui/loading_screen.dart';
 import './ui/scan_result.dart';
+import './ui/error_screen.dart';
 
 
 void main() {
   runApp(const MyApp());
-}
-
-Widget showError(String error) {
-  return Scaffold(
-    appBar: AppBar(
-      title: const Text("Failed to initialize"),
-    ),
-    body: Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[
-          Text(error),
-        ],
-      ),
-    ),
-  );
 }
 
 class MyApp extends StatelessWidget {
@@ -36,6 +23,13 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.indigo,
       ),
+      localizationsDelegates: [
+        AppLocalizations.delegate,
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+      supportedLocales: AppLocalizations.supportedLocales,
       home: const MyHomePage(title: 'Cryptograhpic ID'),
     );
   }
@@ -55,11 +49,11 @@ class _MyHomePageState extends State<MyHomePage> {
   List<DBKeyInfo> keys = [];
 
   Future<void> scan(DBKeyInfo? compare) async {
-    String text = "";
+    String title = AppLocalizations.of(context)!.scanContact;
     if (compare != null) {
-      text = " (" + compare.name + ")";
+      title = AppLocalizations.of(context)!.scanContactName(compare.name);
     }
-    final qr = await scanQRCodeAsync(text, context);
+    final qr = await scanQRCodeAsync(title, context);
     Navigator.of(context).push(
       MaterialPageRoute(
         builder: (c) => ScanResult(idBytes: qr, check: compare),
@@ -95,11 +89,12 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
+    final localization = AppLocalizations.of(context)!;
     if (!loaded) {
-      return loadingScreen("Starting");
+      return loadingScreen(localization.appInit);
     }
     if (error != null) {
-      return showError(error!);
+      return showError(localization.appInitFailed, error!);
     }
     final children = ListView.builder(
       itemCount: keys.length,
@@ -109,7 +104,8 @@ class _MyHomePageState extends State<MyHomePage> {
           onPressed: () async {
             await scan(keys[pos]);
           },
-          child: Text("Name: " + keys[pos].name));
+          child: Text(localization.showName(keys[pos].name)),
+        );
       },
     );
 
@@ -124,7 +120,7 @@ class _MyHomePageState extends State<MyHomePage> {
         onPressed: () async {
           await scan(null);
         },
-        tooltip: 'Add new id',
+        tooltip: localization.qrScanTooltip,
         child: const Icon(Icons.qr_code_scanner_outlined),
       ),
     );

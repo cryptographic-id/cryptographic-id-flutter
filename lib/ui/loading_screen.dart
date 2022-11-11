@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
-Widget loadingScreen(String text) {
+Widget loadingScreen(String title) {
   return Scaffold(
     appBar: AppBar(
-      title: Text(text + "..."),
+      title: Text(title),
     ),
     body: Center(
       child: Column(

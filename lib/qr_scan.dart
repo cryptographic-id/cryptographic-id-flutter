@@ -42,7 +42,7 @@ class ScanQR extends StatelessWidget {
       torchEnabled: false);
     return Scaffold(
       appBar: AppBar(
-        title: Text('Scan QR-Code ' + this.title),
+        title: Text(this.title),
       ),
       body: SingleChildScrollView(
         child: Column(

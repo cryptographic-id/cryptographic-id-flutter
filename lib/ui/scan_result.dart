@@ -2,6 +2,7 @@ import 'dart:isolate';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../crypto.dart' as crypto;
 import '../protocol/cryptograhic_id.pb.dart';
@@ -10,10 +11,10 @@ import '../tuple.dart';
 import './add_or_update.dart';
 import './loading_screen.dart';
 
-Widget showScanError(String error) {
+Widget showValidationError(String title, String error) {
   return Scaffold(
     appBar: AppBar(
-      title: const Text("Scan failed"),
+      title: new Text(title),
     ),
     backgroundColor: Colors.redAccent.shade400,
     body: Center(
@@ -99,14 +100,16 @@ class _ScanResultState extends State<ScanResult> {
       final result = await p.first;
       var verified = null;
       var errMsg = null;
+      final localization = AppLocalizations.of(context)!;
       if (result.item1) {
         if (widget.check != null) {
           if (!listEquals(widget.check!.publicKey, tmp_id.publicKey)) {
-            errMsg = "Signature does not belong to user " + widget.check!.name!;
+            errMsg = localization.differentSignature(widget.check!.name!);
           } else {
             if (keyFromDB != null) {
               if (keyFromDB!.name != widget.check!.name) {
-                errMsg = "Wierd! Signature matches, but database name differs";
+                errMsg = localization.databaseNameDiffers(
+                  keyFromDB!.name, widget.check!.name);
               }
             }
           }
@@ -115,7 +118,7 @@ class _ScanResultState extends State<ScanResult> {
         if (result.item2 != null) {
           errMsg = result.item2.toString();
         } else {
-          errMsg = "Signature is not correct";
+          errMsg = localization.corruptSignature;
         }
       }
       List<ValueAddUpdate> valuesToAdd = [];
@@ -148,43 +151,43 @@ class _ScanResultState extends State<ScanResult> {
 
   @override
   Widget build(BuildContext context) {
+    final localization = AppLocalizations.of(context)!;
     if (!loaded) {
-      return loadingScreen("Verifying");
+      return loadingScreen(localization.waitForVerification);
     }
     if (error != null) {
-      return showScanError(error!);
+      return showValidationError(localization.validationFailed, error!);
     }
     final isRecent = crypto.isSignatureRecent(id);
     Color background = Colors.green;
-    String status = "Sigatues correct";
-    var showName = new Text("Key unknown");
-    var showIsRecent = new Text("Signature is recent");
+    var showName = new Text(localization.unkownKey);
+    var showIsRecent = new Text(localization.recentSignature);
     if (!isRecent) {
       background = Colors.yellow;
-      showIsRecent = new Text("Signature is old");
+      showIsRecent = new Text(localization.oldSignature);
     }
     if (dbKeyInfo == null) {
       background = Colors.orange;
     } else {
-      showName = new Text("ID: " + dbKeyInfo!.name);
+      showName = new Text(localization.showName(dbKeyInfo!.name));
     }
     bool showAddUpdate = (dbKeyInfo == null) || (values.length > 0);
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Result: valid"),
+        title: new Text(localization.validResult),
       ),
       backgroundColor: background,
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Text(
-              "Signatures correct",
+            new Text(
+              localization.signatureCorrect,
               style: TextStyle(fontWeight: FontWeight.w900)),
             showName,
             showIsRecent,
-            new Text("Signed on " + formatTimestamp(id.timestamp.toInt())),
+            new Text(localization.signedDate(formatTimestamp(id.timestamp.toInt()))),
             const Text(""),
             if (showAddUpdate) TextButton(
               style: TextButton.styleFrom(
@@ -206,7 +209,7 @@ class _ScanResultState extends State<ScanResult> {
                 );
               },
               child: Text(
-                dbKeyInfo == null ? "Add" : "Update",
+                dbKeyInfo == null ? localization.addButton : localization.updateButton,
                 style: TextStyle(color: Colors.indigo)),
             ),
           ],

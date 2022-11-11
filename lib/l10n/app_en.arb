@@ -1,0 +1,171 @@
+{
+	"@@common": "",
+	"showName": "ID: {name}",
+	"@showName": {
+		"description": "show name of scanned message",
+		"placeholders": {
+			"name": {
+				"type": "String",
+				"example": "Jane"
+			}
+		}
+	},
+	"addButton": "Add",
+	"@addButton": {
+		"description": "Button to add new contact"
+	},
+	"updateButton": "Update",
+	"@updateButton": {
+		"description": "Button to update contact details"
+	},
+
+	"@@main.dart": "",
+	"appInit": "Initializing app...",
+	"@appInit": {
+		"description": "Screen on startup while initializing"
+	},
+	"appInitFailed": "Failed to initialize the app",
+	"@appInitFailed": {
+		"description": "Failed to initialize the app"
+	},
+	"qrScanTooltip": "Scan QR-Code",
+	"@qrScanTooltip": {
+		"description": "Tooltip of the scan button"
+	},
+	"scanContact": "Scan QR-Code from contact",
+	"@scanContact": {
+		"description": "Scan QR-Code from contact"
+	},
+	"scanContactName": "Scan QR-Code from {name}",
+	"@scanContactName": {
+		"description": "Scan QR-Code of specific contact",
+		"placeholders": {
+			"name": {
+				"type": "String",
+				"example": "Jane"
+			}
+		}
+	},
+
+	"@@ui/scan_result.dart": "",
+	"validationFailed": "Failed to validate QR-Code",
+	"@validationFailed": {
+		"description": "Signature is wrong, name does not match, ..."
+	},
+	"differentSignature": "Signature does not belong to contact {name}",
+	"@differentSignature": {
+		"description": "Signature not from expected contact",
+		"placeholders": {
+			"name": {
+				"type": "String",
+				"example": "Jane"
+			}
+		}
+	},
+	"databaseNameDiffers": "Wierd! Signature matches, but database name differs: {name}, {databaseName}",
+	"@databaseNameDiffers": {
+		"description": "Selected contact to scan, but database fetched different contact",
+		"placeholders": {
+			"name": {
+				"type": "String",
+				"example": "Jane"
+			},
+			"databaseName": {
+				"type": "String",
+				"example": "Jane"
+			}
+		}
+	},
+	"corruptSignature": "Signature is not correct.",
+	"@corruptSignature": {
+		"description": "Signature verification failed"
+	},
+	"waitForVerification": "Verifying...",
+	"@waitForVerification": {
+		"description": "Wait until signature and database content is verified"
+	},
+	"unkownKey": "Key unknown",
+	"@unkownKey": {
+		"description": "QR-Code of not yet known key scanned"
+	},
+	"recentSignature": "Signature is recent",
+	"@recentSignature": {
+		"description": "Message was signed in the last minutes"
+	},
+	"oldSignature": "Signature is old",
+	"@unkownKey": {
+		"description": "Message was signed in the past"
+	},
+	"signatureCorrect": "Signature correct",
+	"@signatureCorrect": {
+		"description": "Signature and verification passed"
+	},
+	"validResult": "Result: valid",
+	"@validResult": {
+		"description": "Title of successful scan result"
+	},
+	"signedDate": "Signed on {date}",
+	"@signedDate": {
+		"description": "Show time of signature",
+		"placeholders": {
+			"date": {
+				"type": "String",
+				"example": "2022-01-10 23:10:42"
+			}
+		}
+	},
+
+	"@@ui/add_or_update.dart": "",
+	"enterName": "Enter name:",
+	"@enterName": {
+		"description": "Enter new contact name"
+	},
+	"allowedNameChars": "Enter name, allowed: a-z0-9",
+	"@allowedNameChars": {
+		"description": "Textfield hint for allowed contact names"
+	},
+	"insertError": "Failed to save contact",
+	"@error": {
+		"description": "Show error on insert"
+	},
+	"addNewContact": "Add new contact",
+	"@addNewContact": {
+		"description": "Title for add contacts"
+	},
+	"updateContact": "Update contact",
+	"@updateContact": {
+		"description": "Title for update contacts"
+	},
+	"addDetail": "{property}: {value}",
+	"@addDetail": {
+		"description": "Text to show new contact information",
+		"placeholders": {
+			"property": {
+				"type": "String",
+				"example": "FIRST_NAME"
+			},
+			"value": {
+				"type": "String",
+				"example": "Jane"
+			}
+		}
+	},
+	"updateDetail": "{property}: {value} (was: {oldValue})",
+	"@updateDetail": {
+		"description": "Text to show new and old contact information",
+		"placeholders": {
+			"property": {
+				"type": "String",
+				"example": "FIRST_NAME"
+			},
+			"value": {
+				"type": "String",
+				"example": "Jane"
+			},
+			"oldValue": {
+				"type": "String",
+				"example": "Mary"
+			}
+		}
+	}
+}
