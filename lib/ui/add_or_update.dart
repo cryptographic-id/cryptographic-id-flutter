@@ -1,6 +1,7 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../protocol/cryptograhic_id.pb.dart';
 import '../storage.dart';
@@ -73,10 +74,14 @@ class _AddOrUpdateState extends State<AddOrUpdate> {
 
   @override
   Widget build(BuildContext context) {
+    final localization = AppLocalizations.of(context)!;
     final missingDetails = widget.values.map((ValueAddUpdate val) {
-      String old = (val.oldValue != null ? " (was " + val.oldValue! + ")" : "");
+      // TODO: translate val.property
+      String title = val.oldValue == null ?
+        localization.addDetail(val.property, val.value) :
+        localization.updateDetail(val.property, val.value, val.oldValue!);
       return new CheckboxListTile(
-        title: new Text(val.property + ": " + val.value + old),
+        title: new Text(title),
         value: val.update,
         onChanged: (bool? value) {
           if (value == null) {
@@ -90,11 +95,11 @@ class _AddOrUpdateState extends State<AddOrUpdate> {
     }).toList();
     final elements = <Widget>[];
     if (widget.dbKeyInfo != null) {
-      elements.add(new Text("ID: " + widget.dbKeyInfo!.name));
+      elements.add(new Text(localization.showName(widget.dbKeyInfo!.name)));
       elements.add(const Text(""));
       nameValid = true;
     } else {
-      elements.add(new Text("Enter name:"));
+      elements.add(new Text(localization.enterName));
       elements.add(IntrinsicWidth(child: TextField(
         onChanged: (text) async {
           final storage = await getStorage();
@@ -116,7 +121,7 @@ class _AddOrUpdateState extends State<AddOrUpdate> {
           border: OutlineInputBorder(),
           contentPadding: EdgeInsets.symmetric(vertical: 6, horizontal: 10),
           isDense: true,
-          hintText: 'Enter name, allowed: a-z0-9',
+          hintText: localization.allowedNameChars,
         ),
       )));
     }
@@ -144,19 +149,21 @@ class _AddOrUpdateState extends State<AddOrUpdate> {
         } catch (e) {
           Navigator.of(context).push(
             MaterialPageRoute(
-              builder: (c) => showError("Error", e.toString()),
+              builder: (c) => showError(localization.insertError, e.toString()),
             ),
           );
         }
       },
       child: Text(
-        widget.dbKeyInfo == null ? "Add" : "Update",
+        widget.dbKeyInfo == null ? localization.addButton : localization.updateButton,
         style: TextStyle(color: Colors.indigo)),
     ));
 
+    final title = widget.dbKeyInfo == null ?
+      localization.addNewContact : localization.updateContact;
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Insert or update"),
+        title: new Text(title),
       ),
       body: Center(
         child: Column(
