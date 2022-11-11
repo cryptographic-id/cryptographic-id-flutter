@@ -15,9 +15,9 @@ class CryptographicID extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Cryptograhpic ID',
-      theme: ThemeData(
-        primarySwatch: Colors.indigo,
-      ),
+      darkTheme: ThemeData.dark(),
+      theme: ThemeData.light(),
+      themeMode: ThemeMode.system,
       localizationsDelegates: [
         AppLocalizations.delegate,
         GlobalMaterialLocalizations.delegate,
