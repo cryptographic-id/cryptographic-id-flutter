@@ -10,11 +10,11 @@ import './ui/error_screen.dart';
 
 
 void main() {
-  runApp(const MyApp());
+  runApp(const CryptographicID());
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
+class CryptographicID extends StatelessWidget {
+  const CryptographicID({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -30,20 +30,20 @@ class MyApp extends StatelessWidget {
         GlobalCupertinoLocalizations.delegate,
       ],
       supportedLocales: AppLocalizations.supportedLocales,
-      home: const MyHomePage(title: 'Cryptograhpic ID'),
+      home: const ContactOverview(title: 'Cryptograhpic ID'),
     );
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({Key? key, required this.title}) : super(key: key);
+class ContactOverview extends StatefulWidget {
+  const ContactOverview({Key? key, required this.title}) : super(key: key);
   final String title;
 
   @override
-  State<MyHomePage> createState() => _MyHomePageState();
+  State<ContactOverview> createState() => _ContactOverviewState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
+class _ContactOverviewState extends State<ContactOverview> {
   bool loaded = false;
   String? error;
   List<DBKeyInfo> keys = [];
