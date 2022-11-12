@@ -78,7 +78,13 @@ class _ContactOverviewState extends State<ContactOverview> {
       itemBuilder: (context, i) {
         final pos = i;
         return new ListTile(
-          title: new Text(localization.showName(keys[pos].name)),
+          title: new Row(
+            children: [
+              new Text(localization.showName(keys[pos].name)),
+              const Spacer(),
+              const Icon(Icons.qr_code_scanner_outlined),
+            ],
+          ),
           onTap: () async {
             await scan(keys[pos]);
           },
