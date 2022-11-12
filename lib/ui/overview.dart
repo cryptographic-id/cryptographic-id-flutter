@@ -69,15 +69,19 @@ class _ContactOverviewState extends State<ContactOverview> {
     if (error != null) {
       return showError(localization.appInitFailed, error!);
     }
-    final children = ListView.builder(
+    final children = ListView.separated(
+      separatorBuilder: (context, index) => const Divider(
+        height: 1.0,
+        thickness: 3.0,
+      ),
       itemCount: keys.length,
       itemBuilder: (context, i) {
         final pos = i;
-        return new TextButton(
-          onPressed: () async {
+        return new ListTile(
+          title: new Text(localization.showName(keys[pos].name)),
+          onTap: () async {
             await scan(keys[pos]);
           },
-          child: Text(localization.showName(keys[pos].name)),
         );
       },
     );
@@ -86,9 +90,7 @@ class _ContactOverviewState extends State<ContactOverview> {
       appBar: AppBar(
         title: Text(widget.title),
       ),
-      body: Center(
-        child: children,
-      ),
+      body: children,
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
           await scan(null);
