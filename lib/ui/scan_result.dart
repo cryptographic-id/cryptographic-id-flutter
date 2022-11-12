@@ -197,15 +197,7 @@ class _ScanResultState extends State<ScanResult> {
             showIsRecent,
             darkText(localization.signedDate(formatTimestamp(id.timestamp.toInt()))),
             darkText(""),
-            if (showAddUpdate) TextButton(
-              style: TextButton.styleFrom(
-                padding: EdgeInsets.all(15),
-                foregroundColor: textColor,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(20),
-                  side: BorderSide(color: Colors.indigo),
-                ),
-              ),
+            if (showAddUpdate) ElevatedButton(
               onPressed: () async {
                 Navigator.of(context).pop();
                 Navigator.of(context).push(

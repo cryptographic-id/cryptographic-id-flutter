@@ -126,15 +126,7 @@ class _AddOrUpdateState extends State<AddOrUpdate> {
       )));
     }
     missingDetails.forEach(elements.add);
-    elements.add(TextButton(
-      style: TextButton.styleFrom(
-        padding: EdgeInsets.all(15),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(20),
-          side: BorderSide(color: Colors.indigo),
-        ),
-        backgroundColor: !nameValid ? Colors.grey : null,
-      ),
+    elements.add(ElevatedButton(
       onPressed: !nameValid ? null : () async {
         try {
           final storage = await getStorage();
