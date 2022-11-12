@@ -148,7 +148,7 @@ class _AddOrUpdateState extends State<AddOrUpdate> {
       },
       child: Text(
         widget.dbKeyInfo == null ? localization.addButton : localization.updateButton,
-        style: TextStyle(color: Colors.indigo)),
+      ),
     ));
 
     final title = widget.dbKeyInfo == null ?

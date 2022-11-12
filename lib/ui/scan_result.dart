@@ -211,7 +211,7 @@ class _ScanResultState extends State<ScanResult> {
               },
               child: Text(
                 dbKeyInfo == null ? localization.addButton : localization.updateButton,
-                style: TextStyle(color: Colors.indigo)),
+              ),
             ),
           ],
         ),
