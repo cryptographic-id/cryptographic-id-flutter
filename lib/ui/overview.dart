@@ -102,7 +102,7 @@ class _ContactOverviewState extends State<ContactOverview> {
           await scan(null);
         },
         tooltip: localization.qrScanTooltip,
-        child: const Icon(Icons.qr_code_scanner_outlined),
+        child: const Icon(Icons.person_add),
       ),
     );
   }
