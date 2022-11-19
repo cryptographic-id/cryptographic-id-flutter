@@ -24,8 +24,9 @@ class CryptographicID extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    const title = 'Cryptograhpic ID';
     return MaterialApp(
-      title: 'Cryptograhpic ID',
+      title: title,
       darkTheme: ThemeData.from(
         colorScheme: ColorScheme.fromSwatch(
           primarySwatch: MaterialColorFromRGB(218, 218, 218),
@@ -50,7 +51,7 @@ class CryptographicID extends StatelessWidget {
         GlobalCupertinoLocalizations.delegate,
       ],
       supportedLocales: AppLocalizations.supportedLocales,
-      home: const ContactOverview(title: 'Cryptograhpic ID'),
+      home: const ContactOverview(title: title),
     );
   }
 }
