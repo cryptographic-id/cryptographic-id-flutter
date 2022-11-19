@@ -4,8 +4,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:sqflite_common/utils/utils.dart' as utils;
 
-enum Secure {
-  publicKey,
+enum SecureBinary {
   privateKey,
 }
 
@@ -98,6 +97,14 @@ Future<DBKeyInfo> publicKeyFromMap(Storage storage, Map<String, dynamic> entry) 
   );
 }
 
+String binaryToString(Uint8List l) {
+  return l.join(",");
+}
+
+Uint8List stringToBinary(String s) {
+  return Uint8List.fromList(s.split(",").map(int.parse).toList().cast<int>());
+}
+
 class Storage {
   final AndroidOptions aOptions = const AndroidOptions(
     encryptedSharedPreferences: true,
@@ -113,12 +120,23 @@ class Storage {
     return new Storage._create(db);
   }
 
-  Future<String?> secureRead(Secure s) async {
-    return await storage.read(key: s.name, aOptions: aOptions);
+  String _secureBinaryKeyName(SecureBinary s) {
+    return slot.toString() + "_" + s.name;
   }
 
-  Future<void> secureWrite(Secure s, String val) async {
-    await storage.write(key: s.name, value: val, aOptions: aOptions);
+  Future<Uint8List?> secureBinaryRead(SecureBinary s) async {
+    final key = _secureBinaryKeyName(s);
+    final val = await storage.read(key: key, aOptions: aOptions);
+    if (val == null) {
+      return null;
+    }
+    return stringToBinary(val!);
+  }
+
+  Future<void> secureBinaryWrite(SecureBinary s, Uint8List val) async {
+    final key = _secureBinaryKeyName(s);
+    final str = binaryToString(val);
+    await storage.write(key: key, value: str, aOptions: aOptions);
   }
 
   Future<void> upsertPersonalInfo(DBKeyInfo key) async {
