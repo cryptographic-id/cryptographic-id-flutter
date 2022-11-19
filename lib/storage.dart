@@ -8,6 +8,8 @@ enum SecureBinary {
   privateKey,
 }
 
+String ownPublicKeyInfoName = "";
+
 Future<String> loadSQL(String file) async {
   return await rootBundle.loadString('sql/' + file + '.sql');
 }
@@ -179,8 +181,8 @@ class Storage {
   Future<List<DBKeyInfo>> fetchKeyInfos() async {
     final List<Map<String, dynamic>> maps = await database.query(
       'dbkeyInfos',
-      where: 'slot = ?',
-      whereArgs: [slot]);
+      where: 'slot = ? AND NOT deleted AND name != ?',
+      whereArgs: [slot, ownPublicKeyInfoName]);
     return await Future.wait(List.generate(maps.length, (i) async {
       return await publicKeyFromMap(this, maps[i]);
     }));
@@ -189,7 +191,7 @@ class Storage {
   Future<bool> existsKeyInfoWithName(String name) async {
     final List<Map<String, dynamic>> maps = await database.query(
       'dbkeyinfos',
-      where: 'name = ? AND slot = ?',
+      where: 'name = ? AND slot = ? AND NOT deleted',
       whereArgs: [name, slot]);
     if (maps.length > 0) {
       return true;
