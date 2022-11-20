@@ -5,11 +5,12 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../protocol/cryptograhic_id.pb.dart';
 import '../storage.dart';
+import '../localization.dart';
 import './error_screen.dart';
 
 class ValueAddUpdate {
   bool update = false;
-  final String property;
+  final CryptographicId_PersonalInformationType property;
   final String value;
   String? oldValue;
   int timestamp;
@@ -28,7 +29,8 @@ DBKeyInfo createDatabaseObject(String name,
                                CryptographicId id,
                                List<ValueAddUpdate> values,
                                DBKeyInfo? dbKey) {
-  final Map<String, PersonalInformation> updateInfo = {
+  final Map<CryptographicId_PersonalInformationType,
+            PersonalInformation> updateInfo = {
     for (final v in values)
       if (v.update)
         v.property: new PersonalInformation(
@@ -76,10 +78,10 @@ class _AddOrUpdateState extends State<AddOrUpdate> {
   Widget build(BuildContext context) {
     final localization = AppLocalizations.of(context)!;
     final missingDetails = widget.values.map((ValueAddUpdate val) {
-      // TODO: translate val.property
+      String prop = localizePersonalInformationType(localization, val.property);
       String title = val.oldValue == null ?
-        localization.addDetail(val.property, val.value) :
-        localization.updateDetail(val.property, val.value, val.oldValue!);
+        localization.addDetail(prop, val.value) :
+        localization.updateDetail(prop, val.value, val.oldValue!);
       return new CheckboxListTile(
         title: new Text(title),
         value: val.update,
