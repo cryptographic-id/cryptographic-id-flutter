@@ -8,8 +8,8 @@ Widget loadingScreen(String title) {
     body: Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[
-          const CircularProgressIndicator(),
+        children: const <Widget>[
+          CircularProgressIndicator(),
         ],
       ),
     ),

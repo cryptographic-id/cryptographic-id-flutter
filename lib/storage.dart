@@ -54,6 +54,7 @@ class PersonalInformation {
     };
   }
 
+  @override
   String toString() {
     return '$property: $value';
   }
@@ -84,6 +85,7 @@ class DBKeyInfo {
     };
   }
 
+  @override
   String toString() {
     return '$name: $publicKey ( ' + personalInformation.toString() + ' )';
   }
