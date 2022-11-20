@@ -138,13 +138,17 @@ class _AddOrUpdateState extends State<AddOrUpdate> {
           } else {
             await storage.upsertPersonalInfo(dbObj);
           }
-          Navigator.of(context).pop();
+          if (mounted) {
+            Navigator.of(context).pop();
+          }
         } catch (e) {
-          Navigator.of(context).push(
-            MaterialPageRoute(
-              builder: (c) => showError(localization.insertError, e.toString()),
-            ),
-          );
+          if (mounted) {
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (c) => showError(localization.insertError, e.toString()),
+              ),
+            );
+          }
         }
       },
       child: Text(
