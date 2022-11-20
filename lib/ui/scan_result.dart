@@ -99,6 +99,7 @@ class _ScanResultState extends State<ScanResult> {
 
   void _evaluateScan() async {
     try {
+      final localization = AppLocalizations.of(context)!;
       final tmpID = CryptographicId.fromBuffer(widget.idBytes);
       final p = ReceivePort();
       await Isolate.spawn(_backgroundVerify, Tuple(item1: p.sendPort,
@@ -108,7 +109,6 @@ class _ScanResultState extends State<ScanResult> {
       final keyFromDB = await storage.fetchKeyInfoFromKey(pubKey);
       final result = await p.first;
       var errMsg = null;
-      final localization = AppLocalizations.of(context)!;
       if (result.item1) {
         if (widget.check != null) {
           final toCheck = widget.check!;

@@ -26,12 +26,13 @@ class _ContactOverviewState extends State<ContactOverview> {
     if (compare != null) {
       title = AppLocalizations.of(context)!.scanContactName(compare.name);
     }
-    final qr = await scanQRCodeAsync(title, context);
-    Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (c) => ScanResult(idBytes: qr, check: compare),
-      ),
-    ).then((flag) => _loadData());
+    scanQRCode(title, context, (innerContext, result) {
+      Navigator.of(innerContext).push(
+        MaterialPageRoute(
+          builder: (c) => ScanResult(idBytes: result, check: compare),
+        ),
+      ).then((flag) => _loadData());
+    });
   }
 
   void _loadData() async {
