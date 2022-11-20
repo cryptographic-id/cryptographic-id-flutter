@@ -21,7 +21,7 @@ class _ContactOverviewState extends State<ContactOverview> {
   String? error;
   List<DBKeyInfo> keys = [];
 
-  Future<void> scan(DBKeyInfo? compare) async {
+  void scan(DBKeyInfo? compare) {
     String title = AppLocalizations.of(context)!.scanContact;
     if (compare != null) {
       title = AppLocalizations.of(context)!.scanContactName(compare.name);
@@ -86,8 +86,8 @@ class _ContactOverviewState extends State<ContactOverview> {
               const Icon(Icons.qr_code_scanner_outlined),
             ],
           ),
-          onTap: () async {
-            await scan(keys[pos]);
+          onTap: () {
+            scan(keys[pos]);
           },
         );
       },
@@ -99,8 +99,8 @@ class _ContactOverviewState extends State<ContactOverview> {
       ),
       body: children,
       floatingActionButton: FloatingActionButton(
-        onPressed: () async {
-          await scan(null);
+        onPressed: () {
+          scan(null);
         },
         tooltip: localization.qrScanTooltip,
         child: const Icon(Icons.person_add),
