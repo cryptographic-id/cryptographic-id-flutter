@@ -58,13 +58,13 @@ Future<bool> verifyCryptographicId(CryptographicId id) async {
   return true;
 }
 
-int TIMESTAMP_RECENT_DIFF = 60;
+const timestampRecentDiff = 60;
 bool isSignatureRecent(CryptographicId id) {
   final int timestamp = (DateTime.now().millisecondsSinceEpoch / 1000).round();
   for (final entry in id.personalInformation) {
-    if (entry.timestamp < timestamp - TIMESTAMP_RECENT_DIFF) {
+    if (entry.timestamp < timestamp - timestampRecentDiff) {
       return false;
     }
   }
-  return id.timestamp >= timestamp - TIMESTAMP_RECENT_DIFF;
+  return id.timestamp >= timestamp - timestampRecentDiff;
 }

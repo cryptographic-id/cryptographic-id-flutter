@@ -77,10 +77,10 @@ class _ContactOverviewState extends State<ContactOverview> {
       itemCount: keys.length,
       itemBuilder: (context, i) {
         final pos = i;
-        return new ListTile(
-          title: new Row(
+        return ListTile(
+          title: Row(
             children: [
-              new Text(localization.showName(keys[pos].name)),
+              Text(localization.showName(keys[pos].name)),
               const Spacer(),
               const Icon(Icons.qr_code_scanner_outlined),
             ],

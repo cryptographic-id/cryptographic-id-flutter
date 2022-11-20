@@ -33,7 +33,7 @@ DBKeyInfo createDatabaseObject(String name,
             PersonalInformation> updateInfo = {
     for (final v in values)
       if (v.update)
-        v.property: new PersonalInformation(
+        v.property: PersonalInformation(
           property: v.property,
           value: v.value,
           date: v.timestamp,
@@ -49,11 +49,10 @@ DBKeyInfo createDatabaseObject(String name,
       personalInformation: updateInfo,
     );
   }
-  final useKey = dbKey!;
   for (final e in updateInfo.entries) {
-    useKey.personalInformation[e.value.property] = e.value;
+    dbKey.personalInformation[e.value.property] = e.value;
   }
-  return useKey;
+  return dbKey;
 }
 
 class AddOrUpdate extends StatefulWidget {
@@ -82,26 +81,26 @@ class _AddOrUpdateState extends State<AddOrUpdate> {
       String title = val.oldValue == null ?
         localization.addDetail(prop, val.value) :
         localization.updateDetail(prop, val.value, val.oldValue!);
-      return new CheckboxListTile(
-        title: new Text(title),
+      return CheckboxListTile(
+        title: Text(title),
         value: val.update,
         onChanged: (bool? value) {
           if (value == null) {
             return;
           }
           setState(() {
-            val.update = value!;
+            val.update = value;
           });
         },
       );
     }).toList();
     final elements = <Widget>[];
     if (widget.dbKeyInfo != null) {
-      elements.add(new Text(localization.showName(widget.dbKeyInfo!.name)));
+      elements.add(Text(localization.showName(widget.dbKeyInfo!.name)));
       elements.add(const Text(""));
       nameValid = true;
     } else {
-      elements.add(new Text(localization.enterName));
+      elements.add(Text(localization.enterName));
       elements.add(IntrinsicWidth(child: TextField(
         onChanged: (text) async {
           final storage = await getStorage();
@@ -116,12 +115,12 @@ class _AddOrUpdateState extends State<AddOrUpdate> {
         autocorrect: false,
         enableSuggestions: false,
         inputFormatters: [
-          new FilteringTextInputFormatter.allow(RegExp("[a-z0-9]")),
+          FilteringTextInputFormatter.allow(RegExp("[a-z0-9]")),
         ],
         selectionWidthStyle: BoxWidthStyle.tight,
         decoration: InputDecoration(
-          border: OutlineInputBorder(),
-          contentPadding: EdgeInsets.symmetric(vertical: 6, horizontal: 10),
+          border: const OutlineInputBorder(),
+          contentPadding: const EdgeInsets.symmetric(vertical: 6, horizontal: 10),
           isDense: true,
           hintText: localization.allowedNameChars,
         ),
@@ -157,7 +156,7 @@ class _AddOrUpdateState extends State<AddOrUpdate> {
       localization.addNewContact : localization.updateContact;
     return Scaffold(
       appBar: AppBar(
-        title: new Text(title),
+        title: Text(title),
       ),
       body: Center(
         child: Column(
