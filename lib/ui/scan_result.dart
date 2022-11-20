@@ -111,13 +111,14 @@ class _ScanResultState extends State<ScanResult> {
       final localization = AppLocalizations.of(context)!;
       if (result.item1) {
         if (widget.check != null) {
-          if (!listEquals(widget.check!.publicKey, tmpID.publicKey)) {
-            errMsg = localization.differentSignature(widget.check!.name);
+          final toCheck = widget.check!;
+          if (!listEquals(toCheck.publicKey, tmpID.publicKey)) {
+            errMsg = localization.differentSignature(toCheck.name);
           } else {
             if (keyFromDB != null) {
-              if (keyFromDB.name != widget.check!.name) {
+              if (keyFromDB.name != toCheck.name) {
                 errMsg = localization.databaseNameDiffers(
-                  keyFromDB.name, widget.check!.name);
+                  keyFromDB.name, toCheck.name);
               }
             }
           }
