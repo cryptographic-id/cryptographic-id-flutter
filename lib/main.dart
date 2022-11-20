@@ -8,7 +8,7 @@ void main() {
   runApp(const CryptographicID());
 }
 
-MaterialColor MaterialColorFromRGB(int r, int g, int b) {
+MaterialColor materialColorFromRGB(int r, int g, int b) {
   Map<int, Color> colorCodes = {
     50: Color.fromRGBO(r, g, b, .1),
   };
@@ -29,22 +29,22 @@ class CryptographicID extends StatelessWidget {
       title: title,
       darkTheme: ThemeData.from(
         colorScheme: ColorScheme.fromSwatch(
-          primarySwatch: MaterialColorFromRGB(218, 218, 218),
+          primarySwatch: materialColorFromRGB(218, 218, 218),
           brightness: Brightness.dark,
-          backgroundColor: MaterialColorFromRGB(34, 34, 34),
-          accentColor: MaterialColorFromRGB(250, 138, 41),
+          backgroundColor: materialColorFromRGB(34, 34, 34),
+          accentColor: materialColorFromRGB(250, 138, 41),
         ),
       ),
       theme: ThemeData.from(
         colorScheme: ColorScheme.fromSwatch(
-          primarySwatch: MaterialColorFromRGB(37, 125, 49),
+          primarySwatch: materialColorFromRGB(37, 125, 49),
           brightness: Brightness.light,
-          backgroundColor: MaterialColorFromRGB(231, 231, 231),
-          accentColor: MaterialColorFromRGB(211, 79, 58),
+          backgroundColor: materialColorFromRGB(231, 231, 231),
+          accentColor: materialColorFromRGB(211, 79, 58),
         ),
       ),
       themeMode: ThemeMode.system,
-      localizationsDelegates: [
+      localizationsDelegates: const [
         AppLocalizations.delegate,
         GlobalMaterialLocalizations.delegate,
         GlobalWidgetsLocalizations.delegate,

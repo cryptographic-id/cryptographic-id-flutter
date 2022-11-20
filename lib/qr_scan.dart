@@ -21,7 +21,7 @@ void scanQRCode(String purpose, BuildContext context, Function(Uint8List) onScan
 }
 
 Future<Uint8List> scanQRCodeAsync(String purpose, BuildContext context) {
-  var completer = new Completer<Uint8List>();
+  var completer = Completer<Uint8List>();
   scanQRCode(purpose, context, (s) {
     if (!completer.isCompleted) {
       completer.complete(s);
@@ -42,7 +42,7 @@ class ScanQR extends StatelessWidget {
       torchEnabled: false);
     return Scaffold(
       appBar: AppBar(
-        title: Text(this.title),
+        title: Text(title),
       ),
       body: SingleChildScrollView(
         child: Column(
@@ -57,7 +57,7 @@ class ScanQR extends StatelessWidget {
                 } else {
                   final Uint8List code = barcode.rawBytes!;
                   debugPrint('Barcode found! $code');
-                  this.onScanned(code);
+                  onScanned(code);
                 }
               },
             ),

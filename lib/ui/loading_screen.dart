@@ -9,7 +9,7 @@ Widget loadingScreen(String title) {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
-          CircularProgressIndicator(),
+          const CircularProgressIndicator(),
         ],
       ),
     ),

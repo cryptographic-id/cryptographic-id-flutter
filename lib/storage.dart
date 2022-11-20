@@ -120,7 +120,7 @@ class Storage {
   final AndroidOptions aOptions = const AndroidOptions(
     encryptedSharedPreferences: true,
   );
-  final FlutterSecureStorage storage = new FlutterSecureStorage();
+  static const FlutterSecureStorage storage = FlutterSecureStorage();
   final Database database;
   final int slot = 0;
 
@@ -128,7 +128,7 @@ class Storage {
 
   static Future<Storage> _createWithDB() async {
     var db = await openOrCreateDatabase();
-    return new Storage._create(db);
+    return Storage._create(db);
   }
 
   String _secureBinaryKeyName(SecureBinary s) {
@@ -141,7 +141,7 @@ class Storage {
     if (val == null) {
       return null;
     }
-    return stringToBinary(val!);
+    return stringToBinary(val);
   }
 
   Future<void> secureBinaryWrite(SecureBinary s, Uint8List val) async {
@@ -202,7 +202,7 @@ class Storage {
       'dbkeyinfos',
       where: 'name = ? AND slot = ? AND NOT deleted',
       whereArgs: [name, slot]);
-    if (maps.length > 0) {
+    if (maps.isNotEmpty) {
       return true;
     }
     return false;
@@ -213,7 +213,7 @@ class Storage {
       'dbkeyinfos',
       where: 'name = ? AND slot = ? AND NOT deleted',
       whereArgs: [name, slot]);
-    if (maps.length > 0) {
+    if (maps.isNotEmpty) {
       return await publicKeyFromMap(this, maps.first);
     }
     return null;
@@ -224,7 +224,7 @@ class Storage {
       'dbkeyinfos',
       where: 'hex(public_key) = ? AND slot = ? AND NOT deleted',
       whereArgs: [utils.hex(key), slot]);
-    if (maps.length > 0) {
+    if (maps.isNotEmpty) {
       return await publicKeyFromMap(this, maps.first);
     }
     return null;

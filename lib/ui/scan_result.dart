@@ -12,16 +12,16 @@ import './add_or_update.dart';
 import './loading_screen.dart';
 
 // black is viewable on green/red/yellow screen in dark and light mode
-final textColor = Colors.black;
+const textColor = Colors.black;
 
 Text darkText(String text) {
-  return new Text(text, style:TextStyle(color: textColor));
+  return Text(text, style: const TextStyle(color: textColor));
 }
 
 Widget showValidationError(String title, String error) {
   return Scaffold(
     appBar: AppBar(
-      title: new Text(title),
+      title: Text(title),
     ),
     backgroundColor: Colors.redAccent.shade400,
     body: Center(
@@ -50,31 +50,32 @@ Future<void> _backgroundVerify(Tuple<SendPort, CryptographicId> params) async {
     final result = await crypto.verifyCryptographicId(params.item2);
     Isolate.exit(p, Tuple(item1: result, item2: null));
   } catch (e, trace) {
+    debugPrint(trace.toString());
     Isolate.exit(p, Tuple(item1: false, item2: e));
   }
 }
 
 String formatTimestamp(int ts) {
-  var date = new DateTime.fromMicrosecondsSinceEpoch(ts * 1000000);
+  var date = DateTime.fromMicrosecondsSinceEpoch(ts * 1000000);
   return date.toString();
 }
 
 Map<CryptographicId_PersonalInformationType, ValueAddUpdate> idToPersonalInfoMap(
     CryptographicId id) {
-  return Map.fromIterable(
-    id.personalInformation,
-    key: (e) => e.type,
-    value: (e) => new ValueAddUpdate(
-      property: e.type,
-      value: e.content,
-      timestamp: e.timestamp.toInt(),
-      signature: e.signature));
+  return {
+    for (final e in id.personalInformation)
+      e.type: ValueAddUpdate(
+        property: e.type,
+        value: e.content,
+        timestamp: e.timestamp.toInt(),
+        signature: Uint8List.fromList(e.signature))
+  };
 }
 
 List<ValueAddUpdate> createAddUpdateList(CryptographicId id, DBKeyInfo? dbKey) {
   var curr = idToPersonalInfoMap(id);
   if (dbKey != null) {
-    for (final i in dbKey!.personalInformation.entries) {
+    for (final i in dbKey.personalInformation.entries) {
       final e = i.value;
       if (curr.containsKey(e.property)) {
         final elem = curr[e.property]!;
@@ -98,26 +99,25 @@ class _ScanResultState extends State<ScanResult> {
 
   void _evaluateScan() async {
     try {
-      final tmp_id = CryptographicId.fromBuffer(widget.idBytes);
+      final tmpID = CryptographicId.fromBuffer(widget.idBytes);
       final p = ReceivePort();
       await Isolate.spawn(_backgroundVerify, Tuple(item1: p.sendPort,
-                                                   item2: tmp_id));
+                                                   item2: tmpID));
       final storage = await getStorage();
-      final pubKey = Uint8List.fromList(tmp_id.publicKey);
+      final pubKey = Uint8List.fromList(tmpID.publicKey);
       final keyFromDB = await storage.fetchKeyInfoFromKey(pubKey);
       final result = await p.first;
-      var verified = null;
       var errMsg = null;
       final localization = AppLocalizations.of(context)!;
       if (result.item1) {
         if (widget.check != null) {
-          if (!listEquals(widget.check!.publicKey, tmp_id.publicKey)) {
-            errMsg = localization.differentSignature(widget.check!.name!);
+          if (!listEquals(widget.check!.publicKey, tmpID.publicKey)) {
+            errMsg = localization.differentSignature(widget.check!.name);
           } else {
             if (keyFromDB != null) {
-              if (keyFromDB!.name != widget.check!.name) {
+              if (keyFromDB.name != widget.check!.name) {
                 errMsg = localization.databaseNameDiffers(
-                  keyFromDB!.name, widget.check!.name);
+                  keyFromDB.name, widget.check!.name);
               }
             }
           }
@@ -131,17 +131,18 @@ class _ScanResultState extends State<ScanResult> {
       }
       List<ValueAddUpdate> valuesToAdd = [];
       if (errMsg == null) {
-        valuesToAdd = createAddUpdateList(tmp_id, keyFromDB);
+        valuesToAdd = createAddUpdateList(tmpID, keyFromDB);
       }
 
       setState(() {
         loaded = true;
-        id = tmp_id;
+        id = tmpID;
         dbKeyInfo = keyFromDB;
         error = errMsg;
         values = valuesToAdd;
       });
     } catch (e, trace) {
+      debugPrint(trace.toString());
       setState(() {
         loaded = true;
         error = e.toString();
@@ -179,12 +180,12 @@ class _ScanResultState extends State<ScanResult> {
     } else {
       showName = darkText(localization.showName(dbKeyInfo!.name));
     }
-    bool showAddUpdate = (dbKeyInfo == null) || (values.length > 0);
+    bool showAddUpdate = (dbKeyInfo == null) || (values.isNotEmpty);
 
     return Scaffold(
       appBar: AppBar(
         // no darkText, since title background is not changed
-        title: new Text(localization.validResult),
+        title: Text(localization.validResult),
       ),
       backgroundColor: background,
       body: Center(
@@ -193,7 +194,7 @@ class _ScanResultState extends State<ScanResult> {
           children: [
             Text(
               localization.signatureCorrect,
-              style: TextStyle(fontWeight: FontWeight.w900, color: textColor)),
+              style: const TextStyle(fontWeight: FontWeight.w900, color: textColor)),
             showName,
             showIsRecent,
             darkText(localization.signedDate(formatTimestamp(id.timestamp.toInt()))),

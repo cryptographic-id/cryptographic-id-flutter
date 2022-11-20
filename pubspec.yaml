@@ -1,4 +1,4 @@
-name: CryptographicID
+name: cryptographic_id
 description: A new Flutter project.
 
 # The following line prevents the package from being accidentally published to
@@ -37,6 +37,7 @@ dependencies:
   intl: ^0.17.0
   mobile_scanner: ^2.0.0
   sqflite: ^2.0.3
+  sqflite_common: ^2.2.1+1
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
