@@ -59,12 +59,13 @@ String formatTimestamp(int ts) {
   return date.toString();
 }
 
-Map<String, ValueAddUpdate> idToPersonalInfoMap(CryptographicId id) {
+Map<CryptographicId_PersonalInformationType, ValueAddUpdate> idToPersonalInfoMap(
+    CryptographicId id) {
   return Map.fromIterable(
     id.personalInformation,
-    key: (e) => e.type.toString(),
+    key: (e) => e.type,
     value: (e) => new ValueAddUpdate(
-      property: e.type.toString(),
+      property: e.type,
       value: e.content,
       timestamp: e.timestamp.toInt(),
       signature: e.signature));

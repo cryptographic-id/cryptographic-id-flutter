@@ -167,5 +167,20 @@
 				"example": "Mary"
 			}
 		}
-	}
+	},
+
+	"@@localization": "",
+	"pitFirstName": "First name",
+	"pitLastName": "Last name",
+	"pitNickName": "Nickname",
+	"pitEMail": "e-Mail",
+	"pitWebsite": "Website",
+	"pitPhoneNumber": "Phone number",
+	"pitCountry": "Country",
+	"pitState": "State",
+	"pitCity": "City",
+	"pitPostCode": "Post code",
+	"pitStreet": "Street",
+	"pitHouseNumber": "House number",
+	"pitMatrixID": "Matrix ID"
 }

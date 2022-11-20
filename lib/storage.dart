@@ -3,6 +3,7 @@ import 'package:flutter/services.dart' show rootBundle;
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:sqflite_common/utils/utils.dart' as utils;
+import './protocol/cryptograhic_id.pb.dart';
 
 enum SecureBinary {
   privateKey,
@@ -32,7 +33,7 @@ Future<Database> openOrCreateDatabase() async {
 }
 
 class PersonalInformation {
-  final String property;
+  final CryptographicId_PersonalInformationType property;
   final String value;
   final int date;
   final Uint8List signature;
@@ -46,7 +47,7 @@ class PersonalInformation {
 
   Map<String, Object> toMap() {
     return <String, Object>{
-      "property": property,
+      "property": property.name,
       "value": value,
       "date": date,
       "signature": signature,
@@ -63,7 +64,8 @@ class DBKeyInfo {
   final Uint8List publicKey;
   final Uint8List signature;
   final int date;
-  final Map<String, PersonalInformation> personalInformation;
+  final Map<CryptographicId_PersonalInformationType,
+            PersonalInformation> personalInformation;
 
   DBKeyInfo({
     required this.name,
@@ -105,6 +107,13 @@ String binaryToString(Uint8List l) {
 
 Uint8List stringToBinary(String s) {
   return Uint8List.fromList(s.split(",").map(int.parse).toList().cast<int>());
+}
+
+CryptographicId_PersonalInformationType personalInformationTypeFromString(String s) {
+  // protobuf enum should never have information removed
+  // so this should always find something
+  return CryptographicId_PersonalInformationType.values.firstWhere(
+    (e) => e.toString().split(".").last == s);
 }
 
 class Storage {
@@ -161,21 +170,21 @@ class Storage {
     return key;
   }
 
-  Future<Map<String, PersonalInformation>> fetchPersonalInformation(
-      String name) async {
+  Future<Map<CryptographicId_PersonalInformationType, PersonalInformation>>
+      fetchPersonalInformation(String name) async {
     final List<Map<String, dynamic>> maps = await database.query(
       'PersonalInformation',
       where: 'public_key_name = ?',
       whereArgs: [name]);
-    return {
-      for (final e in maps)
-        e["property"]: PersonalInformation(
-          property: e["property"],
-          value: e["value"],
-          date: e["date"],
-          signature: e["signature"],
-        )
-    };
+    return Map.fromEntries(maps.map((e) {
+      final prop = personalInformationTypeFromString(e["property"]);
+      return MapEntry(prop, PersonalInformation(
+        property: prop,
+        value: e["value"],
+        date: e["date"],
+        signature: e["signature"],
+      ));
+    }));
   }
 
   Future<List<DBKeyInfo>> fetchKeyInfos() async {
