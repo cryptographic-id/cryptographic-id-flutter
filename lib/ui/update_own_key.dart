@@ -166,7 +166,9 @@ class _UpdateOwnKeyState extends State<UpdateOwnKey> {
         );
         await storage.upsertPersonalInfo(insertKey);
       }
-      widget.onSaved(context);
+      if (mounted) {
+        widget.onSaved(context);
+      }
     } catch (e) {
       setState(() {
         _loaded = true;
