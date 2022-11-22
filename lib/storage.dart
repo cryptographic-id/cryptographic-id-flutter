@@ -221,6 +221,10 @@ class Storage {
     return null;
   }
 
+  Future<DBKeyInfo?> fetchOwnKeyInfo() async {
+    return fetchKeyInfo(ownPublicKeyInfoName);
+  }
+
   Future<DBKeyInfo?> fetchKeyInfoFromKey(Uint8List key) async {
     final List<Map<String, dynamic>> maps = await database.query(
       'dbkeyinfos',

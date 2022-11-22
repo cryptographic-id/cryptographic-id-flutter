@@ -3,9 +3,10 @@ import 'package:flutter/scheduler.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../qr_scan.dart';
 import '../storage.dart';
+import './error_screen.dart';
 import './loading_screen.dart';
 import './scan_result.dart';
-import './error_screen.dart';
+import './update_own_key.dart';
 
 
 class ContactOverview extends StatefulWidget {
@@ -18,6 +19,7 @@ class ContactOverview extends StatefulWidget {
 
 class _ContactOverviewState extends State<ContactOverview> {
   bool loaded = false;
+  bool hasOwnKey = false;
   String? error;
   List<DBKeyInfo> keys = [];
 
@@ -38,10 +40,12 @@ class _ContactOverviewState extends State<ContactOverview> {
   void _loadData() async {
     try {
       final storage = await getStorage();
+      final ownKey = await storage.fetchOwnKeyInfo();
       final dBkeys = await storage.fetchKeyInfos();
       setState(() {
         loaded = true;
         keys = dBkeys;
+        hasOwnKey = (ownKey != null);
         error = null;
       });
     } catch (e) {
@@ -69,6 +73,11 @@ class _ContactOverviewState extends State<ContactOverview> {
     }
     if (error != null) {
       return showError(localization.appInitFailed, error!);
+    }
+    if (!hasOwnKey) {
+      return UpdateOwnKey(onSaved: (context) {
+        _loadData();
+      });
     }
     final children = ListView.separated(
       separatorBuilder: (context, index) => const Divider(

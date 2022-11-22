@@ -182,5 +182,19 @@
 	"pitPostCode": "Post code",
 	"pitStreet": "Street",
 	"pitHouseNumber": "House number",
-	"pitMatrixID": "Matrix ID"
+	"pitMatrixID": "Matrix ID",
+
+	"@@ui/update_own_key.dart": "",
+	"createID": "Create ID",
+	"@createID": {
+		"description": "Title of create new key"
+	},
+	"addFormField": "Add another field",
+	"@addFormField": {
+		"description": "Text for adding other fields like first name, matrix..."
+	},
+	"saveID": "Save ID",
+	"@save": {
+		"description": "Save ID"
+	}
 }
