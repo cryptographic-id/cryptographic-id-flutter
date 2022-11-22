@@ -178,7 +178,7 @@ class Storage {
       'PersonalInformation',
       where: 'public_key_name = ?',
       whereArgs: [name]);
-    return Map.fromEntries(maps.map((e) {
+    return Map.fromEntries(maps.where((e) => !e["value"].isEmpty).map((e) {
       final prop = personalInformationTypeFromString(e["property"]);
       return MapEntry(prop, PersonalInformation(
         property: prop,
