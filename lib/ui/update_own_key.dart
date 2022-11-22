@@ -179,10 +179,10 @@ class _UpdateOwnKeyState extends State<UpdateOwnKey> {
   Widget build(BuildContext context) {
     final localization = AppLocalizations.of(context)!;
     if (!_loaded) {
-      return loadingScreen(localization.appInit);
+      return loadingScreen(localization.modifyOwnKey);
     }
     if (_error != null) {
-      return showError(localization.appInitFailed, _error!);
+      return showError(localization.modifyOwnKeyFailed, _error!);
     }
 
     final dropDownList = <DropdownMenuItem<

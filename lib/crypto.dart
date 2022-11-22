@@ -1,7 +1,7 @@
+import 'dart:typed_data';
 import 'package:cryptography/cryptography.dart';
 import './tuple.dart';
 import './protocol/cryptograhic_id.pb.dart';
-import 'dart:typed_data';
 
 Future<Tuple<Uint8List, Uint8List>> createKey() async {
   final algorithm = Ed25519();

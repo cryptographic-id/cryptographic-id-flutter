@@ -19,7 +19,7 @@
 		"description": "Button to update contact details"
 	},
 
-	"@@main.dart": "",
+	"@@ui/overview.dart": "",
 	"appInit": "Initializing app...",
 	"@appInit": {
 		"description": "Screen on startup while initializing"
@@ -45,6 +45,10 @@
 				"example": "Jane"
 			}
 		}
+	},
+	"modifyID": "Modify ID",
+	"@modifyID": {
+		"description": "Dropdown menu, modify own information"
 	},
 
 	"@@ui/scan_result.dart": "",
@@ -185,6 +189,8 @@
 	"pitMatrixID": "Matrix ID",
 
 	"@@ui/update_own_key.dart": "",
+	"modifyOwnKeyFailed": "Modifing ID failed",
+	"modifyOwnKey": "Modify ID",
 	"createID": "Create ID",
 	"@createID": {
 		"description": "Title of create new key"

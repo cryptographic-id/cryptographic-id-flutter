@@ -37,6 +37,16 @@ class _ContactOverviewState extends State<ContactOverview> {
     });
   }
 
+  void editOwnID() {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (c) => UpdateOwnKey(onSaved: (innerContext) {
+          Navigator.of(innerContext).pop();
+        }),
+      ),
+    );
+  }
+
   void _loadData() async {
     try {
       final storage = await getStorage();
@@ -105,6 +115,23 @@ class _ContactOverviewState extends State<ContactOverview> {
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.title),
+        actions: <Widget>[
+          PopupMenuButton(
+            onSelected: (result) {
+              if (result == 0) {
+                editOwnID();
+              }
+            },
+            itemBuilder: (context) {
+              return [
+                PopupMenuItem(
+                  value: 0,
+                  child: Text(localization.modifyID),
+                ),
+              ];
+            },
+          ),
+        ],
       ),
       body: children,
       floatingActionButton: FloatingActionButton(
