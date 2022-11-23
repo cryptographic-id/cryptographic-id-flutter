@@ -20,7 +20,7 @@ class ContactOverview extends StatefulWidget {
 
 class _ContactOverviewState extends State<ContactOverview> {
   bool loaded = false;
-  bool hasOwnKey = false;
+  bool hasOwnID = false;
   String? error;
   List<DBKeyInfo> keys = [];
 
@@ -64,12 +64,12 @@ class _ContactOverviewState extends State<ContactOverview> {
   void _loadData() async {
     try {
       final storage = await getStorage();
-      final ownKey = await storage.fetchOwnKeyInfo();
+      final ownID = await storage.fetchOwnKeyInfo();
       final dBkeys = await storage.fetchKeyInfos();
       setState(() {
         loaded = true;
         keys = dBkeys;
-        hasOwnKey = (ownKey != null);
+        hasOwnID = (ownID != null);
         error = null;
       });
     } catch (e) {
@@ -98,7 +98,7 @@ class _ContactOverviewState extends State<ContactOverview> {
     if (error != null) {
       return showError(localization.appInitFailed, error!);
     }
-    if (!hasOwnKey) {
+    if (!hasOwnID) {
       return UpdateOwnID(onSaved: (context) {
         _loadData();
       });
