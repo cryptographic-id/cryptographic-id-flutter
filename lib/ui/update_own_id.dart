@@ -9,18 +9,18 @@ import '../crypto.dart';
 import './error_screen.dart';
 import './loading_screen.dart';
 
-class UpdateOwnKey extends StatefulWidget {
-  const UpdateOwnKey({Key? key, required this.onSaved}) : super(key: key);
+class UpdateOwnID extends StatefulWidget {
+  const UpdateOwnID({Key? key, required this.onSaved}) : super(key: key);
   final Function(BuildContext context) onSaved;
 
   @override
-  State<UpdateOwnKey> createState() => _UpdateOwnKeyState();
+  State<UpdateOwnID> createState() => _UpdateOwnIDState();
 }
 
-class _UpdateOwnKeyState extends State<UpdateOwnKey> {
+class _UpdateOwnIDState extends State<UpdateOwnID> {
   bool _loaded = false;
   String? _error;
-  DBKeyInfo _ownKey = DBKeyInfo(
+  DBKeyInfo _ownID = DBKeyInfo(
     name: ownPublicKeyInfoName,
     publicKey: Uint8List(0),
     date: 0,
@@ -35,14 +35,14 @@ class _UpdateOwnKeyState extends State<UpdateOwnKey> {
   void _loadData() async {
     try {
       final storage = await getStorage();
-      final tmpOwnKey = await storage.fetchOwnKeyInfo();
+      final tmpOwnID = await storage.fetchOwnKeyInfo();
       setState(() {
         _loaded = true;
-        if (tmpOwnKey != null) {
-          _ownKey = tmpOwnKey;
+        if (tmpOwnID != null) {
+          _ownID = tmpOwnID;
         }
         _error = null;
-        for (final val in _ownKey.personalInformation.values) {
+        for (final val in _ownID.personalInformation.values) {
           final edit = TextEditingController();
           edit.text = val.value;
           _textControllers[val.property] = edit;
@@ -64,7 +64,7 @@ class _UpdateOwnKeyState extends State<UpdateOwnKey> {
     });
   }
 
-  void saveKey(BuildContext context) async {
+  void saveID(BuildContext context) async {
     try {
       setState(() {
         _loaded = false;
@@ -80,7 +80,7 @@ class _UpdateOwnKeyState extends State<UpdateOwnKey> {
             signature: Uint8List(0),
             );
       }
-      if (_ownKey.publicKey.isEmpty) {
+      if (_ownID.publicKey.isEmpty) {
         final key = await createKey();
         await storage.secureBinaryWrite(
             SecureBinary.privateKey, key.item1);
@@ -95,7 +95,7 @@ class _UpdateOwnKeyState extends State<UpdateOwnKey> {
       } else {
         final insertKey = DBKeyInfo(
           name: ownPublicKeyInfoName,
-          publicKey: _ownKey.publicKey,
+          publicKey: _ownID.publicKey,
           date: 0,
           signature: Uint8List(0),
           personalInformation: update,
@@ -117,10 +117,10 @@ class _UpdateOwnKeyState extends State<UpdateOwnKey> {
   Widget build(BuildContext context) {
     final localization = AppLocalizations.of(context)!;
     if (!_loaded) {
-      return loadingScreen(localization.modifyOwnKey);
+      return loadingScreen(localization.modifyOwnID);
     }
     if (_error != null) {
-      return showError(localization.modifyOwnKeyFailed, _error!);
+      return showError(localization.modifyOwnIDFailed, _error!);
     }
 
     final dropDownList = <DropdownMenuItem<
@@ -207,7 +207,7 @@ class _UpdateOwnKeyState extends State<UpdateOwnKey> {
             icon: const Icon(Icons.save),
             tooltip: localization.saveID,
             onPressed: () {
-              saveKey(context);
+              saveID(context);
             },
           ),
         ],

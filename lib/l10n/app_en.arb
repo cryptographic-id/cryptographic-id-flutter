@@ -188,9 +188,9 @@
 	"pitHouseNumber": "House number",
 	"pitMatrixID": "Matrix ID",
 
-	"@@ui/update_own_key.dart": "",
-	"modifyOwnKeyFailed": "Modifing ID failed",
-	"modifyOwnKey": "Modify ID",
+	"@@ui/update_own_id.dart": "",
+	"modifyOwnIDFailed": "Modifing ID failed",
+	"modifyOwnID": "Modify ID",
 	"createID": "Create ID",
 	"@createID": {
 		"description": "Title of create new key"

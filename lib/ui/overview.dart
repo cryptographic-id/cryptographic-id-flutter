@@ -7,7 +7,7 @@ import './error_screen.dart';
 import './loading_screen.dart';
 import './scan_result.dart';
 import './show_id.dart';
-import './update_own_key.dart';
+import './update_own_id.dart';
 
 
 class ContactOverview extends StatefulWidget {
@@ -54,7 +54,7 @@ class _ContactOverviewState extends State<ContactOverview> {
   void editOwnID() {
     Navigator.of(context).push(
       MaterialPageRoute(
-        builder: (c) => UpdateOwnKey(onSaved: (innerContext) {
+        builder: (c) => UpdateOwnID(onSaved: (innerContext) {
           Navigator.of(innerContext).pop();
         }),
       ),
@@ -99,7 +99,7 @@ class _ContactOverviewState extends State<ContactOverview> {
       return showError(localization.appInitFailed, error!);
     }
     if (!hasOwnKey) {
-      return UpdateOwnKey(onSaved: (context) {
+      return UpdateOwnID(onSaved: (context) {
         _loadData();
       });
     }
