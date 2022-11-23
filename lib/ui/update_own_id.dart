@@ -30,7 +30,6 @@ class _UpdateOwnIDState extends State<UpdateOwnID> {
   final _formKey = GlobalKey<FormState>();
   final Map<CryptographicId_PersonalInformationType,
             TextEditingController> _textControllers = {};
-  CryptographicId_PersonalInformationType? _lastDropDownElem;
 
   void _loadData() async {
     try {
@@ -125,18 +124,6 @@ class _UpdateOwnIDState extends State<UpdateOwnID> {
 
     final dropDownList = <DropdownMenuItem<
       CryptographicId_PersonalInformationType>>[];
-    if (_lastDropDownElem != null) {
-      // DropdownButtonFormField does not allow to remove the selected item
-      // and value cannot be reset to null
-      // This workaround results in a gap at the top of the menu
-      dropDownList.add(
-        DropdownMenuItem(
-          enabled: false,
-          value: _lastDropDownElem,
-          child: const SizedBox(height: 0),
-        )
-      );
-    }
     final formList = <Widget>[];
     // iterate over pits, so the order makes sense and is deterministic
     for (final pit in CryptographicId_PersonalInformationType.values) {
@@ -166,11 +153,12 @@ class _UpdateOwnIDState extends State<UpdateOwnID> {
         );
       }
     }
-    final dropdown = DropdownButtonFormField(
+    final dropdown = DropdownButtonFormField<CryptographicId_PersonalInformationType>(
       decoration: InputDecoration(
         labelText: localization.addFormField,
-        icon: const Icon(Icons.person),
+        icon: const Icon(Icons.add),
       ),
+      value: null,
       onChanged: (CryptographicId_PersonalInformationType? selected) {
         if (selected == null) {
           return;
@@ -178,13 +166,11 @@ class _UpdateOwnIDState extends State<UpdateOwnID> {
         final edit = TextEditingController();
         edit.text = "";
         setState(() {
-          _lastDropDownElem = selected;
           _textControllers[selected] = edit;
         });
       },
       items: dropDownList,
     );
-    formList.add(dropdown);
 
     ListView body = ListView(
       padding: const EdgeInsets.all(20),
@@ -196,7 +182,16 @@ class _UpdateOwnIDState extends State<UpdateOwnID> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: formList,
           ),
-        )
+        ),
+        // use own form for dropdown, so own GlobalKey can be used
+        // otherwise it wont work to reset to value to null (show label)
+        Form(
+          key: GlobalKey<FormState>(),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [dropdown],
+          ),
+        ),
       ],
     );
     return Scaffold(
