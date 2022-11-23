@@ -6,6 +6,7 @@ import '../storage.dart';
 import './error_screen.dart';
 import './loading_screen.dart';
 import './scan_result.dart';
+import './show_id.dart';
 import './update_own_key.dart';
 
 
@@ -23,7 +24,7 @@ class _ContactOverviewState extends State<ContactOverview> {
   String? error;
   List<DBKeyInfo> keys = [];
 
-  void scan(DBKeyInfo? compare) {
+  void scan(BuildContext context, DBKeyInfo? compare) {
     String title = AppLocalizations.of(context)!.scanContact;
     if (compare != null) {
       title = AppLocalizations.of(context)!.scanContactName(compare.name);
@@ -35,6 +36,19 @@ class _ContactOverviewState extends State<ContactOverview> {
         ),
       ).then((flag) => _loadData());
     });
+  }
+
+  void showID(DBKeyInfo id) {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (c) => ShowID(
+          id: id,
+          scan: (BuildContext innerContext) {
+            scan(innerContext, id);
+          },
+        ),
+      ),
+    ).then((flag) => _loadData());
   }
 
   void editOwnID() {
@@ -102,11 +116,17 @@ class _ContactOverviewState extends State<ContactOverview> {
             children: [
               Text(localization.showName(keys[pos].name)),
               const Spacer(),
-              const Icon(Icons.qr_code_scanner_outlined),
+              IconButton(
+                icon: const Icon(Icons.qr_code_scanner_outlined),
+                tooltip: localization.saveID,
+                onPressed: () {
+                  scan(context, keys[pos]);
+                },
+              ),
             ],
           ),
           onTap: () {
-            scan(keys[pos]);
+            showID(keys[pos]);
           },
         );
       },
@@ -136,7 +156,7 @@ class _ContactOverviewState extends State<ContactOverview> {
       body: children,
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          scan(null);
+          scan(context, null);
         },
         tooltip: localization.qrScanTooltip,
         child: const Icon(Icons.person_add),

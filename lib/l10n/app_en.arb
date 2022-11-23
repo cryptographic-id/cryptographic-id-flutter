@@ -18,6 +18,16 @@
 	"@updateButton": {
 		"description": "Button to update contact details"
 	},
+	"scanContactName": "Scan QR-Code from {name}",
+	"@scanContactName": {
+		"description": "Scan QR-Code of specific contact",
+		"placeholders": {
+			"name": {
+				"type": "String",
+				"example": "Jane"
+			}
+		}
+	},
 
 	"@@ui/overview.dart": "",
 	"appInit": "Initializing app...",
@@ -35,16 +45,6 @@
 	"scanContact": "Scan QR-Code from contact",
 	"@scanContact": {
 		"description": "Scan QR-Code from contact"
-	},
-	"scanContactName": "Scan QR-Code from {name}",
-	"@scanContactName": {
-		"description": "Scan QR-Code of specific contact",
-		"placeholders": {
-			"name": {
-				"type": "String",
-				"example": "Jane"
-			}
-		}
 	},
 	"modifyID": "Modify ID",
 	"@modifyID": {
@@ -202,5 +202,17 @@
 	"saveID": "Save ID",
 	"@save": {
 		"description": "Save ID"
+	},
+
+	"@@ui/show_id.dart": "",
+	"showID": "ID: {name}",
+	"@showID": {
+		"description": "Title of show id",
+		"placeholders": {
+			"name": {
+				"type": "String",
+				"example": "Jane"
+			}
+		}
 	}
 }
