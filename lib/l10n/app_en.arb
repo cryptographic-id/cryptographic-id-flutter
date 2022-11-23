@@ -173,7 +173,7 @@
 		}
 	},
 
-	"@@localization": "",
+	"@@personal_information.dart": "",
 	"pitFirstName": "First name",
 	"pitLastName": "Last name",
 	"pitNickName": "Nickname",
