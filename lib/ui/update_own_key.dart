@@ -2,76 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import '../localization.dart';
+import '../personal_information.dart';
 import '../protocol/cryptograhic_id.pb.dart';
 import '../storage.dart';
 import '../crypto.dart';
 import './error_screen.dart';
 import './loading_screen.dart';
-
-TextInputType pitToKeyboardType(CryptographicId_PersonalInformationType t) {
-  switch (t) {
-    case CryptographicId_PersonalInformationType.FIRST_NAME:
-      return TextInputType.text;
-    case CryptographicId_PersonalInformationType.LAST_NAME:
-      return TextInputType.text;
-    case CryptographicId_PersonalInformationType.NICK_NAME:
-      return TextInputType.text;
-    case CryptographicId_PersonalInformationType.E_MAIL:
-      return TextInputType.emailAddress;
-    case CryptographicId_PersonalInformationType.PHONE_NUMBER:
-      return TextInputType.phone;
-    case CryptographicId_PersonalInformationType.WEBSITE:
-      return TextInputType.url;
-    case CryptographicId_PersonalInformationType.STATE:
-      return TextInputType.text;
-    case CryptographicId_PersonalInformationType.COUNTRY:
-      return TextInputType.text;
-    case CryptographicId_PersonalInformationType.CITY:
-      return TextInputType.text;
-    case CryptographicId_PersonalInformationType.POST_CODE:
-      return TextInputType.number;
-    case CryptographicId_PersonalInformationType.STREET:
-      return TextInputType.streetAddress;
-    case CryptographicId_PersonalInformationType.HOUSE_NUMBER:
-      return TextInputType.number;
-    case CryptographicId_PersonalInformationType.MATRIX_ID:
-      return TextInputType.text;
-  }
-  return TextInputType.text;
-}
-
-IconData pitToIcon(CryptographicId_PersonalInformationType t) {
-  switch (t) {
-    case CryptographicId_PersonalInformationType.FIRST_NAME:
-      return Icons.person;
-    case CryptographicId_PersonalInformationType.LAST_NAME:
-      return Icons.person;
-    case CryptographicId_PersonalInformationType.NICK_NAME:
-      return Icons.person;
-    case CryptographicId_PersonalInformationType.E_MAIL:
-      return Icons.email;
-    case CryptographicId_PersonalInformationType.WEBSITE:
-      return Icons.web;
-    case CryptographicId_PersonalInformationType.PHONE_NUMBER:
-      return Icons.phone;
-    case CryptographicId_PersonalInformationType.COUNTRY:
-      return Icons.public;
-    case CryptographicId_PersonalInformationType.STATE:
-      return Icons.flag;
-    case CryptographicId_PersonalInformationType.CITY:
-      return Icons.location_city;
-    case CryptographicId_PersonalInformationType.POST_CODE:
-      return Icons.local_post_office;
-    case CryptographicId_PersonalInformationType.STREET:
-      return Icons.house;
-    case CryptographicId_PersonalInformationType.HOUSE_NUMBER:
-      return Icons.house;
-    case CryptographicId_PersonalInformationType.MATRIX_ID:
-      return Icons.message;
-  }
-  return Icons.person;
-}
 
 class UpdateOwnKey extends StatefulWidget {
   const UpdateOwnKey({Key? key, required this.onSaved}) : super(key: key);

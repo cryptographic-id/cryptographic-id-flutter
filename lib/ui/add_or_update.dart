@@ -5,7 +5,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../protocol/cryptograhic_id.pb.dart';
 import '../storage.dart';
-import '../localization.dart';
+import '../personal_information.dart';
 import './error_screen.dart';
 
 class ValueAddUpdate {
