@@ -13,8 +13,8 @@ void scanQRCode(String purpose, BuildContext context,
         if (!fired) {
           Navigator.of(context).pop();
           fired = true;
+          onScanned(c, s);
         }
-        onScanned(c, s);
       })
     )
   );
