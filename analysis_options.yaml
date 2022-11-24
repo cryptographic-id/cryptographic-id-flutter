@@ -4,3 +4,4 @@ linter:
   rules:
     prefer_interpolation_to_compose_strings: false
     avoid_init_to_null: false
+    unawaited_futures: true
