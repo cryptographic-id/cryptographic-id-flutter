@@ -34,7 +34,7 @@ dependencies:
   barcode_widget: ^2.0.3
   cryptography: ^2.0.5
   fixnum: ^1.0.1
-  flutter_secure_storage: ^5.1.0
+  flutter_secure_storage: ^6.1.0
   intl: ^0.17.0
   mobile_scanner: ^2.0.0
   sqflite: ^2.0.3
