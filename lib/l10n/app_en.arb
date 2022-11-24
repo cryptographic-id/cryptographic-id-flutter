@@ -214,5 +214,9 @@
 				"example": "Jane"
 			}
 		}
-	}
+	},
+
+	"@@ui/sign_own_id.dart": "",
+	"createQRCode": "Create QR-Code",
+	"shareID": "Sign ID"
 }

@@ -33,6 +33,25 @@ Future<Uint8List> sign(Uint8List message, Uint8List key) async {
   return Uint8List.fromList(signature.bytes);
 }
 
+Uint8List idToDataToSign(CryptographicId id) {
+  final date = id.timestamp;
+  final key = Uint8List.fromList(id.publicKey);
+  final list = Uint8List(8 + key.length);
+  final data = ByteData.sublistView(list);
+  data.setUint64(0, date.toInt(), Endian.big);
+  list.setAll(8, key);
+  return list;
+}
+
+Uint8List personalInformationToDataToSign(CryptographicId_PersonalInformation entry) {
+  final list = Uint8List(8 + 4 + entry.content.length);
+  final data = ByteData.sublistView(list);
+  data.setUint64(0, entry.timestamp.toInt(), Endian.big);
+  data.setInt32(8, entry.type.value, Endian.big);
+  list.setAll(12, entry.content.codeUnits);
+  return list;
+}
+
 Future<bool> verifyCryptographicId(CryptographicId id) async {
   final sig = Uint8List.fromList(id.signature);
   final date = id.timestamp;
@@ -58,9 +77,22 @@ Future<bool> verifyCryptographicId(CryptographicId id) async {
   return true;
 }
 
+Future<void> signCryptographicId(CryptographicId id, Uint8List privateKey) async {
+  final data = idToDataToSign(id);
+  id.signature = await sign(data, privateKey);
+  for (final entry in id.personalInformation) {
+    final entryData = personalInformationToDataToSign(entry);
+    entry.signature = await sign(entryData, privateKey);
+  }
+}
+
+int now() {
+  return (DateTime.now().millisecondsSinceEpoch / 1000).round();
+}
+
 const timestampRecentDiff = 60;
 bool isSignatureRecent(CryptographicId id) {
-  final int timestamp = (DateTime.now().millisecondsSinceEpoch / 1000).round();
+  final int timestamp = now();
   for (final entry in id.personalInformation) {
     if (entry.timestamp < timestamp - timestampRecentDiff) {
       return false;
