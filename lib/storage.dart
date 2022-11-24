@@ -152,8 +152,7 @@ class Storage {
     await storage.write(key: key, value: str, aOptions: aOptions);
   }
 
-  Future<void> upsertPersonalInfo(DBKeyInfo key) async {
-    final batch = database.batch();
+  Future<void> _upsertPersonalInfo(Batch batch, DBKeyInfo key) async {
     for (final entry in key.personalInformation.entries) {
       final map = entry.value.toMap();
       map["public_key_name"] = key.name;
@@ -161,14 +160,21 @@ class Storage {
                    map,
                    conflictAlgorithm: ConflictAlgorithm.replace);
     }
+  }
+
+  Future<void> upsertPersonalInfo(DBKeyInfo key) async {
+    final batch = database.batch();
+    await _upsertPersonalInfo(batch, key);
     await batch.commit();
   }
 
   Future<DBKeyInfo> insertKeyInfo(DBKeyInfo key) async {
     var map = key.toMap();
     map["slot"] = slot;
+    final batch = database.batch();
     await database.insert("dbkeyinfos", map);
-    await upsertPersonalInfo(key);
+    await _upsertPersonalInfo(batch, key);
+    await batch.commit();
     return key;
   }
 
