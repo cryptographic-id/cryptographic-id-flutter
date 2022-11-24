@@ -62,7 +62,7 @@ class _SignOwnIDState extends State<SignOwnID> {
     final data = cryptoID.writeToBuffer();
     if (mounted) {
       final localization = AppLocalizations.of(context)!;
-      Navigator.of(context).push(
+      await Navigator.of(context).push(
         MaterialPageRoute(
           builder: (c) => ShowQR(
             title: localization.shareID,

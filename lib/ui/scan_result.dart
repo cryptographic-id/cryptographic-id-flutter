@@ -203,7 +203,7 @@ class _ScanResultState extends State<ScanResult> {
             if (showAddUpdate) ElevatedButton(
               onPressed: () async {
                 Navigator.of(context).pop();
-                Navigator.of(context).push(
+                await Navigator.of(context).push(
                   MaterialPageRoute(
                     builder: (c) => AddOrUpdate(
                       dbKeyInfo: dbKeyInfo,

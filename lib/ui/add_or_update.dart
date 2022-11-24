@@ -143,7 +143,7 @@ class _AddOrUpdateState extends State<AddOrUpdate> {
           }
         } catch (e) {
           if (mounted) {
-            Navigator.of(context).push(
+            await Navigator.of(context).push(
               MaterialPageRoute(
                 builder: (c) => showError(localization.insertError, e.toString()),
               ),
