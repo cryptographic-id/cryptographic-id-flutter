@@ -190,7 +190,7 @@
 
 	"@@ui/update_own_id.dart": "",
 	"modifyOwnIDFailed": "Modifing ID failed",
-	"modifyOwnID": "Modify ID",
+	"saveOwnID": "Saving ID...",
 	"createID": "Create ID",
 	"@createID": {
 		"description": "Title of create new key"
