@@ -82,7 +82,7 @@ class _UpdateOwnIDState extends State<UpdateOwnID> {
       if (_ownID.publicKey.isEmpty) {
         final key = await createKey();
         await storage.secureBinaryWrite(
-            SecureBinary.privateKey, key.item1);
+          SecureBinary.privateKey, key.item1);
         final insertKey = DBKeyInfo(
           name: ownPublicKeyInfoName,
           publicKey: key.item2,

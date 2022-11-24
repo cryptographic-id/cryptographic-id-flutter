@@ -7,6 +7,7 @@ import './error_screen.dart';
 import './loading_screen.dart';
 import './scan_result.dart';
 import './show_id.dart';
+import './sign_own_id.dart';
 import './update_own_id.dart';
 
 
@@ -20,7 +21,7 @@ class ContactOverview extends StatefulWidget {
 
 class _ContactOverviewState extends State<ContactOverview> {
   bool loaded = false;
-  bool hasOwnID = false;
+  DBKeyInfo? ownID;
   String? error;
   List<DBKeyInfo> keys = [];
 
@@ -51,6 +52,20 @@ class _ContactOverviewState extends State<ContactOverview> {
     ).then((flag) => _loadData());
   }
 
+  void signOwnID() {
+    // Widget is not shown, if ownID is null
+    if (ownID != null) {
+      final DBKeyInfo tmpOwnID = ownID!;
+      Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (c) => SignOwnID(
+            id: tmpOwnID,
+          ),
+        ),
+      ).then((flag) => _loadData());
+    }
+  }
+
   void editOwnID() {
     Navigator.of(context).push(
       MaterialPageRoute(
@@ -64,12 +79,12 @@ class _ContactOverviewState extends State<ContactOverview> {
   void _loadData() async {
     try {
       final storage = await getStorage();
-      final ownID = await storage.fetchOwnKeyInfo();
+      final tmpOwnID = await storage.fetchOwnKeyInfo();
       final dBkeys = await storage.fetchKeyInfos();
       setState(() {
         loaded = true;
         keys = dBkeys;
-        hasOwnID = (ownID != null);
+        ownID = tmpOwnID;
         error = null;
       });
     } catch (e) {
@@ -98,7 +113,7 @@ class _ContactOverviewState extends State<ContactOverview> {
     if (error != null) {
       return showError(localization.appInitFailed, error!);
     }
-    if (!hasOwnID) {
+    if (ownID == null) {
       return UpdateOwnID(onSaved: (context) {
         _loadData();
       });
@@ -154,12 +169,30 @@ class _ContactOverviewState extends State<ContactOverview> {
         ],
       ),
       body: children,
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          scan(context, null);
-        },
-        tooltip: localization.qrScanTooltip,
-        child: const Icon(Icons.person_add),
+      floatingActionButton: Wrap(
+        direction: Axis.horizontal,
+        children: [
+          Container(
+            margin: const EdgeInsets.only(left: 10),
+            child: FloatingActionButton(
+              heroTag: "share",
+              onPressed: signOwnID,
+              tooltip: "",
+              child: const Icon(Icons.share),
+            ),
+          ),
+          Container(
+            margin: const EdgeInsets.only(left: 10),
+            child: FloatingActionButton(
+              heroTag: "scan",
+              onPressed: () {
+                scan(context, null);
+              },
+              tooltip: localization.qrScanTooltip,
+              child: const Icon(Icons.person_add),
+            ),
+          ),
+        ],
       ),
     );
   }
