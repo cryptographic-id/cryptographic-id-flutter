@@ -1,12 +1,13 @@
+import 'dart:async';
+import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
-import 'dart:typed_data';
 
 void scanQRCode(String purpose, BuildContext context,
-                Function(BuildContext, Uint8List) onScanned) {
+                Function(BuildContext, Uint8List) onScanned) async {
   debugPrint('Scan QR Code');
   var fired = false;
-  Navigator.of(context).push(
+  await Navigator.of(context).push(
     MaterialPageRoute(
       builder: (c) => ScanQR(title: purpose, onScanned: (c, s) {
         debugPrint('after scan');
@@ -18,6 +19,16 @@ void scanQRCode(String purpose, BuildContext context,
       })
     )
   );
+}
+
+Future<Uint8List> scanQRCodeAsync(String purpose, BuildContext context) {
+  final completer = Completer<Uint8List>();
+  scanQRCode(purpose, context, (c, s) {
+    if (!completer.isCompleted) {
+      completer.complete(s);
+    }
+  });
+  return completer.future;
 }
 
 class ScanQR extends StatelessWidget {
