@@ -10,7 +10,6 @@ import './show_id.dart';
 import './sign_own_id.dart';
 import './update_own_id.dart';
 
-
 class ContactOverview extends StatefulWidget {
   const ContactOverview({Key? key, required this.title}) : super(key: key);
   final String title;
@@ -25,18 +24,20 @@ class _ContactOverviewState extends State<ContactOverview> {
   String? error;
   List<DBKeyInfo> keys = [];
 
-  void scan(BuildContext context, DBKeyInfo? compare) {
+  void scan(BuildContext innerContext, DBKeyInfo? compare) async {
     String title = AppLocalizations.of(context)!.scanContact;
     if (compare != null) {
       title = AppLocalizations.of(context)!.scanContactName(compare.name);
     }
-    scanQRCode(title, context, (innerContext, result) {
-      Navigator.of(innerContext).push(
+    final data = await scanQRCodeAsync(title, context);
+    if (mounted) {
+      await Navigator.of(context).push(
         MaterialPageRoute(
-          builder: (c) => ScanResult(idBytes: result, check: compare),
+          builder: (c) => ScanResult(idBytes: data, check: compare),
         ),
-      ).then((flag) => _loadData());
-    });
+      );
+      _loadData();
+    }
   }
 
   void showID(DBKeyInfo id) {
@@ -73,7 +74,7 @@ class _ContactOverviewState extends State<ContactOverview> {
           Navigator.of(innerContext).pop();
         }),
       ),
-    );
+    ).then((flag) => _loadData());
   }
 
   void _loadData() async {

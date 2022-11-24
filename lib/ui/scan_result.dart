@@ -202,8 +202,7 @@ class _ScanResultState extends State<ScanResult> {
             darkText(""),
             if (showAddUpdate) ElevatedButton(
               onPressed: () async {
-                Navigator.of(context).pop();
-                await Navigator.of(context).push(
+                final res = await Navigator.of(context).push(
                   MaterialPageRoute(
                     builder: (c) => AddOrUpdate(
                       dbKeyInfo: dbKeyInfo,
@@ -211,6 +210,9 @@ class _ScanResultState extends State<ScanResult> {
                       values: values),
                   ),
                 );
+                if (res != null && mounted) {
+                  Navigator.of(context).pop(res);
+                }
               },
               child: Text(
                 dbKeyInfo == null ? localization.addButton : localization.updateButton,

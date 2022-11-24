@@ -139,7 +139,7 @@ class _AddOrUpdateState extends State<AddOrUpdate> {
             await storage.upsertPersonalInfo(dbObj);
           }
           if (mounted) {
-            Navigator.of(context).pop();
+            Navigator.of(context).pop(true);
           }
         } catch (e) {
           if (mounted) {
