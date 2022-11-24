@@ -19,12 +19,10 @@ class ShowQR extends StatelessWidget {
       appBar: AppBar(
         title: Text(title),
       ),
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: <Widget>[
-          showQRCode(data),
-        ],
+      body: Container(
+        padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 20),
+        color: Colors.white, // needed for dark mode
+        child: showQRCode(data),
       ),
     );
   }
