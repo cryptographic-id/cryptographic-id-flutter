@@ -54,7 +54,6 @@ Uint8List personalInformationToDataToSign(CryptographicId_PersonalInformation en
 
 Future<bool> verifyCryptographicId(CryptographicId id) async {
   final sig = Uint8List.fromList(id.signature);
-  final date = id.timestamp;
   final key = Uint8List.fromList(id.publicKey);
   final verifyList = idToDataToSign(id);
   if (!await verify(verifyList, sig, key)) {
