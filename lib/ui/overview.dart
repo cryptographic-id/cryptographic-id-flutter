@@ -20,7 +20,7 @@ class ContactOverview extends StatefulWidget {
 
 class _ContactOverviewState extends State<ContactOverview> {
   bool loaded = false;
-  DBKeyInfo? ownID;
+  DBKeyInfo ownID = createPlaceholderOwnID();
   String? error;
   List<DBKeyInfo> keys = [];
 
@@ -54,23 +54,19 @@ class _ContactOverviewState extends State<ContactOverview> {
   }
 
   void signOwnID() {
-    // Widget is not shown, if ownID is null
-    if (ownID != null) {
-      final DBKeyInfo tmpOwnID = ownID!;
-      Navigator.of(context).push(
-        MaterialPageRoute(
-          builder: (c) => SignOwnID(
-            id: tmpOwnID,
-          ),
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (c) => SignOwnID(
+          id: ownID,
         ),
-      ).then((flag) => _loadData());
-    }
+      ),
+    ).then((flag) => _loadData());
   }
 
   void editOwnID() {
     Navigator.of(context).push(
       MaterialPageRoute(
-        builder: (c) => UpdateOwnID(onSaved: (innerContext) {
+        builder: (c) => UpdateOwnID(ownID: ownID, onSaved: (innerContext) {
           Navigator.of(innerContext).pop();
         }),
       ),
@@ -85,7 +81,9 @@ class _ContactOverviewState extends State<ContactOverview> {
       setState(() {
         loaded = true;
         keys = dBkeys;
-        ownID = tmpOwnID;
+        if (tmpOwnID != null) {
+          ownID = tmpOwnID;
+        }
         error = null;
       });
     } catch (e) {
@@ -114,8 +112,8 @@ class _ContactOverviewState extends State<ContactOverview> {
     if (error != null) {
       return showError(localization.appInitFailed, error!);
     }
-    if (ownID == null) {
-      return UpdateOwnID(onSaved: (context) {
+    if (isPlaceholderOwnID(ownID)) {
+      return UpdateOwnID(ownID: ownID, onSaved: (context) {
         _loadData();
       });
     }

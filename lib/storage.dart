@@ -243,6 +243,20 @@ class Storage {
   }
 }
 
+DBKeyInfo createPlaceholderOwnID() {
+  return DBKeyInfo(
+    name: ownPublicKeyInfoName,
+    publicKey: Uint8List(0),
+    date: 0,
+    signature: Uint8List(0),
+    personalInformation: {},
+  );
+}
+
+bool isPlaceholderOwnID(DBKeyInfo id) {
+  return id.publicKey.isEmpty;
+}
+
 Future<Storage> storage = Storage._createWithDB();
 
 Future<Storage> getStorage() {

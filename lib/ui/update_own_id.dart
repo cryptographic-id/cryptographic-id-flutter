@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../personal_information.dart';
@@ -10,63 +9,41 @@ import './error_screen.dart';
 import './loading_screen.dart';
 
 class UpdateOwnID extends StatefulWidget {
-  const UpdateOwnID({Key? key, required this.onSaved}) : super(key: key);
+  const UpdateOwnID({
+    Key? key,
+    required this.ownID,
+    required this.onSaved,
+  }) : super(key: key);
   final Function(BuildContext context) onSaved;
+  final DBKeyInfo ownID;
 
   @override
   State<UpdateOwnID> createState() => _UpdateOwnIDState();
 }
 
 class _UpdateOwnIDState extends State<UpdateOwnID> {
-  bool _loaded = false;
+  bool _saving = false;
   String? _error;
-  DBKeyInfo _ownID = DBKeyInfo(
-    name: ownPublicKeyInfoName,
-    publicKey: Uint8List(0),
-    date: 0,
-    signature: Uint8List(0),
-    personalInformation: {},
-  );
+  DBKeyInfo _ownID = createPlaceholderOwnID();
   final _formKey = GlobalKey<FormState>();
   final Map<CryptographicId_PersonalInformationType,
             TextEditingController> _textControllers = {};
 
-  void _loadData() async {
-    try {
-      final storage = await getStorage();
-      final tmpOwnID = await storage.fetchOwnKeyInfo();
-      setState(() {
-        _loaded = true;
-        if (tmpOwnID != null) {
-          _ownID = tmpOwnID;
-        }
-        _error = null;
-        for (final val in _ownID.personalInformation.values) {
-          final edit = TextEditingController();
-          edit.text = val.value;
-          _textControllers[val.property] = edit;
-        }
-      });
-    } catch (e) {
-      setState(() {
-        _loaded = true;
-        _error = e.toString();
-      });
-    }
-  }
-
   @override
   void initState() {
     super.initState();
-    SchedulerBinding.instance.addPostFrameCallback((_) {
-      _loadData();
-    });
+    _ownID = widget.ownID;
+    for (final val in _ownID.personalInformation.values) {
+      final edit = TextEditingController();
+      edit.text = val.value;
+      _textControllers[val.property] = edit;
+    }
   }
 
   void saveID(BuildContext context) async {
     try {
       setState(() {
-        _loaded = false;
+        _saving = true;
       });
       final storage = await getStorage();
       final Map<CryptographicId_PersonalInformationType,
@@ -79,7 +56,7 @@ class _UpdateOwnIDState extends State<UpdateOwnID> {
             signature: Uint8List(0),
             );
       }
-      if (_ownID.publicKey.isEmpty) {
+      if (isPlaceholderOwnID(_ownID)) {
         final key = await createKey();
         await storage.secureBinaryWrite(
           SecureBinary.privateKey, key.item1);
@@ -106,7 +83,7 @@ class _UpdateOwnIDState extends State<UpdateOwnID> {
       }
     } catch (e) {
       setState(() {
-        _loaded = true;
+        _saving = false;
         _error = e.toString();
       });
     }
@@ -115,8 +92,8 @@ class _UpdateOwnIDState extends State<UpdateOwnID> {
   @override
   Widget build(BuildContext context) {
     final localization = AppLocalizations.of(context)!;
-    if (!_loaded) {
-      return loadingScreen(localization.modifyOwnID);
+    if (_saving) {
+      return loadingScreen(localization.saveOwnID);
     }
     if (_error != null) {
       return showError(localization.modifyOwnIDFailed, _error!);
