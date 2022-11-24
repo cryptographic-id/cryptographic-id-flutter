@@ -218,5 +218,6 @@
 
 	"@@ui/sign_own_id.dart": "",
 	"createQRCode": "Create QR-Code",
+	"waitForSignature": "Signing...",
 	"shareID": "Sign ID"
 }

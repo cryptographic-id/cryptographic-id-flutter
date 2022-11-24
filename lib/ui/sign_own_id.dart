@@ -7,6 +7,7 @@ import '../personal_information.dart';
 import '../protocol/cryptograhic_id.pb.dart';
 import '../qr_show.dart';
 import '../storage.dart';
+import './loading_screen.dart';
 
 DBKeyInfo filterIDFromSet(DBKeyInfo id, Set<CryptographicId_PersonalInformationType> use) {
   final Map<CryptographicId_PersonalInformationType,
@@ -51,8 +52,12 @@ class SignOwnID extends StatefulWidget {
 
 class _SignOwnIDState extends State<SignOwnID> {
   final _toShare = <CryptographicId_PersonalInformationType>{};
+  bool _signing = false;
 
   void showQR() async {
+    setState(() {
+      _signing = true;
+    });
     final useID = filterIDFromSet(widget.id, _toShare);
     final cryptoID = cryptographicIdFromDB(useID);
     final storage = await getStorage();
@@ -60,6 +65,9 @@ class _SignOwnIDState extends State<SignOwnID> {
       SecureBinary.privateKey);
     await crypto.signCryptographicId(cryptoID, privateKey!);
     final data = cryptoID.writeToBuffer();
+    setState(() {
+      _signing = false;
+    });
     if (mounted) {
       final localization = AppLocalizations.of(context)!;
       await Navigator.of(context).push(
@@ -76,6 +84,9 @@ class _SignOwnIDState extends State<SignOwnID> {
   @override
   Widget build(BuildContext context) {
     final localization = AppLocalizations.of(context)!;
+    if (_signing) {
+      return loadingScreen(localization.waitForSignature);
+    }
     final elements = <Widget>[];
 
     for (final pit in CryptographicId_PersonalInformationType.values) {
