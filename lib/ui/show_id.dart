@@ -50,6 +50,8 @@ class ShowID extends StatelessWidget {
             icon: const Icon(Icons.qr_code_scanner_outlined),
             tooltip: localization.scanContactName(id.name),
             onPressed: () {
+              // data will be outdated, if updated
+              Navigator.of(context).pop();
               scan(context);
             },
           ),
