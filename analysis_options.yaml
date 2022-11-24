@@ -2,6 +2,10 @@ include: package:flutter_lints/flutter.yaml
 
 linter:
   rules:
-    prefer_interpolation_to_compose_strings: false
+    always_declare_return_types: true
     avoid_init_to_null: false
+    prefer_interpolation_to_compose_strings: false
+    sort_child_properties_last: true
     unawaited_futures: true
+    unsafe_html: true
+    use_full_hex_values_for_flutter_colors: true
