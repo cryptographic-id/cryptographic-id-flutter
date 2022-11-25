@@ -199,7 +199,9 @@ class Storage {
     final List<Map<String, dynamic>> maps = await database.query(
       'dbkeyInfos',
       where: 'slot = ? AND NOT deleted AND name != ?',
-      whereArgs: [slot, ownPublicKeyInfoName]);
+      whereArgs: [slot, ownPublicKeyInfoName],
+      orderBy: 'name ASC',
+    );
     return await Future.wait(List.generate(maps.length, (i) async {
       return await publicKeyFromMap(this, maps[i]);
     }));
