@@ -20,14 +20,10 @@ class ShowID extends StatelessWidget {
         final elem = TextEditingController();
         elem.text = id.personalInformation[pit]!.value;
         formList.add(
-          TextFormField(
-            controller: elem,
-            enabled: false,
-            decoration: InputDecoration(
-              labelText: localizePersonalInformationType(localization, pit),
-              icon: Icon(pitToIcon(pit)),
-            ),
-          )
+          pitToDisabledTextFormField(
+            pit: pit,
+            value: id.personalInformation[pit]!.value,
+            localization: localization)
         );
       }
     }
