@@ -118,6 +118,7 @@
 			}
 		}
 	},
+	"publicKeyNext": "Public Key:",
 
 	"@@ui/add_or_update.dart": "",
 	"name": "Name",
