@@ -1,5 +1,6 @@
 import 'dart:typed_data';
 import 'package:cryptography/cryptography.dart';
+import 'package:sqflite_common/utils/utils.dart' as utils;
 import './tuple.dart';
 import './protocol/cryptograhic_id.pb.dart';
 
@@ -91,4 +92,16 @@ bool isSignatureRecent(CryptographicId id) {
     }
   }
   return id.timestamp >= timestamp - timestampRecentDiff;
+}
+
+String formatPublicKey(Uint8List key) {
+  final hex = utils.hex(key);
+  if (hex.length != 64) {
+    return hex;
+  }
+  return [
+    hex.substring(0, 16),
+    hex.substring(16, 32),
+    hex.substring(32, 48),
+    hex.substring(48, 64)].join(" ");
 }

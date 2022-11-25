@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import '../crypto.dart';
 import '../personal_information.dart';
 import '../protocol/cryptograhic_id.pb.dart';
 import '../storage.dart';
@@ -30,6 +31,21 @@ class ShowID extends StatelessWidget {
         );
       }
     }
+    final pubKeyController = TextEditingController();
+    pubKeyController.text = formatPublicKey(id.publicKey);
+    formList.add(
+      TextFormField(
+        controller: pubKeyController,
+        readOnly: true,
+        minLines: 4,
+        maxLines: 4,
+        decoration: InputDecoration(
+          labelText: localization.publicKey,
+          icon: const Icon(Icons.fingerprint),
+        ),
+      )
+    );
+
     ListView body = ListView(
       padding: const EdgeInsets.all(20),
       children: <Widget>[
