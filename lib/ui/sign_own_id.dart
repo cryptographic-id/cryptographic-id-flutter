@@ -127,9 +127,11 @@ class _SignOwnIDState extends State<SignOwnID> {
         title: Text(localization.shareID),
       ),
       body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: elements,
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: elements,
+          ),
         ),
       ),
     );
