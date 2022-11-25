@@ -110,7 +110,7 @@ TextFormField pitToTextFormField({
 }) {
   return TextFormField(
     controller: controller,
-    enabled: enabled,
+    readOnly: !enabled,
     decoration: InputDecoration(
       labelText: localizePersonalInformationType(localization, pit),
       icon: Icon(pitToIcon(pit)),
