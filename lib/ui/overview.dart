@@ -126,9 +126,10 @@ class _ContactOverviewState extends State<ContactOverview> {
       itemBuilder: (context, i) {
         final pos = i;
         return ListTile(
+          leading: const Icon(Icons.person),
           title: Row(
             children: [
-              Text(localization.showName(keys[pos].name)),
+              Text(keys[pos].name),
               const Spacer(),
               IconButton(
                 icon: const Icon(Icons.qr_code_scanner_outlined),
