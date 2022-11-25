@@ -115,25 +115,23 @@ class _SignOwnIDState extends State<SignOwnID> {
         );
       }
     }
-    elements.add(ElevatedButton(
+    final button = ElevatedButton(
       onPressed: showQR,
       child: Text(
         localization.createQRCode,
       ),
-    ));
-
+    );
+    // add gap for floatingActionButton
+    elements.add(SizedBox(height: 75));
     return Scaffold(
       appBar: AppBar(
         title: Text(localization.shareID),
       ),
-      body: Center(
-        child: SingleChildScrollView(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: elements,
-          ),
-        ),
+      body: ListView(
+        children: elements,
       ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+      floatingActionButton: button,
     );
   }
 }
