@@ -120,9 +120,9 @@
 	},
 
 	"@@ui/add_or_update.dart": "",
-	"enterName": "Enter name:",
-	"@enterName": {
-		"description": "Enter new contact name"
+	"name": "Name",
+	"@name": {
+		"description": "Enter new contact name form field label"
 	},
 	"allowedNameChars": "Enter name, allowed: a-z0-9",
 	"@allowedNameChars": {
