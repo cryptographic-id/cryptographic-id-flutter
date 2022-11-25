@@ -1,4 +1,3 @@
-import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -127,7 +126,7 @@ class _AddOrUpdateState extends State<AddOrUpdate> {
           decoration: InputDecoration(
             hintText: localization.allowedNameChars,
             labelText: localization.name,
-            icon: Icon(Icons.person),
+            icon: const Icon(Icons.person),
           ),
         ),
       ));
