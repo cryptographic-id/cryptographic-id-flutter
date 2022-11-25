@@ -92,6 +92,7 @@ List<ValueAddUpdate> createAddUpdateList(CryptographicId id, DBKeyInfo? dbKey) {
 
 class _ScanResultState extends State<ScanResult> {
   bool loaded = false;
+  bool isRecent = false;
   String? error;
   DBKeyInfo? dbKeyInfo;
   CryptographicId id = CryptographicId();
@@ -134,12 +135,16 @@ class _ScanResultState extends State<ScanResult> {
       if (errMsg == null) {
         valuesToAdd = createAddUpdateList(tmpID, keyFromDB);
       }
+      // caluclate recent here, otherwise navigator.pop will
+      // change the screen
+      final tmpIsRecent = crypto.isSignatureRecent(tmpID);
 
       setState(() {
         loaded = true;
         id = tmpID;
         dbKeyInfo = keyFromDB;
         error = errMsg;
+        isRecent = tmpIsRecent;
         values = valuesToAdd;
       });
     } catch (e, trace) {
@@ -168,7 +173,6 @@ class _ScanResultState extends State<ScanResult> {
     if (error != null) {
       return showValidationError(localization.validationFailed, error!);
     }
-    final isRecent = crypto.isSignatureRecent(id);
     Color background = Colors.green;
     var showName = darkText(localization.unkownKey);
     var showIsRecent = darkText(localization.recentSignature);
