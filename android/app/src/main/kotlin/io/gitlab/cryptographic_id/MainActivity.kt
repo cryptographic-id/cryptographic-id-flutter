@@ -1,4 +1,4 @@
-package dev.testapp.testapp
+package io.gitlab.cryptographic_id
 
 import io.flutter.embedding.android.FlutterActivity
 

@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="dev.testapp.testapp">
+    package="io.gitlab.cryptographic_id">
    <application
-        android:label="testapp"
+        android:label="Cryptographic ID"
         android:name="${applicationName}"
         android:allowBackup="false"
         android:fullBackupContent="false"
