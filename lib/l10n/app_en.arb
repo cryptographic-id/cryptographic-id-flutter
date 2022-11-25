@@ -170,7 +170,7 @@
 	"pitHouseNumber": "House number",
 	"pitMatrixID": "Matrix ID",
 
-	"@@ui/update_own_id.dart": "",
+	"@@ui/modify_own_id.dart": "",
 	"modifyOwnIDFailed": "Modifing ID failed",
 	"saveOwnID": "Saving ID...",
 	"createID": "Create ID",
