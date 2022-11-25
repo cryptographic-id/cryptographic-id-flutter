@@ -1,5 +1,5 @@
+import 'dart:typed_data';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../personal_information.dart';
 import '../protocol/cryptograhic_id.pb.dart';
@@ -107,19 +107,11 @@ class _UpdateOwnIDState extends State<UpdateOwnID> {
       final text = localizePersonalInformationType(localization, pit);
       final enableInput = _textControllers.containsKey(pit);
       if (enableInput) {
-        final elem = _textControllers[pit];
         formList.add(
-          TextFormField(
-            controller: elem,
-            inputFormatters: [
-              LengthLimitingTextInputFormatter(45),
-            ],
-            keyboardType: pitToKeyboardType(pit),
-            decoration: InputDecoration(
-              labelText: text,
-              icon: Icon(pitToIcon(pit)),
-            ),
-          )
+          pitToTextFormField(
+            pit: pit,
+            controller: _textControllers[pit],
+            localization: localization)
         );
       } else {
         dropDownList.add(

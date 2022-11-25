@@ -77,12 +77,14 @@ class _AddOrUpdateState extends State<AddOrUpdate> {
   Widget build(BuildContext context) {
     final localization = AppLocalizations.of(context)!;
     final missingDetails = widget.values.map((ValueAddUpdate val) {
-      String prop = localizePersonalInformationType(localization, val.property);
-      String title = val.oldValue == null ?
-        localization.addDetail(prop, val.value) :
-        localization.updateDetail(prop, val.value, val.oldValue!);
+      String value = val.oldValue == null ?
+        val.value :
+        localization.updateDetail(val.value, val.oldValue!);
       return CheckboxListTile(
-        title: Text(title),
+        title: pitToDisabledTextFormField(
+          pit: val.property,
+          value: value,
+          localization: localization),
         value: val.update,
         onChanged: (bool? value) {
           if (value == null) {

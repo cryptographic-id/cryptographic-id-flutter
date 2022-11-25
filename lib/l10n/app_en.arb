@@ -140,28 +140,10 @@
 	"@updateContact": {
 		"description": "Title for update contacts"
 	},
-	"addDetail": "{property}: {value}",
-	"@addDetail": {
-		"description": "Text to show new contact information",
-		"placeholders": {
-			"property": {
-				"type": "String",
-				"example": "FIRST_NAME"
-			},
-			"value": {
-				"type": "String",
-				"example": "Jane"
-			}
-		}
-	},
-	"updateDetail": "{property}: {value} (was: {oldValue})",
+	"updateDetail": "{value} (was: {oldValue})",
 	"@updateDetail": {
 		"description": "Text to show new and old contact information",
 		"placeholders": {
-			"property": {
-				"type": "String",
-				"example": "FIRST_NAME"
-			},
 			"value": {
 				"type": "String",
 				"example": "Jane"

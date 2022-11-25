@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import './protocol/cryptograhic_id.pb.dart';
 
@@ -99,4 +100,38 @@ IconData pitToIcon(CryptographicId_PersonalInformationType t) {
       return Icons.message;
   }
   return Icons.person;
+}
+
+TextFormField pitToTextFormField({
+  required CryptographicId_PersonalInformationType pit,
+  required TextEditingController? controller,
+  required AppLocalizations localization,
+  bool enabled = true,
+}) {
+  return TextFormField(
+    controller: controller,
+    enabled: enabled,
+    decoration: InputDecoration(
+      labelText: localizePersonalInformationType(localization, pit),
+      icon: Icon(pitToIcon(pit)),
+    ),
+    inputFormatters: [
+      LengthLimitingTextInputFormatter(45),
+    ],
+    keyboardType: pitToKeyboardType(pit),
+  );
+}
+
+TextFormField pitToDisabledTextFormField({
+  required CryptographicId_PersonalInformationType pit,
+  required String value,
+  required AppLocalizations localization,
+}) {
+  final elem = TextEditingController();
+  elem.text = value;
+  return pitToTextFormField(
+    pit: pit,
+    controller: elem,
+    localization: localization,
+    enabled: false);
 }
