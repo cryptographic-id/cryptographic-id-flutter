@@ -163,9 +163,11 @@ class _ModifyOwnIDState extends State<ModifyOwnID> {
         ),
       ],
     );
+    final title = isPlaceholderOwnID(_ownID) ?
+      localization.createID : localization.modifyID;
     return Scaffold(
       appBar: AppBar(
-        title: Text(localization.createID),
+        title: Text(title),
         actions: <Widget>[
           IconButton(
             icon: const Icon(Icons.save),
