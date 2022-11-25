@@ -92,11 +92,12 @@ class _SignOwnIDState extends State<SignOwnID> {
     for (final pit in CryptographicId_PersonalInformationType.values) {
       if (widget.id.personalInformation.containsKey(pit)) {
         final val = widget.id.personalInformation[pit]!;
-        final prop = localizePersonalInformationType(localization, pit);
-        String title = localization.addDetail(prop, val.value);
         elements.add(
           CheckboxListTile(
-            title: Text(title),
+            title: pitToDisabledTextFormField(
+              pit: val.property,
+              value: val.value,
+              localization: localization),
             value: _toShare.contains(pit),
             onChanged: (bool? value) {
               if (value == null) {
