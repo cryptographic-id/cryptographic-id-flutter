@@ -14,8 +14,14 @@ import './loading_screen.dart';
 // black is viewable on green/red/yellow screen in dark and light mode
 const textColor = Colors.black;
 
-Text darkText(String text) {
-  return Text(text, style: const TextStyle(color: textColor));
+Text darkText(String text, [FontWeight? weight]) {
+  return Text(
+    text, style:
+    TextStyle(
+      color: textColor,
+      fontWeight: weight,
+    )
+  );
 }
 
 Widget showValidationError(String title, String error) {
@@ -175,16 +181,19 @@ class _ScanResultState extends State<ScanResult> {
     }
     Color background = Colors.green;
     var showName = darkText(localization.unkownKey);
-    var showIsRecent = darkText(localization.recentSignature);
+    var showIsRecent = darkText(localization.recentSignature, FontWeight.w900);
     if (!isRecent) {
       background = Colors.yellow;
-      showIsRecent = darkText(localization.oldSignature);
+      showIsRecent = darkText(localization.oldSignature, FontWeight.w900);
     }
     if (dbKeyInfo == null) {
       background = Colors.orange;
     } else {
       showName = darkText(localization.showName(dbKeyInfo!.name));
     }
+
+    final publicKey = crypto.formatPublicKey(Uint8List.fromList(id.publicKey));
+    final publicKeyText = darkText(publicKey);
     bool showAddUpdate = (dbKeyInfo == null) || (values.isNotEmpty);
 
     return Scaffold(
@@ -197,10 +206,12 @@ class _ScanResultState extends State<ScanResult> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text(
-              localization.signatureCorrect,
-              style: const TextStyle(fontWeight: FontWeight.w900, color: textColor)),
+            darkText(localization.signatureCorrect, FontWeight.w900),
             showName,
+            const SizedBox(height: 15),
+            darkText(localization.publicKeyNext, FontWeight.w900),
+            publicKeyText,
+            const SizedBox(height: 15),
             showIsRecent,
             darkText(localization.signedDate(formatTimestamp(id.timestamp.toInt()))),
             darkText(""),

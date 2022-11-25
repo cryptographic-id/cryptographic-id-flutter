@@ -103,5 +103,5 @@ String formatPublicKey(Uint8List key) {
     hex.substring(0, 16),
     hex.substring(16, 32),
     hex.substring(32, 48),
-    hex.substring(48, 64)].join(" ");
+    hex.substring(48, 64)].join("\n");
 }
