@@ -122,7 +122,7 @@ class _SignOwnIDState extends State<SignOwnID> {
       ),
     );
     // add gap for floatingActionButton
-    elements.add(SizedBox(height: 75));
+    elements.add(const SizedBox(height: 75));
     return Scaffold(
       appBar: AppBar(
         title: Text(localization.shareID),

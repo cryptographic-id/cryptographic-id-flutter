@@ -96,40 +96,44 @@ class _AddOrUpdateState extends State<AddOrUpdate> {
         },
       );
     }).toList();
-    final elements = <Widget>[];
+    final elements = <Widget>[const SizedBox(height: 40)];
     if (widget.dbKeyInfo != null) {
-      elements.add(Text(localization.showName(widget.dbKeyInfo!.name)));
-      elements.add(const Text(""));
+      elements.add(Text(
+        localization.showName(widget.dbKeyInfo!.name),
+        textAlign: TextAlign.center,
+        style: const TextStyle(fontWeight: FontWeight.bold)));
+      elements.add(const SizedBox(height: 10));
       nameValid = true;
     } else {
-      elements.add(Text(localization.enterName));
-      elements.add(IntrinsicWidth(child: TextField(
-        onChanged: (text) async {
-          final storage = await getStorage();
-          final exists = await storage.existsKeyInfoWithName(text);
-          setState(() {
-            nameValid = text != "" && !exists;
-            currName = text;
-          });
-        },
-        keyboardType: TextInputType.name,
-        maxLines: 1,
-        autocorrect: false,
-        enableSuggestions: false,
-        inputFormatters: [
-          FilteringTextInputFormatter.allow(RegExp("[a-z0-9]")),
-        ],
-        selectionWidthStyle: BoxWidthStyle.tight,
-        decoration: InputDecoration(
-          border: const OutlineInputBorder(),
-          contentPadding: const EdgeInsets.symmetric(vertical: 6, horizontal: 10),
-          isDense: true,
-          hintText: localization.allowedNameChars,
+      elements.add(Container(
+        margin: const EdgeInsets.symmetric(horizontal: 15),
+        child: TextFormField(
+          onChanged: (text) async {
+            final storage = await getStorage();
+            final exists = await storage.existsKeyInfoWithName(text);
+            setState(() {
+              nameValid = text != "" && !exists;
+              currName = text;
+            });
+          },
+          keyboardType: TextInputType.text,
+          maxLines: 1,
+          autocorrect: false,
+          autofocus: true,
+          enableSuggestions: false,
+          inputFormatters: [
+            FilteringTextInputFormatter.allow(RegExp("[a-z0-9]")),
+          ],
+          decoration: InputDecoration(
+            hintText: localization.allowedNameChars,
+            labelText: localization.name,
+            icon: Icon(Icons.person),
+          ),
         ),
-      )));
+      ));
     }
     missingDetails.forEach(elements.add);
-    elements.add(ElevatedButton(
+    final button = ElevatedButton(
       onPressed: !nameValid ? null : () async {
         try {
           final storage = await getStorage();
@@ -156,7 +160,9 @@ class _AddOrUpdateState extends State<AddOrUpdate> {
       child: Text(
         widget.dbKeyInfo == null ? localization.addButton : localization.updateButton,
       ),
-    ));
+    );
+    // add gap for floatingActionButton
+    elements.add(const SizedBox(height: 75));
 
     final title = widget.dbKeyInfo == null ?
       localization.addNewContact : localization.updateContact;
@@ -164,12 +170,11 @@ class _AddOrUpdateState extends State<AddOrUpdate> {
       appBar: AppBar(
         title: Text(title),
       ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: elements,
-        ),
+      body: ListView(
+        children: elements,
       ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+      floatingActionButton: button,
     );
   }
 }
