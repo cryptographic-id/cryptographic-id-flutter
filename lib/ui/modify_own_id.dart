@@ -8,8 +8,8 @@ import '../crypto.dart';
 import './error_screen.dart';
 import './loading_screen.dart';
 
-class UpdateOwnID extends StatefulWidget {
-  const UpdateOwnID({
+class ModifyOwnID extends StatefulWidget {
+  const ModifyOwnID({
     Key? key,
     required this.ownID,
     required this.onSaved,
@@ -18,10 +18,10 @@ class UpdateOwnID extends StatefulWidget {
   final DBKeyInfo ownID;
 
   @override
-  State<UpdateOwnID> createState() => _UpdateOwnIDState();
+  State<ModifyOwnID> createState() => _ModifyOwnIDState();
 }
 
-class _UpdateOwnIDState extends State<UpdateOwnID> {
+class _ModifyOwnIDState extends State<ModifyOwnID> {
   bool _saving = false;
   String? _error;
   DBKeyInfo _ownID = createPlaceholderOwnID();

@@ -8,7 +8,7 @@ import './loading_screen.dart';
 import './scan_result.dart';
 import './show_id.dart';
 import './sign_own_id.dart';
-import './update_own_id.dart';
+import './modify_own_id.dart';
 
 class ContactOverview extends StatefulWidget {
   const ContactOverview({Key? key, required this.title}) : super(key: key);
@@ -66,7 +66,7 @@ class _ContactOverviewState extends State<ContactOverview> {
   void editOwnID() {
     Navigator.of(context).push(
       MaterialPageRoute(
-        builder: (c) => UpdateOwnID(ownID: ownID, onSaved: (innerContext) {
+        builder: (c) => ModifyOwnID(ownID: ownID, onSaved: (innerContext) {
           Navigator.of(innerContext).pop();
         }),
       ),
@@ -113,7 +113,7 @@ class _ContactOverviewState extends State<ContactOverview> {
       return showError(localization.appInitFailed, error!);
     }
     if (isPlaceholderOwnID(ownID)) {
-      return UpdateOwnID(ownID: ownID, onSaved: (context) {
+      return ModifyOwnID(ownID: ownID, onSaved: (context) {
         _loadData();
       });
     }
