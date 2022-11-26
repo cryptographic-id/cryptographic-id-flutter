@@ -125,6 +125,10 @@
 	"@name": {
 		"description": "Enter new contact name form field label"
 	},
+	"nameCannotBeChanged": "Name cannot be changed later.",
+	"@nameCannotBeChanged": {
+		"description": "Hint that name cannot be changed"
+	},
 	"allowedNameChars": "Enter name, allowed: a-z0-9",
 	"@allowedNameChars": {
 		"description": "Textfield hint for allowed contact names"
