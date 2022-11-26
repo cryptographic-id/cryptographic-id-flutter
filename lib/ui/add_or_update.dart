@@ -104,9 +104,12 @@ class _AddOrUpdateState extends State<AddOrUpdate> {
       elements.add(const SizedBox(height: 10));
       nameValid = true;
     } else {
-      elements.add(new Text(
-        localization.nameCannotBeChanged,
-        textAlign: TextAlign.center,
+      elements.add(Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          const Icon(Icons.warning_amber),
+          Text(localization.nameCannotBeChanged),
+        ],
       ));
       elements.add(Container(
         margin: const EdgeInsets.symmetric(horizontal: 15),
