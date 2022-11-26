@@ -107,10 +107,12 @@ TextFormField pitToTextFormField({
   required TextEditingController? controller,
   required AppLocalizations localization,
   bool enabled = true,
+  FocusNode? focusNode = null,
 }) {
   return TextFormField(
     controller: controller,
     readOnly: !enabled,
+    focusNode: focusNode,
     decoration: InputDecoration(
       labelText: localizePersonalInformationType(localization, pit),
       icon: Icon(pitToIcon(pit)),

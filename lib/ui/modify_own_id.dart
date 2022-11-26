@@ -26,6 +26,7 @@ class _ModifyOwnIDState extends State<ModifyOwnID> {
   String? _error;
   DBKeyInfo _ownID = createPlaceholderOwnID();
   final _formKey = GlobalKey<FormState>();
+  CryptographicId_PersonalInformationType? _lastAdded;
   final Map<CryptographicId_PersonalInformationType,
             TextEditingController> _textControllers = {};
 
@@ -107,12 +108,17 @@ class _ModifyOwnIDState extends State<ModifyOwnID> {
       final text = localizePersonalInformationType(localization, pit);
       final enableInput = _textControllers.containsKey(pit);
       if (enableInput) {
+        FocusNode focusNode = FocusNode();
         formList.add(
           pitToTextFormField(
             pit: pit,
             controller: _textControllers[pit],
+            focusNode: focusNode,
             localization: localization)
         );
+        if (_lastAdded == pit) {
+          focusNode.requestFocus();
+        }
       } else {
         dropDownList.add(
           DropdownMenuItem(
@@ -136,6 +142,7 @@ class _ModifyOwnIDState extends State<ModifyOwnID> {
         edit.text = "";
         setState(() {
           _textControllers[selected] = edit;
+          _lastAdded = selected;
         });
       },
       items: dropDownList,
