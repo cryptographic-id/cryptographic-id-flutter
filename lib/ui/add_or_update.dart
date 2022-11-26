@@ -104,6 +104,10 @@ class _AddOrUpdateState extends State<AddOrUpdate> {
       elements.add(const SizedBox(height: 10));
       nameValid = true;
     } else {
+      elements.add(new Text(
+        localization.nameCannotBeChanged,
+        textAlign: TextAlign.center,
+      ));
       elements.add(Container(
         margin: const EdgeInsets.symmetric(horizontal: 15),
         child: TextFormField(
