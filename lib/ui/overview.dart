@@ -7,7 +7,7 @@ import './error_screen.dart';
 import './loading_screen.dart';
 import './scan_result.dart';
 import './show_id.dart';
-import './sign_own_id.dart';
+import './share_own_id.dart';
 import './modify_own_id.dart';
 
 class ContactOverview extends StatefulWidget {
@@ -53,10 +53,10 @@ class _ContactOverviewState extends State<ContactOverview> {
     ).then((flag) => _loadData());
   }
 
-  void signOwnID() {
+  void shareOwnID() {
     Navigator.of(context).push(
       MaterialPageRoute(
-        builder: (c) => SignOwnID(
+        builder: (c) => ShareOwnID(
           id: ownID,
         ),
       ),
@@ -176,7 +176,7 @@ class _ContactOverviewState extends State<ContactOverview> {
             margin: const EdgeInsets.only(left: 10),
             child: FloatingActionButton(
               heroTag: "share",
-              onPressed: signOwnID,
+              onPressed: shareOwnID,
               tooltip: "",
               child: const Icon(Icons.share),
             ),

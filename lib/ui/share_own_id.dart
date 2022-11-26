@@ -39,18 +39,18 @@ CryptographicId cryptographicIdFromDB(DBKeyInfo id) {
   return result;
 }
 
-class SignOwnID extends StatefulWidget {
-  const SignOwnID({
+class ShareOwnID extends StatefulWidget {
+  const ShareOwnID({
     Key? key,
     required this.id,
   }) : super(key: key);
   final DBKeyInfo id;
 
   @override
-  State<SignOwnID> createState() => _SignOwnIDState();
+  State<ShareOwnID> createState() => _ShareOwnIDState();
 }
 
-class _SignOwnIDState extends State<SignOwnID> {
+class _ShareOwnIDState extends State<ShareOwnID> {
   final _toShare = <CryptographicId_PersonalInformationType>{};
   bool _signing = false;
 
