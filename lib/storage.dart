@@ -3,7 +3,7 @@ import 'package:flutter/services.dart' show rootBundle;
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:sqflite_common/utils/utils.dart' as utils;
-import 'package:flutter_gen/protobuf/cryptograhic_id.pb.dart';
+import 'package:flutter_gen/protobuf/cryptographic_id.pb.dart';
 
 enum SecureBinary {
   privateKey,
