@@ -5,7 +5,7 @@ description:
   people who are in posession of a private key.
 
 publish_to: 'none'
-version: 0.1.0+1
+version: 0.1.0
 
 environment:
   sdk: ">=2.16.2 <3.0.0"
