@@ -94,10 +94,10 @@ class _ShareOwnIDState extends State<ShareOwnID> {
         final val = widget.id.personalInformation[pit]!;
         elements.add(
           CheckboxListTile(
-            title: pitToDisabledTextFormField(
+            title: IgnorePointer(child: pitToDisabledTextFormField(
               pit: val.property,
               value: val.value,
-              localization: localization),
+              localization: localization)),
             value: _toShare.contains(pit),
             onChanged: (bool? value) {
               if (value == null) {
