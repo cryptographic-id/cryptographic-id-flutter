@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:fixnum/fixnum.dart' as fixnum;
-import 'package:flutter_gen/protobuf/cryptograhic_id.pb.dart';
+import 'package:flutter_gen/protobuf/cryptographic_id.pb.dart';
 
 import '../crypto.dart' as crypto;
 import '../personal_information.dart';

@@ -1,7 +1,7 @@
 import 'dart:typed_data';
 import 'package:cryptography/cryptography.dart';
 import 'package:sqflite_common/utils/utils.dart' as utils;
-import 'package:flutter_gen/protobuf/cryptograhic_id.pb.dart';
+import 'package:flutter_gen/protobuf/cryptographic_id.pb.dart';
 import './tuple.dart';
 
 Future<Tuple<Uint8List, Uint8List>> createKey() async {
