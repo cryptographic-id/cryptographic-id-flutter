@@ -1,8 +1,8 @@
 import 'dart:typed_data';
 import 'package:cryptography/cryptography.dart';
 import 'package:sqflite_common/utils/utils.dart' as utils;
+import 'package:flutter_gen/protobuf/cryptograhic_id.pb.dart';
 import './tuple.dart';
-import './protocol/cryptograhic_id.pb.dart';
 
 Future<Tuple<Uint8List, Uint8List>> createKey() async {
   final algorithm = Ed25519();
@@ -45,11 +45,11 @@ Uint8List idToDataToSign(CryptographicId id) {
 }
 
 Uint8List personalInformationToDataToSign(CryptographicId_PersonalInformation entry) {
-  final list = Uint8List(8 + 4 + entry.content.length);
+  final list = Uint8List(8 + 4 + entry.value.length);
   final data = ByteData.sublistView(list);
   data.setUint64(0, entry.timestamp.toInt(), Endian.big);
   data.setInt32(8, entry.type.value, Endian.big);
-  list.setAll(12, entry.content.codeUnits);
+  list.setAll(12, entry.value.codeUnits);
   return list;
 }
 

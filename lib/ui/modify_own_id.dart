@@ -1,8 +1,8 @@
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:flutter_gen/protobuf/cryptograhic_id.pb.dart';
 import '../personal_information.dart';
-import '../protocol/cryptograhic_id.pb.dart';
 import '../storage.dart';
 import '../crypto.dart';
 import './error_screen.dart';

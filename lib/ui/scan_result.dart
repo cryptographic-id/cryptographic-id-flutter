@@ -3,9 +3,9 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:flutter_gen/protobuf/cryptograhic_id.pb.dart';
 
 import '../crypto.dart' as crypto;
-import '../protocol/cryptograhic_id.pb.dart';
 import '../storage.dart';
 import '../tuple.dart';
 import './add_or_update.dart';
@@ -72,7 +72,7 @@ Map<CryptographicId_PersonalInformationType, ValueAddUpdate> idToPersonalInfoMap
     for (final e in id.personalInformation)
       e.type: ValueAddUpdate(
         property: e.type,
-        value: e.content,
+        value: e.value,
         timestamp: e.timestamp.toInt(),
         signature: Uint8List.fromList(e.signature))
   };
