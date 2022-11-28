@@ -16,7 +16,8 @@ flutter pub global activate protoc_plugin
 Generate the protobuf dart files:
 ```bash
 git submodule update --init --recursive
-protoc --proto_path=lib --dart_out=.dart_tool/flutter_gen/protobuf lib/cryptographic-id-protocol/cryptographic_id.proto
+mkdir .dart_tool/flutter_gen/protobuf/
+protoc --proto_path=lib/cryptographic-id-protocol --dart_out=.dart_tool/flutter_gen/protobuf lib/cryptographic-id-protocol/cryptographic_id.proto
 ```
 
 ### Build
