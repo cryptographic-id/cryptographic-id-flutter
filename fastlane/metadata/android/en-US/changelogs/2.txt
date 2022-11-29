@@ -1,1 +1,2 @@
 - Add fastlane metadata
+- Transition from mobile_scanner (non-free) to qr_code_scanner

@@ -1,7 +1,8 @@
 import 'dart:async';
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
-import './qr_scan_mlkit.dart';
+// import './qr_scan_mlkit.dart';
+import './qr_scan_free.dart';
 
 void scanQRCode(String purpose, BuildContext context,
                 Function(BuildContext, Uint8List) onScanned) async {
