@@ -1,3 +1,6 @@
 [submodule "lib/cryptographic-id-protocol"]
 	path = lib/cryptographic-id-protocol
 	url = https://gitlab.com/cryptographic_id/cryptographic-id-protocol.git
+[submodule "flutter"]
+	path = flutter
+	url = https://github.com/flutter/flutter.git
