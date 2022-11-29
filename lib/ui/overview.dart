@@ -33,7 +33,7 @@ class _ContactOverviewState extends State<ContactOverview> {
     if (mounted) {
       await Navigator.of(context).push(
         MaterialPageRoute(
-          builder: (c) => ScanResult(idBytes: data, check: compare),
+          builder: (c) => ScanResult(data: data, check: compare),
         ),
       );
       _loadData();

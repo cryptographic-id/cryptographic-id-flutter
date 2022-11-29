@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:fixnum/fixnum.dart' as fixnum;
@@ -65,6 +66,7 @@ class _ShareOwnIDState extends State<ShareOwnID> {
       SecureBinary.privateKey);
     await crypto.signCryptographicId(cryptoID, privateKey!);
     final data = cryptoID.writeToBuffer();
+    final str = base64.encode(data);
     setState(() {
       _signing = false;
     });
@@ -74,7 +76,7 @@ class _ShareOwnIDState extends State<ShareOwnID> {
         MaterialPageRoute(
           builder: (c) => ShowQR(
             title: localization.shareID,
-            data: data,
+            data: str,
           ),
         ),
       );

@@ -1,9 +1,8 @@
-import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:barcode_widget/barcode_widget.dart';
 
-BarcodeWidget showQRCode(Uint8List data) {
-  return BarcodeWidget.fromBytes(
+BarcodeWidget showQRCode(String data) {
+  return BarcodeWidget(
     data: data,
     barcode: Barcode.qrCode());
 }
@@ -11,7 +10,7 @@ BarcodeWidget showQRCode(Uint8List data) {
 class ShowQR extends StatelessWidget {
   const ShowQR({Key? key, required this.title, required this.data}) : super(key: key);
   final String title;
-  final Uint8List data;
+  final String data;
 
   @override
   Widget build(BuildContext context) {

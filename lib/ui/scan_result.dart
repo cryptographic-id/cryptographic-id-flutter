@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:isolate';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -42,8 +43,8 @@ Widget showValidationError(String title, String error) {
 }
 
 class ScanResult extends StatefulWidget {
-  const ScanResult({Key? key, required this.idBytes, required this.check}) : super(key: key);
-  final Uint8List idBytes;
+  const ScanResult({Key? key, required this.data, required this.check}) : super(key: key);
+  final String data;
   final DBKeyInfo? check;
 
   @override
@@ -107,7 +108,7 @@ class _ScanResultState extends State<ScanResult> {
   void _evaluateScan() async {
     try {
       final localization = AppLocalizations.of(context)!;
-      final tmpID = CryptographicId.fromBuffer(widget.idBytes);
+      final tmpID = CryptographicId.fromBuffer(base64.decode(widget.data));
       final p = ReceivePort();
       await Isolate.spawn(_backgroundVerify, Tuple(item1: p.sendPort,
                                                    item2: tmpID));

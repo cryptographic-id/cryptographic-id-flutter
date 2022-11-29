@@ -1,11 +1,10 @@
-import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 
 class ScanQR extends StatelessWidget {
   const ScanQR({Key? key, required this.title, required this.onScanned}) : super(key: key);
   final String title;
-  final Function(BuildContext, Uint8List) onScanned;
+  final Function(BuildContext, String) onScanned;
 
   @override
   Widget build(BuildContext context) {
@@ -24,10 +23,10 @@ class ScanQR extends StatelessWidget {
               allowDuplicates: true, // otherwise binary qr code did not scan
               controller: controller,
               onDetect: (barcode, args) {
-                if (barcode.rawBytes == null) {
+                if (barcode.rawValue == null) {
                   debugPrint('Failed to scan Barcode');
                 } else {
-                  final Uint8List code = barcode.rawBytes!;
+                  final String code = barcode.rawValue!;
                   debugPrint('Barcode found! $code');
                   onScanned(context, code);
                 }

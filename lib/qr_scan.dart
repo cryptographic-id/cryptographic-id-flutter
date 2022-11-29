@@ -1,11 +1,10 @@
 import 'dart:async';
-import 'dart:typed_data';
 import 'package:flutter/material.dart';
 // import './qr_scan_mlkit.dart';
 import './qr_scan_free.dart';
 
 void scanQRCode(String purpose, BuildContext context,
-                Function(BuildContext, Uint8List) onScanned) async {
+                Function(BuildContext, String) onScanned) async {
   debugPrint('Scan QR Code');
   var fired = false;
   await Navigator.of(context).push(
@@ -22,8 +21,8 @@ void scanQRCode(String purpose, BuildContext context,
   );
 }
 
-Future<Uint8List> scanQRCodeAsync(String purpose, BuildContext context) {
-  final completer = Completer<Uint8List>();
+Future<String> scanQRCodeAsync(String purpose, BuildContext context) {
+  final completer = Completer<String>();
   scanQRCode(purpose, context, (c, s) {
     if (!completer.isCompleted) {
       completer.complete(s);
