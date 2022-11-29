@@ -129,7 +129,7 @@
 	"@nameCannotBeChanged": {
 		"description": "Hint that name cannot be changed"
 	},
-	"allowedNameChars": "Enter name, allowed: a-z0-9",
+	"allowedNameChars": "Enter name, allowed: a-z0-9-_",
 	"@allowedNameChars": {
 		"description": "Textfield hint for allowed contact names"
 	},

@@ -128,7 +128,7 @@ class _AddOrUpdateState extends State<AddOrUpdate> {
           autofocus: true,
           enableSuggestions: false,
           inputFormatters: [
-            FilteringTextInputFormatter.allow(RegExp("[a-z0-9]")),
+            FilteringTextInputFormatter.allow(RegExp("[a-z0-9-_]")),
           ],
           decoration: InputDecoration(
             hintText: localization.allowedNameChars,
