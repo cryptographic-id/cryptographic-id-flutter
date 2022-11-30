@@ -175,15 +175,14 @@ class _ModifyOwnIDState extends State<ModifyOwnID> {
     return Scaffold(
       appBar: AppBar(
         title: Text(title),
-        actions: <Widget>[
-          IconButton(
-            icon: const Icon(Icons.save),
-            tooltip: localization.saveID,
-            onPressed: () {
-              saveID(context);
-            },
-          ),
-        ],
+      ),
+      floatingActionButton: FloatingActionButton(
+        heroTag: "share",
+        onPressed: () {
+          saveID(context);
+        },
+        tooltip: localization.saveID,
+        child: const Icon(Icons.save),
       ),
       body: body,
     );

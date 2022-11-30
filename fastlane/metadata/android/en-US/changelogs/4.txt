@@ -1,3 +1,4 @@
 - Add workaround beause qr_code_scanner showed black screen sometimes
 - Use base64-encoded qr-codes
 - Change launcher icon
+- Move save button to bottom when editing own id
