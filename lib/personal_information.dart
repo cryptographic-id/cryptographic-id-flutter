@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_gen/protobuf/cryptographic_id.pb.dart';
+import './crypto.dart';
 
 String localizePersonalInformationType(
     AppLocalizations localization,
@@ -136,4 +137,19 @@ TextFormField pitToDisabledTextFormField({
     controller: elem,
     localization: localization,
     enabled: false);
+}
+
+TextFormField publicKeyFormField(AppLocalizations localization, Uint8List key) {
+  final pubKeyController = TextEditingController();
+  pubKeyController.text = formatPublicKey(key);
+  return TextFormField(
+    controller: pubKeyController,
+    readOnly: true,
+    minLines: 4,
+    maxLines: 4,
+    decoration: InputDecoration(
+      labelText: localization.publicKey,
+      icon: const Icon(Icons.fingerprint),
+    ),
+  );
 }

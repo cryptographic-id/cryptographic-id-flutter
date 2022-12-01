@@ -2,3 +2,4 @@
 - Use base64-encoded qr-codes
 - Change launcher icon
 - Move save button to bottom when editing own id
+- Show public key when modifying id

@@ -147,6 +147,9 @@ class _ModifyOwnIDState extends State<ModifyOwnID> {
       },
       items: dropDownList,
     );
+    if (!isPlaceholderOwnID(_ownID)) {
+      formList.add(publicKeyFormField(localization, _ownID.publicKey));
+    }
 
     ListView body = ListView(
       padding: const EdgeInsets.all(20),
