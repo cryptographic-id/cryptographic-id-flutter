@@ -1,3 +1,16 @@
 This is an Android App to create and verify identities based on ed25519
-signatures. It can be used to verify devices (e.g. replace tpm-otp) or
+signatures. It can be used to verify devices (e.g. replace tpm2-otp) or
 people who are in posession of a private key.
+The advantage over tpm2-otp is asymmetric cryptography, so you don't
+need to store the secret on both devices, but have one secret on each device.
+
+On the first pairing, you need to trust both devices. You create a QR-Code
+via the share button on device 1, scan it via the "add-friend"-button on
+device 2. So if you trust device 2 in the future, you can share-and-scan
+again to verify, that device 1 is really the device you initially trusted
+in the past.
+
+You can use the same for people you meet over the internet, when you have a
+secure channel already. One can make a screenshot of the qr-code, sign it and
+send it to the other party. When you meet in real-life, the other party can
+proof, that it is really the other party.
