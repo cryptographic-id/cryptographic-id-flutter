@@ -7,7 +7,7 @@ description:
 repository: https://gitlab.com/cryptographic_id/cryptographic-id-flutter/
 issue_tracker: https://gitlab.com/cryptographic_id/cryptographic-id-flutter/-/issues
 publish_to: 'none'
-version: 0.2.2+6
+version: 0.2.3+7
 
 environment:
   sdk: ">=2.16.2 <3.0.0"
