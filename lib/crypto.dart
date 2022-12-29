@@ -37,10 +37,12 @@ Future<Uint8List> sign(Uint8List message, Uint8List key) async {
 Uint8List idToDataToSign(CryptographicId id) {
   final date = id.timestamp;
   final key = Uint8List.fromList(id.publicKey);
-  final list = Uint8List(8 + key.length);
+  final msg = Uint8List.fromList(id.msg);
+  final list = Uint8List(8 + key.length + msg.length);
   final data = ByteData.sublistView(list);
   data.setUint64(0, date.toInt(), Endian.big);
   list.setAll(8, key);
+  list.setAll(8 + key.length, msg);
   return list;
 }
 

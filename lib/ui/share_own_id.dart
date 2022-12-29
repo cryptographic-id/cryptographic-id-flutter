@@ -53,6 +53,7 @@ class ShareOwnID extends StatefulWidget {
 
 class _ShareOwnIDState extends State<ShareOwnID> {
   final _toShare = <CryptographicId_PersonalInformationType>{};
+  final TextEditingController _msgController = TextEditingController();
   bool _signing = false;
 
   void showQR() async {
@@ -61,6 +62,7 @@ class _ShareOwnIDState extends State<ShareOwnID> {
     });
     final useID = filterIDFromSet(widget.id, _toShare);
     final cryptoID = cryptographicIdFromDB(useID);
+    cryptoID.msg = _msgController.text.codeUnits;
     final storage = await getStorage();
     final privateKey = await storage.secureBinaryRead(
       SecureBinary.privateKey);
@@ -90,6 +92,18 @@ class _ShareOwnIDState extends State<ShareOwnID> {
       return loadingScreen(localization.waitForSignature);
     }
     final elements = <Widget>[];
+    elements.add(
+      ListTile(
+        title: TextFormField(
+          controller: _msgController,
+          decoration: InputDecoration(
+            labelText: localization.shareMessage,
+            icon: const Icon(Icons.message),
+          ),
+          keyboardType: TextInputType.text,
+        ),
+      ),
+    );
 
     for (final pit in CryptographicId_PersonalInformationType.values) {
       if (widget.id.personalInformation.containsKey(pit)) {

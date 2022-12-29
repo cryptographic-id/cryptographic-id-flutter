@@ -216,6 +216,9 @@ class _ScanResultState extends State<ScanResult> {
             showIsRecent,
             darkText(localization.signedDate(formatTimestamp(id.timestamp.toInt()))),
             darkText(""),
+            darkText(localization.showMessage, FontWeight.w900),
+            darkText(utf8.decode(id.msg, allowMalformed: true)),
+            darkText(""),
             if (showAddUpdate) ElevatedButton(
               onPressed: () async {
                 final res = await Navigator.of(context).push(

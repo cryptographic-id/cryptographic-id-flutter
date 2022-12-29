@@ -119,6 +119,7 @@
 		}
 	},
 	"publicKeyNext": "Public Key:",
+	"showMessage": "Message:",
 
 	"@@ui/add_or_update.dart": "",
 	"name": "Name",
@@ -207,5 +208,6 @@
 	"createQRCode": "Create QR-Code",
 	"waitForSignature": "Signing...",
 	"publicKey": "Public Key",
+	"shareMessage": "Message",
 	"shareID": "Sign ID"
 }
