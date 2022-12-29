@@ -15,8 +15,8 @@ import './loading_screen.dart';
 // black is viewable on green/red/yellow screen in dark and light mode
 const textColor = Colors.black;
 
-Text darkText(String text, [FontWeight? weight]) {
-  return Text(
+SelectableText darkText(String text, [FontWeight? weight]) {
+  return SelectableText(
     text, style:
     TextStyle(
       color: textColor,

@@ -1,1 +1,2 @@
 - Add message (to avoid replay-attacks for TPM2-signed messages)
+- Allow to copy text in scan result
