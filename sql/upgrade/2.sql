@@ -1,0 +1,1 @@
+ALTER TABLE DBKeyInfos ADD COLUMN public_key_type INT NOT NULL DEFAULT 0;

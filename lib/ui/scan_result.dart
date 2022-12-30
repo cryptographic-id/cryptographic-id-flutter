@@ -193,7 +193,8 @@ class _ScanResultState extends State<ScanResult> {
       showName = darkText(localization.showName(dbKeyInfo!.name));
     }
 
-    final publicKey = crypto.formatPublicKey(Uint8List.fromList(id.publicKey));
+    final publicKey = crypto.formatPublicKey(
+      Uint8List.fromList(id.publicKey), id.publicKeyType);
     final publicKeyText = darkText(publicKey);
     bool showAddUpdate = (dbKeyInfo == null) || (values.isNotEmpty);
 
@@ -210,7 +211,8 @@ class _ScanResultState extends State<ScanResult> {
             darkText(localization.signatureCorrect, FontWeight.w900),
             showName,
             const SizedBox(height: 15),
-            darkText(localization.publicKeyNext, FontWeight.w900),
+            darkText(localization.publicKeyNext(
+              id.publicKeyType.toString()), FontWeight.w900),
             publicKeyText,
             const SizedBox(height: 15),
             showIsRecent,

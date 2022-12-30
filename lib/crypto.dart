@@ -1,11 +1,18 @@
 import 'dart:typed_data';
-import 'package:cryptography/cryptography.dart';
+import 'package:cryptography/cryptography.dart' as cryptography;
 import 'package:sqflite_common/utils/utils.dart' as utils;
 import 'package:flutter_gen/protobuf/cryptographic_id.pb.dart';
+
+import "package:pointycastle/digests/sha256.dart";
+import "package:pointycastle/ecc/curves/prime256v1.dart";
+import "package:pointycastle/ecc/api.dart";
+import "package:pointycastle/api.dart";
+import "package:pointycastle/asn1.dart";
+import "package:pointycastle/signers/ecdsa_signer.dart";
 import './tuple.dart';
 
 Future<Tuple<Uint8List, Uint8List>> createKey() async {
-  final algorithm = Ed25519();
+  final algorithm = cryptography.Ed25519();
   final key = await algorithm.newKeyPair();
   final pubKey = await key.extractPublicKey();
   final publicBytes = Uint8List.fromList(pubKey.bytes);
@@ -13,10 +20,13 @@ Future<Tuple<Uint8List, Uint8List>> createKey() async {
   return Tuple(item1: privateBytes, item2: publicBytes);
 }
 
-Future<bool> verify(Uint8List message, Uint8List signature, Uint8List publicKey) async {
-  final algorithm = Ed25519();
-  final pubkey = SimplePublicKey(publicKey, type: KeyPairType.ed25519);
-  final sig = Signature(signature, publicKey: pubkey);
+Future<bool> verifyEd25519(Uint8List message, Uint8List signature,
+                           Uint8List publicKey) async {
+  final algorithm = cryptography.Ed25519();
+  final pubkey = cryptography.SimplePublicKey(
+    publicKey,
+    type: cryptography.KeyPairType.ed25519);
+  final sig = cryptography.Signature(signature, publicKey: pubkey);
   final isSignatureCorrect = await algorithm.verify(
     message,
     signature: sig,
@@ -25,13 +35,30 @@ Future<bool> verify(Uint8List message, Uint8List signature, Uint8List publicKey)
 }
 
 Future<Uint8List> sign(Uint8List message, Uint8List key) async {
-  final algorithm = Ed25519();
+  final algorithm = cryptography.Ed25519();
   final keyPair = await algorithm.newKeyPairFromSeed(key);
   final signature = await algorithm.sign(
     message,
     keyPair: keyPair,
   );
   return Uint8List.fromList(signature.bytes);
+}
+
+Future<bool> verifyPrime256v1Sha256(Uint8List message, Uint8List signature,
+                                    Uint8List publicKey) async {
+  final sigParser = ASN1Parser(Uint8List.fromList(signature));
+  final sigElements = (sigParser.nextObject() as ASN1Sequence).elements!;
+
+  final sigR = (sigElements[0] as ASN1Integer).integer!;
+  final sigS = (sigElements[1] as ASN1Integer).integer!;
+  final eccDomain = ECCurve_prime256v1();
+  ECPoint Q = eccDomain.curve.decodePoint(publicKey)!;
+  final key = ECPublicKey(Q, eccDomain);
+  final signer = ECDSASigner(SHA256Digest());
+  signer.init(false, PublicKeyParameter(key));
+  final sigObj = ECSignature(sigR, sigS);
+  final ok = signer.verifySignature(Uint8List.fromList(message), sigObj);
+  return ok;
 }
 
 Uint8List idToDataToSign(CryptographicId id) {
@@ -59,6 +86,12 @@ Future<bool> verifyCryptographicId(CryptographicId id) async {
   final sig = Uint8List.fromList(id.signature);
   final key = Uint8List.fromList(id.publicKey);
   final verifyList = idToDataToSign(id);
+
+  var verify = verifyEd25519;
+  if (id.publicKeyType == CryptographicId_PublicKeyType.Prime256v1) {
+    verify = verifyPrime256v1Sha256;
+  }
+
   if (!await verify(verifyList, sig, key)) {
     return false;
   }
@@ -96,8 +129,13 @@ bool isSignatureRecent(CryptographicId id) {
   return id.timestamp >= timestamp - timestampRecentDiff;
 }
 
-String formatPublicKey(Uint8List key) {
-  final hex = utils.hex(key);
+String formatPublicKey(Uint8List key, CryptographicId_PublicKeyType type) {
+  var data = key;
+  if (type != CryptographicId_PublicKeyType.Ed25519) {
+    final digest = SHA256Digest();
+    data = digest.process(key);
+  }
+  final hex = utils.hex(data);
   if (hex.length != 64) {
     return hex;
   }

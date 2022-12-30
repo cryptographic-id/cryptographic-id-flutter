@@ -139,16 +139,18 @@ TextFormField pitToDisabledTextFormField({
     enabled: false);
 }
 
-TextFormField publicKeyFormField(AppLocalizations localization, Uint8List key) {
+TextFormField publicKeyFormField(AppLocalizations localization,
+                                 CryptographicId_PublicKeyType type,
+                                 Uint8List key) {
   final pubKeyController = TextEditingController();
-  pubKeyController.text = formatPublicKey(key);
+  pubKeyController.text = formatPublicKey(key, type);
   return TextFormField(
     controller: pubKeyController,
     readOnly: true,
     minLines: 4,
     maxLines: 4,
     decoration: InputDecoration(
-      labelText: localization.publicKey,
+      labelText: localization.publicKey(type.toString()),
       icon: const Icon(Icons.fingerprint),
     ),
   );

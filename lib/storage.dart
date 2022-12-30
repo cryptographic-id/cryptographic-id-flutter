@@ -15,20 +15,30 @@ Future<String> loadSQL(String file) async {
   return await rootBundle.loadString('sql/' + file + '.sql');
 }
 
+Future<void> executeMany(Database db, String sql) async {
+  for (final query in sql.split(";\n")) {
+    if (query.trim() != "") {
+      await db.execute(query);
+    }
+  }
+}
+
 Future<String> createTableSQL = loadSQL("create_tables");
+Future<String> upgradeTable2SQL = loadSQL("upgrade/2");
 
 Future<Database> openOrCreateDatabase() async {
   var databasesPath = await getDatabasesPath();
   var path = databasesPath + '/main.db';
-  return await openDatabase(path, version: 1,
+  return await openDatabase(path, version: 2,
     onCreate: (Database db, int version) async {
       final sql = await createTableSQL;
-      for (final query in sql.split(";\n")) {
-        if (query.trim() != "") {
-          await db.execute(query);
-        }
+      await executeMany(db, sql);
+    },
+    onUpgrade: (db, oldVersion, newVersion) async {
+      if (oldVersion < 2) {
+        await executeMany(db, await upgradeTable2SQL);
       }
-    }
+    },
   );
 }
 
@@ -63,6 +73,7 @@ class PersonalInformation {
 class DBKeyInfo {
   final String name;
   final Uint8List publicKey;
+  final CryptographicId_PublicKeyType publicKeyType;
   final Uint8List signature;
   final int date;
   final Map<CryptographicId_PersonalInformationType,
@@ -71,6 +82,7 @@ class DBKeyInfo {
   DBKeyInfo({
     required this.name,
     required this.publicKey,
+    required this.publicKeyType,
     required this.date,
     required this.signature,
     required this.personalInformation,
@@ -80,6 +92,7 @@ class DBKeyInfo {
     return <String, Object>{
       "name": name,
       "public_key": publicKey,
+      "public_key_type": publicKeyType.value,
       "date": date,
       "signature": signature,
     };
@@ -98,6 +111,7 @@ Future<DBKeyInfo> publicKeyFromMap(Storage storage, Map<String, dynamic> entry) 
     name: entry["name"],
     date: entry["date"],
     publicKey: entry["public_key"],
+    publicKeyType: publicKeyTypeFromInt(entry["public_key_type"]),
     signature: entry["signature"],
     personalInformation: pi,
   );
@@ -116,6 +130,10 @@ CryptographicId_PersonalInformationType personalInformationTypeFromString(String
   // so this should always find something
   return CryptographicId_PersonalInformationType.values.firstWhere(
     (e) => e.toString().split(".").last == s);
+}
+
+CryptographicId_PublicKeyType publicKeyTypeFromInt(int s) {
+  return CryptographicId_PublicKeyType.values.firstWhere((e) => e.value == s);
 }
 
 class Storage {
@@ -251,6 +269,7 @@ DBKeyInfo createPlaceholderOwnID() {
     publicKey: Uint8List(0),
     date: 0,
     signature: Uint8List(0),
+    publicKeyType: CryptographicId_PublicKeyType.Ed25519,
     personalInformation: {},
   );
 }

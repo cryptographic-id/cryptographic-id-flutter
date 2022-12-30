@@ -1,3 +1,4 @@
 - Add message (to avoid replay-attacks for TPM2-signed messages)
 - Allow to copy text in scan result
 - Add new icon
+- Add support for Prime256v1Sha256 signatures (TPM2)

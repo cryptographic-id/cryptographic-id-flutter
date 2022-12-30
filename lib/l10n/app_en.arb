@@ -118,7 +118,16 @@
 			}
 		}
 	},
-	"publicKeyNext": "Public Key:",
+	"publicKeyNext": "Public Key ({type}):",
+	"@publicKeyNext": {
+		"description": "Show the fingerprint of the public key",
+		"placeholders": {
+			"type": {
+				"type": "String",
+				"example": "Ed25519"
+			}
+		}
+	},
 	"showMessage": "Message:",
 
 	"@@ui/add_or_update.dart": "",
@@ -207,7 +216,16 @@
 	"@@ui/sign_own_id.dart": "",
 	"createQRCode": "Create QR-Code",
 	"waitForSignature": "Signing...",
-	"publicKey": "Public Key",
+	"publicKey": "Public Key ({type})",
+	"@publicKey": {
+		"description": "Show the fingerprint of the public key",
+		"placeholders": {
+			"type": {
+				"type": "String",
+				"example": "Ed25519"
+			}
+		}
+	},
 	"shareMessage": "Message",
 	"shareID": "Sign ID"
 }

@@ -26,7 +26,8 @@ class ShowID extends StatelessWidget {
         );
       }
     }
-    formList.add(publicKeyFormField(localization, id.publicKey));
+    formList.add(publicKeyFormField(localization, id.publicKeyType,
+                                    id.publicKey));
 
     ListView body = ListView(
       padding: const EdgeInsets.all(20),

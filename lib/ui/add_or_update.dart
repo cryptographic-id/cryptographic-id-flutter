@@ -45,6 +45,7 @@ DBKeyInfo createDatabaseObject(String name,
       publicKey: Uint8List.fromList(id.publicKey),
       date: id.timestamp.toInt(),
       signature: Uint8List.fromList(id.signature),
+      publicKeyType: id.publicKeyType,
       personalInformation: updateInfo,
     );
   }

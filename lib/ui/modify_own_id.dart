@@ -66,6 +66,7 @@ class _ModifyOwnIDState extends State<ModifyOwnID> {
           publicKey: key.item2,
           date: 0,
           signature: Uint8List(0),
+          publicKeyType: CryptographicId_PublicKeyType.Ed25519,
           personalInformation: update,
         );
         await storage.insertKeyInfo(insertKey);
@@ -75,6 +76,7 @@ class _ModifyOwnIDState extends State<ModifyOwnID> {
           publicKey: _ownID.publicKey,
           date: 0,
           signature: Uint8List(0),
+          publicKeyType: CryptographicId_PublicKeyType.Ed25519,
           personalInformation: update,
         );
         await storage.upsertPersonalInfo(insertKey);
@@ -148,7 +150,8 @@ class _ModifyOwnIDState extends State<ModifyOwnID> {
       items: dropDownList,
     );
     if (!isPlaceholderOwnID(_ownID)) {
-      formList.add(publicKeyFormField(localization, _ownID.publicKey));
+      formList.add(publicKeyFormField(localization, _ownID.publicKeyType,
+                                      _ownID.publicKey));
     }
 
     ListView body = ListView(

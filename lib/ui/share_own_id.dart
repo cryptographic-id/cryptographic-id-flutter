@@ -19,6 +19,7 @@ DBKeyInfo filterIDFromSet(DBKeyInfo id, Set<CryptographicId_PersonalInformationT
     publicKey: id.publicKey,
     date: id.date,
     signature: id.signature,
+    publicKeyType: id.publicKeyType,
     personalInformation: info,
   );
 }
