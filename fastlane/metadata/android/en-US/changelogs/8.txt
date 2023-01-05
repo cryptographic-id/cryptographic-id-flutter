@@ -7,3 +7,4 @@ Features:
 
 Bugfixes:
 - Timestamp in the future is not recent
+- Use SingleChildScrollView to prevent overflow

@@ -205,41 +205,43 @@ class _ScanResultState extends State<ScanResult> {
       ),
       backgroundColor: background,
       body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            darkText(localization.signatureCorrect, FontWeight.w900),
-            showName,
-            const SizedBox(height: 15),
-            darkText(localization.publicKeyNext(
-              id.publicKeyType.toString()), FontWeight.w900),
-            publicKeyText,
-            const SizedBox(height: 15),
-            showIsRecent,
-            darkText(localization.signedDate(formatTimestamp(id.timestamp.toInt()))),
-            darkText(""),
-            darkText(localization.showMessage, FontWeight.w900),
-            darkText(utf8.decode(id.msg, allowMalformed: true)),
-            darkText(""),
-            if (showAddUpdate) ElevatedButton(
-              onPressed: () async {
-                final res = await Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (c) => AddOrUpdate(
-                      dbKeyInfo: dbKeyInfo,
-                      id: id,
-                      values: values),
-                  ),
-                );
-                if (res != null && mounted) {
-                  Navigator.of(context).pop(res);
-                }
-              },
-              child: Text(
-                dbKeyInfo == null ? localization.addButton : localization.updateButton,
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              darkText(localization.signatureCorrect, FontWeight.w900),
+              showName,
+              const SizedBox(height: 15),
+              darkText(localization.publicKeyNext(
+                id.publicKeyType.toString()), FontWeight.w900),
+              publicKeyText,
+              const SizedBox(height: 15),
+              showIsRecent,
+              darkText(localization.signedDate(formatTimestamp(id.timestamp.toInt()))),
+              darkText(""),
+              darkText(localization.showMessage, FontWeight.w900),
+              darkText(utf8.decode(id.msg, allowMalformed: true)),
+              darkText(""),
+              if (showAddUpdate) ElevatedButton(
+                onPressed: () async {
+                  final res = await Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (c) => AddOrUpdate(
+                        dbKeyInfo: dbKeyInfo,
+                        id: id,
+                        values: values),
+                    ),
+                  );
+                  if (res != null && mounted) {
+                    Navigator.of(context).pop(res);
+                  }
+                },
+                child: Text(
+                  dbKeyInfo == null ? localization.addButton : localization.updateButton,
+                ),
               ),
-            ),
-          ],
+            ],
+          )
         ),
       ),
     );
