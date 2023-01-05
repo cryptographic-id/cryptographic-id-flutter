@@ -150,9 +150,12 @@ String formatPublicKey(Uint8List key, CryptographicId_PublicKeyType type) {
   if (hex.length != 64) {
     return hex;
   }
+  final withColon = hex.replaceAllMapped(
+    RegExp(r".{2}"),
+    (match) => "${match.group(0)}:");
   return [
-    hex.substring(0, 16),
-    hex.substring(16, 32),
-    hex.substring(32, 48),
-    hex.substring(48, 64)].join("\n");
+    withColon.substring(0, 23),
+    withColon.substring(24, 47),
+    withColon.substring(48, 71),
+    withColon.substring(72, 95)].join("\n");
 }
