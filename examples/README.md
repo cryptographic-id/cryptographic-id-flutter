@@ -2,26 +2,36 @@
 
 ## ED25519
 
-#### correct signature
+#### Correct signature
 
-![correct signature](ed25519_personal_info.svg)
+![Correct signature](ed25519_personal_info.svg)
 
-#### different personal information
+#### Different personal information
 
-![different personal information](ed25519_personal_info_different.svg)
+![Different personal information](ed25519_personal_info_different.svg)
 
-#### timestamp in the future
+#### Timestamp in the future
 
-![timestamp in the future](ed25519_future.svg)
+![Timestamp in the future](ed25519_future.svg)
 
-#### without personal information
+#### Without personal information
 
-![without personal information](ed25519_past.svg)
+![Without personal information](ed25519_past.svg)
 
-#### invalid signature
+#### Invalid signature
 
-![invalid signature](ed25519_invalid_signature.svg)
+![Invalid signature](ed25519_invalid_signature.svg)
 
-#### invalid info signature
+#### Invalid info signature
 
-![invalid info signature](ed25519_invalid_info.svg)
+![Invalid info signature](ed25519_invalid_info.svg)
+
+#### Missing public key type
+
+![Missing public key type](ed25519_missing_key_type.svg)
+
+## Other
+
+#### Wrong public key type
+
+![Wrong public key type](ed25519_wrong_key_type.svg)

@@ -89,10 +89,16 @@ Future<bool> verifyCryptographicId(CryptographicId id) async {
   final verifyList = idToDataToSign(id);
 
   var verify = verifyEd25519;
-  if (id.publicKeyType == CryptographicId_PublicKeyType.Prime256v1) {
+  switch (id.publicKeyType) {
+  case CryptographicId_PublicKeyType.Ed25519:
+    verify = verifyEd25519;
+    break;
+  case CryptographicId_PublicKeyType.Prime256v1:
     verify = verifyPrime256v1Sha256;
+    break;
+  default:
+    throw Exception("Unknown signature type");
   }
-
   if (!await verify(verifyList, sig, key)) {
     return false;
   }
