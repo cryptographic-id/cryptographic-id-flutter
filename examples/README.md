@@ -30,6 +30,20 @@
 
 ![Missing public key type](ed25519_missing_key_type.svg)
 
+## Prime256v1
+
+#### Correct signature
+
+![Correct signature](prime256v1_correct.svg)
+
+#### Timestamp in the future
+
+![Timestamp in the future](prime256v1_future.svg)
+
+#### Invalid signature
+
+![Invalid signature](prime256v1_invalid_signature.svg)
+
 ## Other
 
 #### Wrong public key type
