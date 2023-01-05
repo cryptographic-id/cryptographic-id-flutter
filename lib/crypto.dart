@@ -1,7 +1,8 @@
 import 'dart:typed_data';
 import 'package:cryptography/cryptography.dart' as cryptography;
-import 'package:sqflite_common/utils/utils.dart' as utils;
+import 'package:fixnum/fixnum.dart' as fixnum;
 import 'package:flutter_gen/protobuf/cryptographic_id.pb.dart';
+import 'package:sqflite_common/utils/utils.dart' as utils;
 
 import "package:pointycastle/digests/sha256.dart";
 import "package:pointycastle/ecc/curves/prime256v1.dart";
@@ -119,14 +120,18 @@ int now() {
 }
 
 const timestampRecentDiff = 60;
+bool _isTsRecent(int now, fixnum.Int64 ts) {
+  return ts >= now - timestampRecentDiff && ts < now;
+}
+
 bool isSignatureRecent(CryptographicId id) {
   final int timestamp = now();
   for (final entry in id.personalInformation) {
-    if (entry.timestamp < timestamp - timestampRecentDiff) {
+    if (!_isTsRecent(timestamp, entry.timestamp)) {
       return false;
     }
   }
-  return id.timestamp >= timestamp - timestampRecentDiff;
+  return _isTsRecent(timestamp, id.timestamp);
 }
 
 String formatPublicKey(Uint8List key, CryptographicId_PublicKeyType type) {
