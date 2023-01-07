@@ -1,1 +1,1 @@
-Verify identities based on ed25519-signatures
+Attest the trustworthiness of a device using asymmetric cryptography
