@@ -4,6 +4,7 @@ Features:
 - Add new icon
 - Add support for Prime256v1Sha256 signatures (TPM2)
 - Show fingerprint with colon separated
+- Moved save icon in modify own id view to the app bar
 
 Bugfixes:
 - Timestamp in the future is not recent
