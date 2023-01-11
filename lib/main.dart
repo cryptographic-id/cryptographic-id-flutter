@@ -24,7 +24,7 @@ class CryptographicID extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const title = 'Cryptograhpic ID';
+    const title = 'Cryptographic ID';
     return MaterialApp(
       title: title,
       darkTheme: ThemeData.from(
