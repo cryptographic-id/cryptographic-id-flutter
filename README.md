@@ -39,6 +39,32 @@ To run the app in development mode on your phone, run
 flutter build
 ```
 
+### Release
+
+#### Android
+
+If you don't have a keystore yet, create one:
+```
+../path/to/android-studio/jre/bin/keytool \
+	-genkeypair -v \
+	-keystore path/to/keystore.jks \
+	-keyalg RSA -keysize 4096 -validity 20000 -alias cryptoid
+```
+
+Create `android/key.properties`:
+```
+storePassword=...
+keyPassword=...
+keyAlias=cryptoid
+storeFile=path/to/keystore.jks
+```
+
+Create release:
+
+```
+flutter build apk
+```
+
 ## Contributing
 
 Please use `flutter analyze` before opening a pull request.
