@@ -1,0 +1,16 @@
+stages:
+  - test
+
+test-job:
+  image: cirrusci/flutter
+  stage: test
+  script:
+    - sudo apt-get update
+    - sudo apt-get --yes install protobuf-compiler
+    - git submodule update --init --recursive
+    - export PATH="$(pwd)/flutter/bin/flutter:${PATH}"
+    - export PATH="${PATH}:${HOME}/.pub-cache/bin"
+    - flutter pub global activate protoc_plugin
+    - mkdir -p .dart_tool/flutter_gen/protobuf/
+    - protoc --proto_path=lib/cryptographic-id-protocol --dart_out=.dart_tool/flutter_gen/protobuf lib/cryptographic-id-protocol/cryptographic_id.proto
+    - flutter analyze
