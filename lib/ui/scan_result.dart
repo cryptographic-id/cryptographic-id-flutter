@@ -108,6 +108,7 @@ List<ValueAddUpdate> createAddUpdateList(CryptographicId id, DBKeyInfo? dbKey) {
 class _ScanResultState extends State<ScanResult> {
   bool loaded = false;
   bool isRecent = false;
+  int scannedTime = crypto.now();
   String? error;
   DBKeyInfo? dbKeyInfo;
   CryptographicId id = CryptographicId();
@@ -205,6 +206,8 @@ class _ScanResultState extends State<ScanResult> {
       Uint8List.fromList(id.publicKey), id.publicKeyType);
     final publicKeyText = darkText(publicKey);
     bool showAddUpdate = (dbKeyInfo == null) || (values.isNotEmpty);
+    final int signed = crypto.oldestTimestamp(id);
+    final int signatureAge = scannedTime - signed;
 
     return Scaffold(
       appBar: AppBar(
@@ -220,12 +223,13 @@ class _ScanResultState extends State<ScanResult> {
               darkText(localization.signatureCorrect, FontWeight.w900),
               showName,
               const SizedBox(height: 15),
-              darkText(localization.publicKeyNext(
+              darkText(localization.publicKeyType(
                 id.publicKeyType.toString()), FontWeight.w900),
               publicKeyText,
               const SizedBox(height: 15),
               showIsRecent,
-              darkText(localization.signedDate(formatTimestamp(id.timestamp.toInt()))),
+              darkText(localization.signedDate(formatTimestamp(signed))),
+              darkText(localization.signatureAge(signatureAge)),
               darkText(""),
               darkText(localization.showMessage, FontWeight.w900),
               darkText(intListToString(id.msg)),

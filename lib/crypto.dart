@@ -130,7 +130,19 @@ bool _isTsRecent(int now, fixnum.Int64 ts) {
   return ts >= now - timestampRecentDiff && ts < now;
 }
 
+int oldestTimestamp(CryptographicId id) {
+  int oldest = id.timestamp.toInt();
+  for (final entry in id.personalInformation) {
+    final int ts = entry.timestamp.toInt();
+    if (ts < oldest) {
+      oldest = ts;
+    }
+  }
+  return oldest;
+}
+
 bool isSignatureRecent(CryptographicId id) {
+  // do not use oldestTimestamp, since future-timestamps are not checked
   final int timestamp = now();
   for (final entry in id.personalInformation) {
     if (!_isTsRecent(timestamp, entry.timestamp)) {

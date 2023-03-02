@@ -1,4 +1,5 @@
 - Upgrade flutter
+- Show age of signature in seconds
 
 Bugfixes:
 - Fix title typo

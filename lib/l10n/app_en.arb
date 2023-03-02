@@ -118,9 +118,19 @@
 			}
 		}
 	},
-	"publicKeyNext": "Public Key ({type}):",
-	"@publicKeyNext": {
-		"description": "Show the fingerprint of the public key",
+	"signatureAge": "{seconds} seconds ago",
+	"@signatureAge": {
+		"description": "Age of signature in seconds",
+		"placeholders": {
+			"seconds": {
+				"type": "int",
+				"example": "15"
+			}
+		}
+	},
+	"publicKeyType": "Public Key ({type}):",
+	"@publicKeyType": {
+		"description": "Show the type of the public key",
 		"placeholders": {
 			"type": {
 				"type": "String",
