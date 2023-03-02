@@ -133,6 +133,8 @@ class _ContactOverviewState extends State<ContactOverview> {
               const Spacer(),
               IconButton(
                 icon: const Icon(Icons.qr_code_scanner_outlined),
+                iconSize: 30,
+                padding: const EdgeInsets.fromLTRB(40, 5, 10, 5),
                 tooltip: localization.saveID,
                 onPressed: () {
                   scan(context, keys[pos]);

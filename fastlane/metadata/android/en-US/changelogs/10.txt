@@ -1,5 +1,6 @@
 - Upgrade flutter
 - Show age of signature in seconds
+- Increase size of qr-scan-button in overview and show id
 
 Bugfixes:
 - Fix title typo
