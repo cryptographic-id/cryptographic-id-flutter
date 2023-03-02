@@ -1,2 +1,5 @@
-- Fix title typo
 - Upgrade flutter
+
+Bugfixes:
+- Fix title typo
+- Fix wrong decoding of message

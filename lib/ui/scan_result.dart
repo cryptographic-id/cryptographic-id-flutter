@@ -67,6 +67,14 @@ String formatTimestamp(int ts) {
   return date.toString();
 }
 
+String intListToString(List<int> msg) {
+  try {
+    return String.fromCharCodes(msg);
+  } catch (e) {
+    return utf8.decode(msg, allowMalformed: true);
+  }
+}
+
 Map<CryptographicId_PersonalInformationType, ValueAddUpdate> idToPersonalInfoMap(
     CryptographicId id) {
   return {
@@ -220,7 +228,7 @@ class _ScanResultState extends State<ScanResult> {
               darkText(localization.signedDate(formatTimestamp(id.timestamp.toInt()))),
               darkText(""),
               darkText(localization.showMessage, FontWeight.w900),
-              darkText(utf8.decode(id.msg, allowMalformed: true)),
+              darkText(intListToString(id.msg)),
               darkText(""),
               if (showAddUpdate) ElevatedButton(
                 onPressed: () async {
