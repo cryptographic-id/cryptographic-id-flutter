@@ -1,7 +1,12 @@
-- Upgrade flutter
+Breaking changes:
+In the past, the message (in UTF-16) was "converted" to UTF-8 by truncating the higher byte, but signed and verified correctly. There was only a loss in the message. The personal information was transmitted as UTF-16, but only the lower bytes were signed and verified. This is fixed now. If you only use characters from the UTF-8 set, the new version is still compatible with older versions. If you use charcters from the UTF-16 set, signatures are not compatible with older versions. The rust and tpm2 part have been unaffected.
+
+Features:
+- Upgrade flutter (and use hashes for dependencies)
 - Show age of signature in seconds
 - Increase size of qr-scan-button in overview and show id
 
 Bugfixes:
 - Fix title typo
 - Fix wrong decoding of message
+- Fix signing and verifying of UTF-16 strings

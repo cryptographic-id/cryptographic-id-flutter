@@ -79,7 +79,7 @@ Uint8List personalInformationToDataToSign(CryptographicId_PersonalInformation en
   final data = ByteData.sublistView(list);
   data.setUint64(0, entry.timestamp.toInt(), Endian.big);
   data.setInt32(8, entry.type.value, Endian.big);
-  list.setAll(12, entry.value.codeUnits);
+  list.setAll(12, entry.value);
   return list;
 }
 

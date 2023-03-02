@@ -67,12 +67,8 @@ String formatTimestamp(int ts) {
   return date.toString();
 }
 
-String intListToString(List<int> msg) {
-  try {
-    return String.fromCharCodes(msg);
-  } catch (e) {
-    return utf8.decode(msg, allowMalformed: true);
-  }
+String bytesToString(List<int> msg) {
+  return utf8.decode(msg, allowMalformed: true);
 }
 
 Map<CryptographicId_PersonalInformationType, ValueAddUpdate> idToPersonalInfoMap(
@@ -81,7 +77,7 @@ Map<CryptographicId_PersonalInformationType, ValueAddUpdate> idToPersonalInfoMap
     for (final e in id.personalInformation)
       e.type: ValueAddUpdate(
         property: e.type,
-        value: e.value,
+        value: bytesToString(e.value),
         timestamp: e.timestamp.toInt(),
         signature: Uint8List.fromList(e.signature))
   };
@@ -232,7 +228,7 @@ class _ScanResultState extends State<ScanResult> {
               darkText(localization.signatureAge(signatureAge)),
               darkText(""),
               darkText(localization.showMessage, FontWeight.w900),
-              darkText(intListToString(id.msg)),
+              darkText(bytesToString(id.msg)),
               darkText(""),
               if (showAddUpdate) ElevatedButton(
                 onPressed: () async {

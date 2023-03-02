@@ -33,7 +33,7 @@ CryptographicId cryptographicIdFromDB(DBKeyInfo id) {
     result.personalInformation.add(
       CryptographicId_PersonalInformation(
         type: e.property,
-        value: e.value,
+        value: utf8.encode(e.value),
         timestamp: now,
       )
     );
@@ -63,7 +63,7 @@ class _ShareOwnIDState extends State<ShareOwnID> {
     });
     final useID = filterIDFromSet(widget.id, _toShare);
     final cryptoID = cryptographicIdFromDB(useID);
-    cryptoID.msg = _msgController.text.codeUnits;
+    cryptoID.msg = utf8.encode(_msgController.text);
     final storage = await getStorage();
     final privateKey = await storage.secureBinaryRead(
       SecureBinary.privateKey);
