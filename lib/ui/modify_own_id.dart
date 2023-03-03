@@ -184,6 +184,8 @@ class _ModifyOwnIDState extends State<ModifyOwnID> {
         actions: <Widget>[
           IconButton(
             icon: const Icon(Icons.save),
+            iconSize: 30,
+            padding: const EdgeInsets.fromLTRB(40, 5, 10, 5),
             tooltip: localization.saveID,
             onPressed: () {
               saveID(context);

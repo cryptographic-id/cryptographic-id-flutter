@@ -5,6 +5,7 @@ Features:
 - Upgrade flutter (and use hashes for dependencies)
 - Show age of signature in seconds
 - Increase size of qr-scan-button in overview and show id
+- Increase size of save-button in modify own id
 
 Bugfixes:
 - Fix title typo
