@@ -42,6 +42,10 @@
 	"@qrScanTooltip": {
 		"description": "Tooltip of the scan button"
 	},
+	"shareTooltip": "Share your id",
+	"@shareTooltip": {
+		"description": "Tooltip of the share-id button"
+	},
 	"scanContact": "Scan QR-Code from contact",
 	"@scanContact": {
 		"description": "Scan QR-Code from contact"

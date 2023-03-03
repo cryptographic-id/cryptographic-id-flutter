@@ -181,7 +181,7 @@ class _ContactOverviewState extends State<ContactOverview> {
             child: FloatingActionButton(
               heroTag: "share",
               onPressed: shareOwnID,
-              tooltip: "",
+              tooltip: localization.shareTooltip,
               child: const Icon(Icons.share),
             ),
           ),
