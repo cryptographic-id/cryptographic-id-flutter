@@ -154,6 +154,8 @@ class _ContactOverviewState extends State<ContactOverview> {
         title: Text(widget.title),
         actions: <Widget>[
           PopupMenuButton(
+            iconSize: 30,
+            padding: const EdgeInsets.fromLTRB(40, 8, 10, 8),
             onSelected: (result) {
               if (result == 0) {
                 editOwnID();

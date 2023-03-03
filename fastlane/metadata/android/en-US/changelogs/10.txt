@@ -6,6 +6,7 @@ Features:
 - Show age of signature in seconds
 - Increase size of qr-scan-button in overview and show id
 - Increase size of save-button in modify own id
+- Increase size of popmenu in overview
 
 Bugfixes:
 - Fix title typo
