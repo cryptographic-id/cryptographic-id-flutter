@@ -204,6 +204,9 @@ class _ScanResultState extends State<ScanResult> {
     bool showAddUpdate = (dbKeyInfo == null) || (values.isNotEmpty);
     final int signed = crypto.oldestTimestamp(id);
     final int signatureAge = scannedTime - signed;
+    final signatureTimeText = signatureAge > 0 ?
+      localization.signatureAgePast(signatureAge) :
+      localization.signatureAgeFuture(- signatureAge);
 
     return Scaffold(
       appBar: AppBar(
@@ -225,7 +228,7 @@ class _ScanResultState extends State<ScanResult> {
               const SizedBox(height: 15),
               showIsRecent,
               darkText(localization.signedDate(formatTimestamp(signed))),
-              darkText(localization.signatureAge(signatureAge)),
+              darkText(signatureTimeText),
               darkText(""),
               darkText(localization.showMessage, FontWeight.w900),
               darkText(bytesToString(id.msg)),

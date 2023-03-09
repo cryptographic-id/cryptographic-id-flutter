@@ -122,9 +122,19 @@
 			}
 		}
 	},
-	"signatureAge": "{seconds} seconds ago",
-	"@signatureAge": {
-		"description": "Age of signature in seconds",
+	"signatureAgePast": "{seconds} seconds ago",
+	"@signatureAgePast": {
+		"description": "Age of signature in seconds in the past",
+		"placeholders": {
+			"seconds": {
+				"type": "int",
+				"example": "15"
+			}
+		}
+	},
+	"signatureAgeFuture": "{seconds} seconds in the future",
+	"@signatureAgeFuture": {
+		"description": "Age of signature in seconds in the future",
 		"placeholders": {
 			"seconds": {
 				"type": "int",
