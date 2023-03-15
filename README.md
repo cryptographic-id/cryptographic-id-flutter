@@ -62,7 +62,7 @@ storeFile=path/to/keystore.jks
 Create release:
 
 ```
-flutter build apk
+flutter build apk --release
 ```
 
 ## Contributing
