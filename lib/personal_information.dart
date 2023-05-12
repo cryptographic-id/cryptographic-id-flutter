@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_gen/protobuf/cryptographic_id.pb.dart';
-import './crypto.dart';
+import './crypto.dart' as crypto;
 
 String localizePersonalInformationType(
     AppLocalizations localization,
@@ -143,7 +143,7 @@ TextFormField publicKeyFormField(AppLocalizations localization,
                                  CryptographicId_PublicKeyType type,
                                  Uint8List key) {
   final pubKeyController = TextEditingController();
-  pubKeyController.text = formatPublicKey(key, type);
+  pubKeyController.text = crypto.formatPublicKey(key, type);
   return TextFormField(
     controller: pubKeyController,
     readOnly: true,
