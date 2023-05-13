@@ -166,7 +166,7 @@ class _ModifyOwnIDState extends State<ModifyOwnID> {
           ),
         ),
         // use own form for dropdown, so own GlobalKey can be used
-        // otherwise it wont work to reset to value to null (show label)
+        // otherwise it wont work to reset the value to null (show label)
         Form(
           key: GlobalKey<FormState>(),
           child: Column(
