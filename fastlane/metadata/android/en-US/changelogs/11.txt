@@ -1,2 +1,5 @@
 - Update dependencies
 - Show signatures from the future with correct text
+
+Bugfixes:
+- Signature created in this second was marked as old

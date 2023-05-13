@@ -127,7 +127,7 @@ int now() {
 
 const timestampRecentDiff = 60;
 bool _isTsRecent(int now, fixnum.Int64 ts) {
-  return ts >= now - timestampRecentDiff && ts < now;
+  return ts >= now - timestampRecentDiff && ts <= now;
 }
 
 int oldestTimestamp(CryptographicId id) {

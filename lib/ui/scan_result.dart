@@ -204,7 +204,7 @@ class _ScanResultState extends State<ScanResult> {
     bool showAddUpdate = (dbKeyInfo == null) || (values.isNotEmpty);
     final int signed = crypto.oldestTimestamp(id);
     final int signatureAge = scannedTime - signed;
-    final signatureTimeText = signatureAge > 0 ?
+    final signatureTimeText = signatureAge >= 0 ?
       localization.signatureAgePast(signatureAge) :
       localization.signatureAgeFuture(- signatureAge);
 
