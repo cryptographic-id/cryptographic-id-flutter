@@ -10,7 +10,8 @@ import '../qr_show.dart';
 import '../storage.dart';
 import './loading_screen.dart';
 
-DBKeyInfo filterIDFromSet(DBKeyInfo id, Set<CryptographicId_PersonalInformationType> use) {
+DBKeyInfo filterSelectedInformation(
+    DBKeyInfo id, Set<CryptographicId_PersonalInformationType> use) {
   final Map<CryptographicId_PersonalInformationType,
             PersonalInformation> info = Map.from(id.personalInformation);
   info.removeWhere((k, v) => !use.contains(k));
@@ -24,7 +25,7 @@ DBKeyInfo filterIDFromSet(DBKeyInfo id, Set<CryptographicId_PersonalInformationT
   );
 }
 
-CryptographicId cryptographicIdFromDB(DBKeyInfo id) {
+CryptographicId dbKeyInfoToProtobuf(DBKeyInfo id) {
   final now = fixnum.Int64(crypto.now());
   CryptographicId result = CryptographicId();
   result.timestamp = now;
@@ -61,14 +62,14 @@ class _ShareOwnIDState extends State<ShareOwnID> {
     setState(() {
       _signing = true;
     });
-    final useID = filterIDFromSet(widget.id, _toShare);
-    final cryptoID = cryptographicIdFromDB(useID);
-    cryptoID.msg = utf8.encode(_msgController.text);
+    final useID = filterSelectedInformation(widget.id, _toShare);
+    final protobuf = dbKeyInfoToProtobuf(useID);
+    protobuf.msg = utf8.encode(_msgController.text);
     final storage = await getStorage();
     final privateKey = await storage.secureBinaryRead(
       SecureBinary.privateKey);
-    await crypto.signCryptographicId(cryptoID, privateKey!);
-    final data = cryptoID.writeToBuffer();
+    await crypto.signCryptographicId(protobuf, privateKey!);
+    final data = protobuf.writeToBuffer();
     final str = base64.encode(data);
     setState(() {
       _signing = false;
@@ -106,15 +107,19 @@ class _ShareOwnIDState extends State<ShareOwnID> {
       ),
     );
 
+    // iterate over pits, so the order makes sense and is deterministic
     for (final pit in CryptographicId_PersonalInformationType.values) {
       if (widget.id.personalInformation.containsKey(pit)) {
         final val = widget.id.personalInformation[pit]!;
         elements.add(
           CheckboxListTile(
-            title: IgnorePointer(child: pitToDisabledTextFormField(
-              pit: val.property,
-              value: val.value,
-              localization: localization)),
+            title: IgnorePointer(
+              child: pitToDisabledTextFormField(
+                pit: val.property,
+                value: val.value,
+                localization: localization,
+              ),
+            ),
             value: _toShare.contains(pit),
             onChanged: (bool? value) {
               if (value == null) {
