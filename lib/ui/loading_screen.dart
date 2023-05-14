@@ -5,10 +5,10 @@ Widget loadingScreen(String title) {
     appBar: AppBar(
       title: Text(title),
     ),
-    body: Center(
+    body: const Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
-        children: const <Widget>[
+        children: <Widget>[
           CircularProgressIndicator(),
         ],
       ),
