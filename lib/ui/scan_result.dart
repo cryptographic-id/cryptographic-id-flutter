@@ -114,6 +114,9 @@ class _ScanResultState extends State<ScanResult> {
     try {
       final localization = AppLocalizations.of(context)!;
       final tmpID = CryptographicId.fromBuffer(base64.decode(widget.data));
+      // calculate recent here and asap, otherwise a refresh will
+      // change the result
+      final tmpIsRecent = crypto.isSignatureRecent(tmpID);
       final p = ReceivePort();
       await Isolate.spawn(_backgroundVerify, Tuple(item1: p.sendPort,
                                                    item2: tmpID));
@@ -147,9 +150,6 @@ class _ScanResultState extends State<ScanResult> {
       if (errMsg == null) {
         valuesToAdd = createAddUpdateList(tmpID, keyFromDB);
       }
-      // caluclate recent here, otherwise navigator.pop will
-      // change the screen
-      final tmpIsRecent = crypto.isSignatureRecent(tmpID);
 
       setState(() {
         loaded = true;
