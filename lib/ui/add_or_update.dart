@@ -70,8 +70,14 @@ class AddOrUpdate extends StatefulWidget {
 }
 
 class _AddOrUpdateState extends State<AddOrUpdate> {
-  bool nameValid = false;
-  String currName = "";
+  bool _nameValid = false;
+  final TextEditingController _nameController = TextEditingController();
+
+  Future<bool> isNameValid(String text) async {
+    final storage = await getStorage();
+    final exists = await storage.existsKeyInfoWithName(text);
+    return text != "" && !exists;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -103,7 +109,7 @@ class _AddOrUpdateState extends State<AddOrUpdate> {
         textAlign: TextAlign.center,
         style: const TextStyle(fontWeight: FontWeight.bold)));
       elements.add(const SizedBox(height: 10));
-      nameValid = true;
+      _nameValid = true;
     } else {
       elements.add(Row(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -115,12 +121,11 @@ class _AddOrUpdateState extends State<AddOrUpdate> {
       elements.add(Container(
         margin: const EdgeInsets.symmetric(horizontal: 15),
         child: TextFormField(
+          controller: _nameController,
           onChanged: (text) async {
-            final storage = await getStorage();
-            final exists = await storage.existsKeyInfoWithName(text);
+            final valid = await isNameValid(text);
             setState(() {
-              nameValid = text != "" && !exists;
-              currName = text;
+              _nameValid = valid;
             });
           },
           keyboardType: TextInputType.text,
@@ -141,11 +146,22 @@ class _AddOrUpdateState extends State<AddOrUpdate> {
     }
     missingDetails.forEach(elements.add);
     final button = ElevatedButton(
-      onPressed: !nameValid ? null : () async {
+      onPressed: !_nameValid ? null : () async {
         try {
+          final name = _nameController.text;
+          if (widget.dbKeyInfo == null) {
+            // check to avoid race-conditions
+            final valid = await isNameValid(name);
+            if (!valid) {
+              return;
+            }
+          }
           final storage = await getStorage();
           final dbObj = createDatabaseObject(
-            currName, widget.id, widget.values, widget.dbKeyInfo);
+            name,
+            widget.id,
+            widget.values,
+            widget.dbKeyInfo);
           if (widget.dbKeyInfo == null) {
             await storage.insertKeyInfo(dbObj);
           } else {
