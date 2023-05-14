@@ -122,6 +122,8 @@ class _ContactOverviewState extends State<ContactOverview> {
         height: 1.0,
         thickness: 3.0,
       ),
+      // add gap for floatingActionButton
+      padding: const EdgeInsets.only(bottom: 60),
       itemCount: keys.length,
       itemBuilder: (context, i) {
         final pos = i;
@@ -178,22 +180,22 @@ class _ContactOverviewState extends State<ContactOverview> {
         children: [
           Container(
             margin: const EdgeInsets.only(left: 10),
-            child: FloatingActionButton(
+            child: FloatingActionButton.extended(
               heroTag: "share",
               onPressed: shareOwnID,
               tooltip: localization.shareTooltip,
-              child: const Icon(Icons.share),
+              label: const Icon(Icons.share),
             ),
           ),
           Container(
             margin: const EdgeInsets.only(left: 10),
-            child: FloatingActionButton(
+            child: FloatingActionButton.extended(
               heroTag: "scan",
               onPressed: () {
                 scan(context, null);
               },
               tooltip: localization.qrScanTooltip,
-              child: const Icon(Icons.person_add),
+              label: const Icon(Icons.person_add),
             ),
           ),
         ],

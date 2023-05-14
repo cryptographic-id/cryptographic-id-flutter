@@ -1,5 +1,6 @@
 - Update dependencies
 - Show signatures from the future with correct text
+- Use extended floating action buttons
 
 Bugfixes:
 - Signature created in this second was marked as old
