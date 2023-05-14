@@ -2,7 +2,7 @@ stages:
   - test
 
 test-job:
-  image: cirrusci/flutter
+  image: cirruslabs/flutter
   stage: test
   script:
     - sudo apt-get update
