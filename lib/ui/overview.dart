@@ -181,21 +181,21 @@ class _ContactOverviewState extends State<ContactOverview> {
           Container(
             margin: const EdgeInsets.only(left: 10),
             child: FloatingActionButton.extended(
-              heroTag: "share",
-              onPressed: shareOwnID,
-              tooltip: localization.shareTooltip,
-              label: const Icon(Icons.share),
-            ),
-          ),
-          Container(
-            margin: const EdgeInsets.only(left: 10),
-            child: FloatingActionButton.extended(
               heroTag: "scan",
               onPressed: () {
                 scan(context, null);
               },
               tooltip: localization.qrScanTooltip,
               label: const Icon(Icons.person_add),
+            ),
+          ),
+          Container(
+            margin: const EdgeInsets.only(left: 10),
+            child: FloatingActionButton.extended(
+              heroTag: "share",
+              onPressed: shareOwnID,
+              tooltip: localization.shareTooltip,
+              label: const Icon(Icons.share),
             ),
           ),
         ],
