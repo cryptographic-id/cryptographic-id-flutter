@@ -24,16 +24,17 @@ class _ContactOverviewState extends State<ContactOverview> {
   String? error;
   List<DBKeyInfo> keys = [];
 
-  void scan(BuildContext innerContext, DBKeyInfo? compare) async {
-    String title = AppLocalizations.of(context)!.scanContact;
-    if (compare != null) {
-      title = AppLocalizations.of(context)!.scanContactName(compare.name);
+  void scan(BuildContext innerContext, DBKeyInfo? checkIdentity) async {
+    final localization = AppLocalizations.of(context)!;
+    String title = localization.scanContact;
+    if (checkIdentity != null) {
+      title = localization.scanContactName(checkIdentity.name);
     }
     final data = await scanQRCodeAsync(title, context);
     if (mounted) {
       await Navigator.of(context).push(
         MaterialPageRoute(
-          builder: (c) => ScanResult(data: data, check: compare),
+          builder: (c) => ScanResult(data: data, checkIdentity: checkIdentity),
         ),
       );
       _loadData();

@@ -43,9 +43,13 @@ Widget showValidationError(String title, String error) {
 }
 
 class ScanResult extends StatefulWidget {
-  const ScanResult({Key? key, required this.data, required this.check}) : super(key: key);
+  const ScanResult({
+    Key? key,
+    required this.data,
+    required this.checkIdentity,
+  }) : super(key: key);
   final String data;
-  final DBKeyInfo? check;
+  final DBKeyInfo? checkIdentity;
 
   @override
   State<ScanResult> createState() => _ScanResultState();
@@ -126,15 +130,15 @@ class _ScanResultState extends State<ScanResult> {
       final result = await p.first;
       var errMsg = null;
       if (result.item1) {
-        if (widget.check != null) {
-          final toCheck = widget.check!;
-          if (!listEquals(toCheck.publicKey, tmpID.publicKey)) {
-            errMsg = localization.differentSignature(toCheck.name);
+        if (widget.checkIdentity != null) {
+          final checkIdentity = widget.checkIdentity!;
+          if (!listEquals(checkIdentity.publicKey, tmpID.publicKey)) {
+            errMsg = localization.differentSignature(checkIdentity.name);
           } else {
             if (keyFromDB != null) {
-              if (keyFromDB.name != toCheck.name) {
+              if (keyFromDB.name != checkIdentity.name) {
                 errMsg = localization.databaseNameDiffers(
-                  keyFromDB.name, toCheck.name);
+                  keyFromDB.name, checkIdentity.name);
               }
             }
           }
