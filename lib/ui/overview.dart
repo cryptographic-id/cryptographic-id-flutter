@@ -20,11 +20,11 @@ class ContactOverview extends StatefulWidget {
 
 class _ContactOverviewState extends State<ContactOverview> {
   bool loaded = false;
-  DBKeyInfo ownID = createPlaceholderOwnID();
+  DBIdentity ownID = createPlaceholderOwnID();
   String? error;
-  List<DBKeyInfo> keys = [];
+  List<DBIdentity> keys = [];
 
-  void scan(BuildContext innerContext, DBKeyInfo? checkIdentity) async {
+  void scan(BuildContext innerContext, DBIdentity? checkIdentity) async {
     final localization = AppLocalizations.of(context)!;
     String title = localization.scanContact;
     if (checkIdentity != null) {
@@ -41,7 +41,7 @@ class _ContactOverviewState extends State<ContactOverview> {
     }
   }
 
-  void showID(DBKeyInfo id) {
+  void showID(DBIdentity id) {
     Navigator.of(context).push(
       MaterialPageRoute(
         builder: (c) => ShowID(

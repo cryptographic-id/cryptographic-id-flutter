@@ -10,12 +10,12 @@ import '../qr_show.dart';
 import '../storage.dart';
 import './loading_screen.dart';
 
-DBKeyInfo filterSelectedInformation(
-    DBKeyInfo id, Set<CryptographicId_PersonalInformationType> use) {
+DBIdentity filterSelectedInformation(
+    DBIdentity id, Set<CryptographicId_PersonalInformationType> use) {
   final Map<CryptographicId_PersonalInformationType,
             PersonalInformation> info = Map.from(id.personalInformation);
   info.removeWhere((k, v) => !use.contains(k));
-  return DBKeyInfo(
+  return DBIdentity(
     name: id.name,
     publicKey: id.publicKey,
     date: id.date,
@@ -25,7 +25,7 @@ DBKeyInfo filterSelectedInformation(
   );
 }
 
-CryptographicId dbKeyInfoToProtobuf(DBKeyInfo id) {
+CryptographicId dbKeyInfoToProtobuf(DBIdentity id) {
   final now = fixnum.Int64(crypto.now());
   CryptographicId result = CryptographicId();
   result.timestamp = now;
@@ -47,7 +47,7 @@ class ShareOwnID extends StatefulWidget {
     Key? key,
     required this.id,
   }) : super(key: key);
-  final DBKeyInfo id;
+  final DBIdentity id;
 
   @override
   State<ShareOwnID> createState() => _ShareOwnIDState();

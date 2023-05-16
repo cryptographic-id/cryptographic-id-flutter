@@ -49,7 +49,7 @@ class ScanResult extends StatefulWidget {
     required this.checkIdentity,
   }) : super(key: key);
   final String data;
-  final DBKeyInfo? checkIdentity;
+  final DBIdentity? checkIdentity;
 
   @override
   State<ScanResult> createState() => _ScanResultState();
@@ -87,7 +87,7 @@ Map<CryptographicId_PersonalInformationType, ValueAddUpdate> idToPersonalInfoMap
   };
 }
 
-List<ValueAddUpdate> createAddUpdateList(CryptographicId id, DBKeyInfo? dbKey) {
+List<ValueAddUpdate> createAddUpdateList(CryptographicId id, DBIdentity? dbKey) {
   var curr = idToPersonalInfoMap(id);
   if (dbKey != null) {
     for (final i in dbKey.personalInformation.entries) {
@@ -110,7 +110,7 @@ class _ScanResultState extends State<ScanResult> {
   bool isRecent = false;
   int scannedTime = crypto.now();
   String? error;
-  DBKeyInfo? dbKeyInfo;
+  DBIdentity? dbKeyInfo;
   CryptographicId id = CryptographicId();
   List<ValueAddUpdate> values = [];
 

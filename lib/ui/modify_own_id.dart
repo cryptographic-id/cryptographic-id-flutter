@@ -15,7 +15,7 @@ class ModifyOwnID extends StatefulWidget {
     required this.onSaved,
   }) : super(key: key);
   final Function(BuildContext context) onSaved;
-  final DBKeyInfo ownID;
+  final DBIdentity ownID;
 
   @override
   State<ModifyOwnID> createState() => _ModifyOwnIDState();
@@ -24,7 +24,7 @@ class ModifyOwnID extends StatefulWidget {
 class _ModifyOwnIDState extends State<ModifyOwnID> {
   bool _saving = false;
   String? _error;
-  DBKeyInfo _ownID = createPlaceholderOwnID();
+  DBIdentity _ownID = createPlaceholderOwnID();
   final _formKey = GlobalKey<FormState>();
   CryptographicId_PersonalInformationType? _lastAdded;
   final Map<CryptographicId_PersonalInformationType,
@@ -61,7 +61,7 @@ class _ModifyOwnIDState extends State<ModifyOwnID> {
         final key = await createKey();
         await storage.secureBinaryWrite(
           SecureBinary.privateKey, key.item1);
-        final insertKey = DBKeyInfo(
+        final insertKey = DBIdentity(
           name: ownIdentityDBName,
           publicKey: key.item2,
           date: 0,
@@ -71,7 +71,7 @@ class _ModifyOwnIDState extends State<ModifyOwnID> {
         );
         await storage.insertKeyInfo(insertKey);
       } else {
-        final insertKey = DBKeyInfo(
+        final insertKey = DBIdentity(
           name: ownIdentityDBName,
           publicKey: _ownID.publicKey,
           date: 0,

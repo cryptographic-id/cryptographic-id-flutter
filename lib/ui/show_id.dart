@@ -6,7 +6,7 @@ import '../storage.dart';
 
 class ShowID extends StatelessWidget {
   const ShowID({Key? key, required this.id, required this.scan}) : super(key: key);
-  final DBKeyInfo id;
+  final DBIdentity id;
   final Function(BuildContext context) scan;
 
   @override

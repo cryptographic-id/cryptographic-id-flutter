@@ -24,10 +24,10 @@ class ValueAddUpdate {
   });
 }
 
-DBKeyInfo createDatabaseObject(String name,
-                               CryptographicId id,
-                               List<ValueAddUpdate> values,
-                               DBKeyInfo? dbKey) {
+DBIdentity createDatabaseObject(String name,
+                                CryptographicId id,
+                                List<ValueAddUpdate> values,
+                                DBIdentity? dbKey) {
   final Map<CryptographicId_PersonalInformationType,
             PersonalInformation> updateInfo = {
     for (final v in values)
@@ -40,7 +40,7 @@ DBKeyInfo createDatabaseObject(String name,
         )
   };
   if (dbKey == null) {
-    return DBKeyInfo(
+    return DBIdentity(
       name: name,
       publicKey: Uint8List.fromList(id.publicKey),
       date: id.timestamp.toInt(),
@@ -61,7 +61,7 @@ class AddOrUpdate extends StatefulWidget {
     required this.dbKeyInfo,
     required this.values,
     required this.id}) : super(key: key);
-  final DBKeyInfo? dbKeyInfo;
+  final DBIdentity? dbKeyInfo;
   final List<ValueAddUpdate> values;
   final CryptographicId id;
 

@@ -70,7 +70,7 @@ class PersonalInformation {
   }
 }
 
-class DBKeyInfo {
+class DBIdentity {
   final String name;
   final Uint8List publicKey;
   final CryptographicId_PublicKeyType publicKeyType;
@@ -79,7 +79,7 @@ class DBKeyInfo {
   final Map<CryptographicId_PersonalInformationType,
             PersonalInformation> personalInformation;
 
-  DBKeyInfo({
+  DBIdentity({
     required this.name,
     required this.publicKey,
     required this.publicKeyType,
@@ -105,9 +105,9 @@ class DBKeyInfo {
 }
 
 
-Future<DBKeyInfo> publicKeyFromMap(Storage storage, Map<String, dynamic> entry) async {
+Future<DBIdentity> publicKeyFromMap(Storage storage, Map<String, dynamic> entry) async {
   final pi = await storage.fetchPersonalInformation(entry["name"]);
-  return DBKeyInfo(
+  return DBIdentity(
     name: entry["name"],
     date: entry["date"],
     publicKey: entry["public_key"],
@@ -170,7 +170,7 @@ class Storage {
     await storage.write(key: key, value: str, aOptions: aOptions);
   }
 
-  Future<void> _upsertPersonalInfo(Batch batch, DBKeyInfo key) async {
+  Future<void> _upsertPersonalInfo(Batch batch, DBIdentity key) async {
     for (final entry in key.personalInformation.entries) {
       final map = entry.value.toMap();
       map["public_key_name"] = key.name;
@@ -180,13 +180,13 @@ class Storage {
     }
   }
 
-  Future<void> upsertPersonalInfo(DBKeyInfo key) async {
+  Future<void> upsertPersonalInfo(DBIdentity key) async {
     final batch = database.batch();
     await _upsertPersonalInfo(batch, key);
     await batch.commit();
   }
 
-  Future<DBKeyInfo> insertKeyInfo(DBKeyInfo key) async {
+  Future<DBIdentity> insertKeyInfo(DBIdentity key) async {
     var map = key.toMap();
     map["slot"] = slot;
     final batch = database.batch();
@@ -213,7 +213,7 @@ class Storage {
     }));
   }
 
-  Future<List<DBKeyInfo>> fetchKeyInfos() async {
+  Future<List<DBIdentity>> fetchKeyInfos() async {
     final List<Map<String, dynamic>> maps = await database.query(
       'dbkeyInfos',
       where: 'slot = ? AND NOT deleted AND name != ?',
@@ -236,7 +236,7 @@ class Storage {
     return false;
   }
 
-  Future<DBKeyInfo?> fetchKeyInfo(String name) async {
+  Future<DBIdentity?> fetchKeyInfo(String name) async {
     final List<Map<String, dynamic>> maps = await database.query(
       'dbkeyinfos',
       where: 'name = ? AND slot = ? AND NOT deleted',
@@ -247,11 +247,11 @@ class Storage {
     return null;
   }
 
-  Future<DBKeyInfo?> fetchOwnKeyInfo() async {
+  Future<DBIdentity?> fetchOwnKeyInfo() async {
     return fetchKeyInfo(ownIdentityDBName);
   }
 
-  Future<DBKeyInfo?> fetchKeyInfoFromKey(Uint8List key) async {
+  Future<DBIdentity?> fetchKeyInfoFromKey(Uint8List key) async {
     final List<Map<String, dynamic>> maps = await database.query(
       'dbkeyinfos',
       where: 'hex(public_key) = ? AND slot = ? AND NOT deleted',
@@ -263,8 +263,8 @@ class Storage {
   }
 }
 
-DBKeyInfo createPlaceholderOwnID() {
-  return DBKeyInfo(
+DBIdentity createPlaceholderOwnID() {
+  return DBIdentity(
     name: ownIdentityDBName,
     publicKey: Uint8List(0),
     date: 0,
@@ -274,7 +274,7 @@ DBKeyInfo createPlaceholderOwnID() {
   );
 }
 
-bool isPlaceholderOwnID(DBKeyInfo id) {
+bool isPlaceholderOwnID(DBIdentity id) {
   return id.publicKey.isEmpty;
 }
 
