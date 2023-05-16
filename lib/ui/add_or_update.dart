@@ -76,7 +76,7 @@ class _AddOrUpdateState extends State<AddOrUpdate> {
   Future<bool> isNameValid(String text) async {
     final storage = await getStorage();
     final exists = await storage.existsKeyInfoWithName(text);
-    return text != "" && !exists;
+    return text != ownIdentityDBName && !exists;
   }
 
   @override

@@ -62,7 +62,7 @@ class _ModifyOwnIDState extends State<ModifyOwnID> {
         await storage.secureBinaryWrite(
           SecureBinary.privateKey, key.item1);
         final insertKey = DBKeyInfo(
-          name: ownPublicKeyInfoName,
+          name: ownIdentityDBName,
           publicKey: key.item2,
           date: 0,
           signature: Uint8List(0),
@@ -72,7 +72,7 @@ class _ModifyOwnIDState extends State<ModifyOwnID> {
         await storage.insertKeyInfo(insertKey);
       } else {
         final insertKey = DBKeyInfo(
-          name: ownPublicKeyInfoName,
+          name: ownIdentityDBName,
           publicKey: _ownID.publicKey,
           date: 0,
           signature: Uint8List(0),
