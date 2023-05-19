@@ -53,6 +53,12 @@ android {
         targetSdkVersion flutter.targetSdkVersion
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
+        ndk {
+            // Flutter does not support x86, but bundle build will create
+            // a lib folder for it (some dependencies support it), which
+            // causes some devices to fail to start the application.
+            abiFilters 'armeabi-v7a', 'arm64-v8a', 'x86_64'
+        }
     }
 
     signingConfigs {
