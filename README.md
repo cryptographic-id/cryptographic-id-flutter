@@ -6,8 +6,6 @@ This app has three use cases:
 
 ##### Attest the state of a Linux computer
 
-This app can verify signatures made with
-[cryptographic-id-rs](https://gitlab.com/cryptographic_id/cryptographic-id-rs).
 When your computer is in a trustworthy state, you can generate a private
 key hidden in the TPM2 of your computer. This private key can be sealed with
 the current state of the computer (PCRs). Then the computer can only sign a
@@ -16,6 +14,8 @@ For example, you can seal the key against the secure boot state (PCR7). If your
 computer is booting an operating system signed by another vendor, the TPM2
 cannot unseal the private key. So if your computer can generate a correct
 signature, it is in this known state.
+You can create a sealed private key and create such a signature with
+[cryptographic-id-rs](https://gitlab.com/cryptographic_id/cryptographic-id-rs).
 This is similar to [tpm2-totp](https://github.com/tpm2-software/tpm2-totp)
 but uses asymmetric cryptography. This means you do not need to keep the
 verification code a secret, but you can share it safely with the world.
@@ -34,8 +34,7 @@ instead.
 
 This works as the section above and has the same shortcomings. It can be used
 to verify someone in person when he sends his public key to you
-in advance.
-
+in advance over a secure channel.
 
 [<img src="https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png"
   alt="Get it on Google Play"
