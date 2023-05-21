@@ -37,6 +37,9 @@ to verify someone in person when he sends his public key to you
 in advance.
 
 
+[<img src="https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png"
+  alt="Get it on Google Play"
+  height="80">](https://play.google.com/store/apps/details?id=io.gitlab.cryptographic_id.playstore)
 [<img src="https://fdroid.gitlab.io/artwork/badge/get-it-on.png"
   alt="Get it on F-Droid"
   height="80">](https://f-droid.org/packages/io.gitlab.cryptographic_id)
