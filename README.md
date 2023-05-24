@@ -18,7 +18,7 @@ You can create a sealed private key and create such a signature with
 [cryptographic-id-rs](https://gitlab.com/cryptographic_id/cryptographic-id-rs).
 This is similar to [tpm2-totp](https://github.com/tpm2-software/tpm2-totp)
 but uses asymmetric cryptography. This means you do not need to keep the
-verification code a secret, but you can share it safely with the world.
+verification code secure. You can share it safely with the world.
 
 ##### Verify the identity of a phone
 
@@ -27,13 +27,13 @@ If your phone can create a correct signature, you know it is the same phone.
 Since the operating system can access the private key, the security guarantees
 are much weaker than with a TPM2. So the verification is just as secure as
 your phone.
-If you use Graphene OS, I recommend [Auditor](https://attestation.app/tutorial)
-instead.
+If you use Graphene OS, also have a look at
+[Auditor](https://attestation.app/tutorial).
 
 ##### Verify that a person is in possession of a private key
 
-This works as the section above and has the same shortcomings. It can be used
-to verify someone in person when he sends his public key to you
+This works as well as the section above but has the same shortcomings. It can
+be used to verify someone in person when he sends his public key to you
 in advance over a secure channel.
 
 [<img src="https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png"
