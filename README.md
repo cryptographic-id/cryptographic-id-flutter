@@ -2,9 +2,16 @@
 
 ## Attest the trustworthiness of a device using asymmetric cryptography
 
-This app has three use cases:
+[<img src="https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png"
+  alt="Get it on Google Play"
+  height="80">](https://play.google.com/store/apps/details?id=io.gitlab.cryptographic_id.playstore)
+[<img src="https://fdroid.gitlab.io/artwork/badge/get-it-on.png"
+  alt="Get it on F-Droid"
+  height="80">](https://f-droid.org/packages/io.gitlab.cryptographic_id)
 
-##### Attest the state of a Linux computer
+### Use cases
+
+#### Attest the state of a Linux computer
 
 When your computer is in a trustworthy state, you can generate a private
 key hidden in the TPM2 of your computer. This private key can be sealed with
@@ -20,7 +27,7 @@ This is similar to [tpm2-totp](https://github.com/tpm2-software/tpm2-totp)
 but uses asymmetric cryptography. This means you do not need to keep the
 verification code secure. You can share it safely with the world.
 
-##### Verify the identity of a phone
+#### Verify the identity of a phone
 
 You can generate a private key when your phone is in a trustworthy state.
 If your phone can create a correct signature, you know it is the same phone.
@@ -30,18 +37,11 @@ your phone.
 If you use Graphene OS, also have a look at
 [Auditor](https://attestation.app/tutorial).
 
-##### Verify that a person is in possession of a private key
+#### Verify that a person is in possession of a private key
 
 This works as well as the section above but has the same shortcomings. It can
 be used to verify someone in person when he sends his public key to you
 in advance over a secure channel.
-
-[<img src="https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png"
-  alt="Get it on Google Play"
-  height="80">](https://play.google.com/store/apps/details?id=io.gitlab.cryptographic_id.playstore)
-[<img src="https://fdroid.gitlab.io/artwork/badge/get-it-on.png"
-  alt="Get it on F-Droid"
-  height="80">](https://f-droid.org/packages/io.gitlab.cryptographic_id)
 
 ## Setup development environment
 

@@ -1,4 +1,4 @@
-This app has three use cases:
+Use cases:
 
 - Attest the state of a Linux computer
 
