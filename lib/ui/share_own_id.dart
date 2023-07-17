@@ -31,13 +31,11 @@ CryptographicId dbKeyInfoToProtobuf(DBIdentity id) {
   result.timestamp = now;
   result.publicKey = id.publicKey;
   for (final e in id.personalInformation.values) {
-    result.personalInformation.add(
-      CryptographicId_PersonalInformation(
-        type: e.property,
-        value: utf8.encode(e.value),
-        timestamp: now,
-      )
-    );
+    final pi = CryptographicId_PersonalInformation();
+    pi.type = e.property;
+    pi.value = utf8.encode(e.value);
+    pi.timestamp = now;
+    result.personalInformation.add(pi);
   }
   return result;
 }

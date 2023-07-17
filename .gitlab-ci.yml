@@ -2,7 +2,7 @@ stages:
   - test
 
 test-job:
-  image: ghcr.io/cirruslabs/flutter:3.10.0
+  image: ghcr.io/cirruslabs/flutter:3.10.6
   stage: test
   script:
     - sudo apt-get update
