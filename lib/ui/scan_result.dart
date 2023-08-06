@@ -3,6 +3,7 @@ import 'dart:isolate';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:flutter/services.dart' show rootBundle;
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_gen/protobuf/cryptographic_id.pb.dart';
 
@@ -41,6 +42,20 @@ Widget showValidationError(String title, String error) {
     ),
   );
 }
+
+Future<Map<String, String>> getknownKeys() async {
+  final str = await rootBundle.loadString('assets/known_devices.json');
+  Map<String, String> result = {};
+  Map<String, dynamic> devices = jsonDecode(str);
+  devices.forEach((e, v) {
+    if (v is String) {
+      result[v] = e;
+    }
+  });
+  return result;
+}
+
+Future<Map<String, String>> knownKeysFuture = getknownKeys();
 
 class ScanResult extends StatefulWidget {
   const ScanResult({
@@ -110,6 +125,7 @@ class _ScanResultState extends State<ScanResult> {
   bool isRecent = false;
   int scannedTime = crypto.now();
   String? error;
+  String? knownKey;
   DBIdentity? dbKeyInfo;
   CryptographicId id = CryptographicId();
   List<ValueAddUpdate> values = [];
@@ -155,6 +171,9 @@ class _ScanResultState extends State<ScanResult> {
         valuesToAdd = createAddUpdateList(tmpID, keyFromDB);
       }
 
+      final knownKeys = await knownKeysFuture;
+      final publicKey = crypto.formatPublicKey(
+        Uint8List.fromList(tmpID.publicKey), tmpID.publicKeyType);
       setState(() {
         loaded = true;
         id = tmpID;
@@ -162,6 +181,9 @@ class _ScanResultState extends State<ScanResult> {
         error = errMsg;
         isRecent = tmpIsRecent;
         values = valuesToAdd;
+        if (knownKeys.containsKey(publicKey)) {
+          knownKey = knownKeys[publicKey]!;
+        }
       });
     } catch (e, trace) {
       debugPrint(trace.toString());
@@ -229,6 +251,11 @@ class _ScanResultState extends State<ScanResult> {
               darkText(localization.publicKeyType(
                 id.publicKeyType.toString()), FontWeight.w900),
               publicKeyText,
+              if (knownKey != null) ...[
+                const SizedBox(height: 10),
+                darkText("Known key:", FontWeight.w900),
+                darkText(knownKey!),
+              ],
               const SizedBox(height: 15),
               showIsRecent,
               darkText(localization.signedDate(formatTimestamp(signed))),
