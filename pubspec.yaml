@@ -20,7 +20,7 @@ dependencies:
   barcode_widget: ^2.0.3
   cryptography: ^2.4.0
   fixnum: ^1.1.0
-  flutter_secure_storage: ^8.0.0
+  flutter_secure_storage: ^9.0.0
   intl: ^0.18.0
   pointycastle: ^3.6.2
   protobuf: ^3.0.0
