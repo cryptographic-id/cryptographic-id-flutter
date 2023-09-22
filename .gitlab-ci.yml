@@ -1,11 +1,16 @@
-stages:
-  - test
-
-test-job:
+test:
   image: ghcr.io/cirruslabs/flutter:3.10.6
-  stage: test
   script:
     - sudo apt-get update
     - sudo apt-get --yes install protobuf-compiler
     - git submodule update --init --recursive
     - bash test/ci-test.sh
+
+codespell:
+  image: ubuntu
+  script:
+    - apt-get update
+    - apt-get --yes install codespell git
+    - git submodule update --init --recursive
+    - codespell --skip ./.git,./flutter --check-filenames
+      --ignore-words-list keypair

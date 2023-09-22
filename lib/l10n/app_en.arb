@@ -70,7 +70,7 @@
 			}
 		}
 	},
-	"databaseNameDiffers": "Wierd! Signature matches, but database name differs: {name}, {databaseName}",
+	"databaseNameDiffers": "Weird! Signature matches, but database name differs: {name}, {databaseName}",
 	"@databaseNameDiffers": {
 		"description": "Selected contact to scan, but database fetched different contact",
 		"placeholders": {
@@ -210,7 +210,7 @@
 	"pitMatrixID": "Matrix ID",
 
 	"@@ui/modify_own_id.dart": "",
-	"modifyOwnIDFailed": "Modifing ID failed",
+	"modifyOwnIDFailed": "Modifying ID failed",
 	"saveOwnID": "Saving ID...",
 	"createID": "Create ID",
 	"@createID": {

@@ -2,7 +2,7 @@ name: cryptographic_id
 description:
   This is an Android App to create and verify identities based on ed25519
   signatures. It can be used to verify devices (e.g. replace tpm-otp) or
-  people who are in posession of a private key.
+  people who are in possession of a private key.
 
 repository: https://gitlab.com/cryptographic_id/cryptographic-id-flutter/
 issue_tracker: https://gitlab.com/cryptographic_id/cryptographic-id-flutter/-/issues

@@ -108,6 +108,6 @@ Please use `flutter analyze` before opening a pull request.
 <img src="fastlane/metadata/android/en-US/images/phoneScreenshots/3.png" alt="Signature recent" height="466">
 <img src="fastlane/metadata/android/en-US/images/phoneScreenshots/4.png" alt="Signature past" height="466">
 <img src="fastlane/metadata/android/en-US/images/phoneScreenshots/5.png" alt="Signature invalid" height="466">
-<img src="fastlane/metadata/android/en-US/images/phoneScreenshots/6.png" alt="Signature unkown" height="466">
+<img src="fastlane/metadata/android/en-US/images/phoneScreenshots/6.png" alt="Signature unknown" height="466">
 <img src="fastlane/metadata/android/en-US/images/phoneScreenshots/7.png" alt="Sign id" height="466">
 <img src="fastlane/metadata/android/en-US/images/phoneScreenshots/8.png" alt="Overview light" height="466">
