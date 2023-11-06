@@ -150,8 +150,8 @@ class _ModifyOwnIDState extends State<ModifyOwnID> {
       items: dropDownList,
     );
     if (!isPlaceholderOwnID(_ownID)) {
-      formList.add(publicKeyFormField(localization, _ownID.publicKeyType,
-                                      _ownID.publicKey));
+      formList.add(fingerprintFormField(localization, _ownID.publicKeyType,
+                                        _ownID.publicKey));
     }
 
     ListView body = ListView(

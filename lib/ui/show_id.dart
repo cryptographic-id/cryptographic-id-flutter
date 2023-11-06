@@ -26,8 +26,12 @@ class ShowID extends StatelessWidget {
         );
       }
     }
-    formList.add(publicKeyFormField(localization, id.publicKeyType,
-                                    id.publicKey));
+    formList.add(fingerprintFormField(localization, id.publicKeyType,
+                                      id.publicKey));
+    if (id.publicKeyType == CryptographicId_PublicKeyType.Prime256v1) {
+      formList.add(fingerprintFormField(localization, id.publicKeyType,
+                                        id.publicKey, true));
+    }
 
     ListView body = ListView(
       padding: const EdgeInsets.all(20),

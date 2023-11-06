@@ -152,11 +152,42 @@ bool isSignatureRecent(CryptographicId id) {
   return _isTsRecent(timestamp, id.timestamp);
 }
 
-String formatPublicKey(Uint8List key, CryptographicId_PublicKeyType type) {
+Uint8List encodeBigIntUncompressed(BigInt number) {
+  const size = 32;
+  final lastByte = BigInt.from(0xff);
+  var result = Uint8List(size);
+  for (var i = 0; i < size; i++) {
+    result[size - i - 1] = (number & lastByte).toInt();
+    number = number >> 8;
+  }
+  if (number != BigInt.from(0)) {
+    throw Exception("BigInt is too big to encode it");
+  }
+  return result;
+}
+
+String formatPublicKey(
+  Uint8List key,
+  CryptographicId_PublicKeyType type,
+  [bool legacy = false]
+) {
   var data = key;
-  if (type != CryptographicId_PublicKeyType.Ed25519) {
-    final digest = SHA256Digest();
-    data = digest.process(key);
+  if (type == CryptographicId_PublicKeyType.Prime256v1) {
+    if (legacy) {
+      final digest = SHA256Digest();
+      data = digest.process(key);
+    } else {
+      final eccDomain = ECCurve_prime256v1();
+      ECPoint? q = eccDomain.curve.decodePoint(key);
+      if (q == null || q.x == null || q.y == null) {
+        return "Invalid public key";
+      }
+      final digest = SHA256Digest();
+      final bytes = BytesBuilder();
+      bytes.add(encodeBigIntUncompressed(q.x!.toBigInteger()!));
+      bytes.add(encodeBigIntUncompressed(q.y!.toBigInteger()!));
+      data = digest.process(bytes.toBytes());
+    }
   }
   final hex = utils.hex(data);
   if (hex.length != 64) {

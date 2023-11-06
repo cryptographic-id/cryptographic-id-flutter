@@ -172,7 +172,7 @@ class _ScanResultState extends State<ScanResult> {
       }
 
       final knownKeys = await knownKeysFuture;
-      final publicKey = crypto.formatPublicKey(
+      final fingerprint = crypto.formatPublicKey(
         Uint8List.fromList(tmpID.publicKey), tmpID.publicKeyType);
       setState(() {
         loaded = true;
@@ -181,8 +181,8 @@ class _ScanResultState extends State<ScanResult> {
         error = errMsg;
         isRecent = tmpIsRecent;
         values = valuesToAdd;
-        if (knownKeys.containsKey(publicKey)) {
-          knownKey = knownKeys[publicKey]!;
+        if (knownKeys.containsKey(fingerprint)) {
+          knownKey = knownKeys[fingerprint]!;
         }
       });
     } catch (e, trace) {
@@ -224,9 +224,18 @@ class _ScanResultState extends State<ScanResult> {
       showName = darkText(localization.showName(dbKeyInfo!.name));
     }
 
-    final publicKey = crypto.formatPublicKey(
+    final fingerprint = crypto.formatPublicKey(
       Uint8List.fromList(id.publicKey), id.publicKeyType);
-    final publicKeyText = darkText(publicKey);
+    final fingerprintTexts = [
+      darkText(fingerprint),
+      if (id.publicKeyType == CryptographicId_PublicKeyType.Prime256v1) ...[
+        const SizedBox(height: 15),
+        darkText(localization.legacyFingerprint(
+          id.publicKeyType.toString()), FontWeight.w900),
+        darkText(crypto.formatPublicKey(
+          Uint8List.fromList(id.publicKey), id.publicKeyType, true)),
+      ]
+    ];
     bool showAddUpdate = (dbKeyInfo == null) || (values.isNotEmpty);
     final int signed = crypto.oldestTimestamp(id);
     final int signatureAge = scannedTime - signed;
@@ -248,9 +257,9 @@ class _ScanResultState extends State<ScanResult> {
               darkText(localization.signatureCorrect, FontWeight.w900),
               showName,
               const SizedBox(height: 15),
-              darkText(localization.publicKeyType(
+              darkText(localization.fingerprint(
                 id.publicKeyType.toString()), FontWeight.w900),
-              publicKeyText,
+              ...fingerprintTexts,
               if (knownKey != null) ...[
                 const SizedBox(height: 10),
                 darkText("Known key:", FontWeight.w900),

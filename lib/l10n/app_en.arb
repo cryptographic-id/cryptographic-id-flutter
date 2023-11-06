@@ -28,6 +28,26 @@
 			}
 		}
 	},
+	"fingerprint": "Fingerprint ({type})",
+	"@publicKey": {
+		"description": "Show the fingerprint of the public key",
+		"placeholders": {
+			"type": {
+				"type": "String",
+				"example": "Ed25519"
+			}
+		}
+	},
+	"legacyFingerprint": "Legacy Fingerprint ({type})",
+	"@publicKey": {
+		"description": "Show the legacy fingerprint of the public key",
+		"placeholders": {
+			"type": {
+				"type": "String",
+				"example": "Ed25519"
+			}
+		}
+	},
 
 	"@@ui/overview.dart": "",
 	"appInit": "Initializing app...",
@@ -142,16 +162,6 @@
 			}
 		}
 	},
-	"publicKeyType": "Public Key ({type}):",
-	"@publicKeyType": {
-		"description": "Show the type of the public key",
-		"placeholders": {
-			"type": {
-				"type": "String",
-				"example": "Ed25519"
-			}
-		}
-	},
 	"showMessage": "Message:",
 
 	"@@ui/add_or_update.dart": "",
@@ -240,16 +250,6 @@
 	"@@ui/sign_own_id.dart": "",
 	"createQRCode": "Create QR-Code",
 	"waitForSignature": "Signing...",
-	"publicKey": "Public Key ({type})",
-	"@publicKey": {
-		"description": "Show the fingerprint of the public key",
-		"placeholders": {
-			"type": {
-				"type": "String",
-				"example": "Ed25519"
-			}
-		}
-	},
 	"shareMessage": "Message",
 	"shareID": "Sign ID"
 }

@@ -41,6 +41,12 @@ Uint8List prime256v1PublicKey() {
     202]);
 }
 
+Uint8List prime256v1PublicKeyEncoded() {
+  return Uint8List.fromList([
+    2, 244, 227, 214, 219, 37, 6, 167, 33, 17, 114, 63, 100, 194, 174, 39, 218,
+    76, 14, 149, 150, 178, 144, 80, 39, 151, 160, 97, 219, 190, 53, 178, 153]);
+}
+
 CryptographicId ed25519signedMsg() {
   return CryptographicId.fromBuffer(base64.decode(
     "CiBnc/OgVDUsU9c6yA0Nl49PoOljQIQfphLBKKeZEAdmeBDjnNidBhoKTXkgbWVzc2FnZUpA2"
@@ -253,14 +259,83 @@ void main() {
     expect(crypto.isSignatureRecent(id), false);
   });
 
+  test('encodeBigIntUncompressed', () {
+    expect(crypto.encodeBigIntUncompressed(BigInt.from(197)),
+           [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 197]);
+    expect(crypto.encodeBigIntUncompressed(BigInt.parse(
+     "11299591275638674629668252309660987941464800843746387481241503097"
+     "0410840113039")),
+     [249, 209, 107, 145, 252, 59, 243, 121, 61, 75, 24, 227, 108, 210, 5, 27,
+      197, 206, 66, 20, 88, 10, 237, 214, 156, 214, 238, 101, 177, 72, 63,
+      143]);
+    expect(() => crypto.encodeBigIntUncompressed(BigInt.parse(
+     "9999999591275638674629668252309660987941464800843746387481241503097"
+     "0410840113039")), throwsA(isA<Exception>()));
+  });
+
   test('formatPublicKey', () {
-    expect(crypto.formatPublicKey(alicePublicKey(),
-                                  CryptographicId_PublicKeyType.Ed25519),
+    const alice =
            'F5:8B:97:F2:6C:5F:BD:EC\n61:08:6D:63:8C:03:87:42\n'
-           '6B:9A:D2:3A:FA:A1:E0:83\n6B:6C:D7:C3:66:81:95:67');
+           '6B:9A:D2:3A:FA:A1:E0:83\n6B:6C:D7:C3:66:81:95:67';
+    expect(crypto.formatPublicKey(alicePublicKey(),
+                                  CryptographicId_PublicKeyType.Ed25519,
+                                  false),
+           alice);
+    expect(crypto.formatPublicKey(alicePublicKey(),
+                                  CryptographicId_PublicKeyType.Ed25519,
+                                  true),
+           alice);
+
     expect(crypto.formatPublicKey(prime256v1PublicKey(),
-                                  CryptographicId_PublicKeyType.Prime256v1),
+                                  CryptographicId_PublicKeyType.Prime256v1,
+                                  true),
            'C3:25:12:8D:DF:E7:79:B4\n59:2E:64:C7:04:DC:FF:17\n'
            'BB:EE:B8:33:69:2F:F0:6E\n12:9B:DC:82:4E:16:6C:ED');
+    expect(crypto.formatPublicKey(prime256v1PublicKeyEncoded(),
+                                  CryptographicId_PublicKeyType.Prime256v1,
+                                  true),
+           'A6:ED:7C:17:DE:6E:2A:70\n85:35:7E:E4:52:A2:09:FA\n'
+           'D6:E6:C2:08:F6:41:2D:F5\nE2:4D:DB:59:AB:12:DF:94');
+
+    const prime256fingerprint =
+      '2B:7A:CF:2A:10:07:4D:F9\nDB:E8:01:2D:F6:A0:D6:A1\n'
+      'D6:ED:AF:72:4D:CC:06:E8\n37:37:DC:72:A9:C2:57:1A';
+    expect(crypto.formatPublicKey(prime256v1PublicKey(),
+                                  CryptographicId_PublicKeyType.Prime256v1,
+                                  false),
+           prime256fingerprint);
+    expect(crypto.formatPublicKey(prime256v1PublicKeyEncoded(),
+                                  CryptographicId_PublicKeyType.Prime256v1,
+                                  false),
+           prime256fingerprint);
+
+    var key = Uint8List.fromList([
+      4, 88, 108, 226, 103, 251, 196, 213, 2, 237, 184, 190, 201, 76, 85, 239,
+      241, 221, 192, 57, 229, 1, 74, 197, 214, 156, 214, 238, 101, 177, 72,
+      63, 143, 87, 35, 95, 211, 53, 219, 167, 132, 193, 128, 183, 7, 109, 184,
+      103, 62, 66, 142, 149, 148, 25, 210, 24, 248, 146, 173, 134, 155, 145,
+      211, 20, 133
+    ]);
+    expect(crypto.formatPublicKey(key,
+                                  CryptographicId_PublicKeyType.Prime256v1,
+                                  false),
+           '46:A9:B7:B9:AC:D1:90:62\nB7:43:73:1A:81:35:F2:E3\n'
+           '7C:19:45:B2:CC:BF:6D:ED\n79:54:B7:D9:38:12:B3:3E');
+    var keyBig = Uint8List.fromList([
+      4, 254, 108, 226, 103, 251, 196, 213, 2, 237, 184, 190, 201, 76, 85, 239,
+      241, 221, 192, 57, 229, 1, 74, 197, 214, 156, 214, 238, 101, 177, 72, 63,
+      143, 87, 35, 95, 211, 53, 219, 167, 132, 193, 128, 183, 7, 109, 184, 103,
+      62, 66, 142, 149, 148, 25, 210, 24, 248, 146, 173, 134, 155, 145, 211,
+      20, 253
+    ]);
+    expect(crypto.formatPublicKey(keyBig,
+                                  CryptographicId_PublicKeyType.Prime256v1,
+                                  false),
+           'D8:C7:0C:8A:58:25:19:09\nCD:38:CD:52:FB:47:72:6E\n'
+           'A4:05:28:4F:6F:FF:39:E8\n59:FF:F1:C9:3F:75:93:5E');
+    expect(crypto.formatPublicKey(Uint8List.fromList([0]),
+                                  CryptographicId_PublicKeyType.Prime256v1),
+           "Invalid public key");
   });
 }
