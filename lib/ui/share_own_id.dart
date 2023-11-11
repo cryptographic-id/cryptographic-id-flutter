@@ -18,6 +18,8 @@ DBIdentity filterSelectedInformation(
   return DBIdentity(
     name: id.name,
     publicKey: id.publicKey,
+    fingerprint: id.fingerprint,
+    duplicate: id.duplicate,
     date: id.date,
     signature: id.signature,
     publicKeyType: id.publicKeyType,

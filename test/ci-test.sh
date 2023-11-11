@@ -4,6 +4,7 @@ export PATH="$(pwd)/flutter/bin:${PATH}"
 export PATH="${PATH}:${HOME}/.pub-cache/bin"
 flutter pub global activate protoc_plugin
 mkdir -p .dart_tool/flutter_gen/protobuf/
+mkdir -p .dart_tool/sqflite_common_ffi/databases/
 protoc --proto_path=lib/cryptographic-id-protocol \
 	--dart_out=.dart_tool/flutter_gen/protobuf \
 	lib/cryptographic-id-protocol/cryptographic_id.proto

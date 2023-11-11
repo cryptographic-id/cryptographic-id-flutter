@@ -2,8 +2,8 @@ import 'dart:typed_data';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:sqflite/sqflite.dart';
-import 'package:sqflite_common/utils/utils.dart' as utils;
 import 'package:flutter_gen/protobuf/cryptographic_id.pb.dart';
+import '../crypto.dart';
 
 enum SecureBinary {
   privateKey,
@@ -25,11 +25,13 @@ Future<void> executeMany(Database db, String sql) async {
 
 Future<String> createTableSQL = loadSQL("create_tables");
 Future<String> upgradeTable2SQL = loadSQL("upgrade/2");
+Future<String> upgradeTable3PreSQL = loadSQL("upgrade/3_pre");
+Future<String> upgradeTable3PostSQL = loadSQL("upgrade/3_post");
 
 Future<Database> openOrCreateDatabase() async {
   var databasesPath = await getDatabasesPath();
   var path = databasesPath + '/main.db';
-  return await openDatabase(path, version: 2,
+  return await openDatabase(path, version: 3,
     onCreate: (Database db, int version) async {
       final sql = await createTableSQL;
       await executeMany(db, sql);
@@ -37,6 +39,34 @@ Future<Database> openOrCreateDatabase() async {
     onUpgrade: (db, oldVersion, newVersion) async {
       if (oldVersion < 2) {
         await executeMany(db, await upgradeTable2SQL);
+      }
+      if (oldVersion < 3) {
+        await executeMany(db, await upgradeTable3PreSQL);
+        final List<Map<String, dynamic>> maps = await db.query(
+          'dbkeyInfos',
+        );
+        final fingerprints = <String, int>{};
+        final batch = db.batch();
+        for (final readonly in maps) {
+          final e = Map<String, dynamic>.from(readonly);
+          final type = publicKeyTypeFromInt(e['public_key_type']);
+          var fingerprint = fingerprintFromPublicKey(e['public_key'], type);
+          if (fingerprints.containsKey(fingerprint)) {
+            final count = fingerprints[fingerprint]!;
+            e['duplicate'] = 1;
+            // fingerprint is unique
+            e['fingerprint'] = fingerprint + "_DUP" + count.toString();
+            fingerprints[fingerprint] = count + 1;
+          } else {
+            e['duplicate'] = 0;
+            e['fingerprint'] = fingerprint;
+            fingerprints[fingerprint] = 1;
+          }
+          batch.insert(
+            'dbkeyInfos', e, conflictAlgorithm: ConflictAlgorithm.replace);
+        }
+        await batch.commit();
+        await executeMany(db, await upgradeTable3PostSQL);
       }
     },
   );
@@ -73,6 +103,8 @@ class PersonalInformation {
 class DBIdentity {
   final String name;
   final Uint8List publicKey;
+  final String fingerprint;
+  final bool duplicate;
   final CryptographicId_PublicKeyType publicKeyType;
   final Uint8List signature;
   final int date;
@@ -82,6 +114,8 @@ class DBIdentity {
   DBIdentity({
     required this.name,
     required this.publicKey,
+    required this.fingerprint,
+    required this.duplicate,
     required this.publicKeyType,
     required this.date,
     required this.signature,
@@ -92,6 +126,8 @@ class DBIdentity {
     return <String, Object>{
       "name": name,
       "public_key": publicKey,
+      "fingerprint": fingerprint,
+      "duplicate": duplicate ? 1 : 0,
       "public_key_type": publicKeyType.value,
       "date": date,
       "signature": signature,
@@ -100,17 +136,24 @@ class DBIdentity {
 
   @override
   String toString() {
-    return '$name: $publicKey ( ' + personalInformation.toString() + ' )';
+    return '$name: $fingerprint ( ' + personalInformation.toString() + ' )';
   }
 }
 
 
-Future<DBIdentity> publicKeyFromMap(Storage storage, Map<String, dynamic> entry) async {
+Future<DBIdentity> identityFromMap(Storage storage, Map<String, dynamic> entry) async {
   final pi = await storage.fetchPersonalInformation(entry["name"]);
+  final duplicate = entry["duplicate"] != 0;
+  var fingerprint = entry["fingerprint"];
+  if (duplicate) {
+    fingerprint = fingerprint.split("_DUP")[0];
+  }
   return DBIdentity(
     name: entry["name"],
     date: entry["date"],
     publicKey: entry["public_key"],
+    fingerprint: fingerprint,
+    duplicate: duplicate,
     publicKeyType: publicKeyTypeFromInt(entry["public_key_type"]),
     signature: entry["signature"],
     personalInformation: pi,
@@ -221,7 +264,7 @@ class Storage {
       orderBy: 'name ASC',
     );
     return await Future.wait(List.generate(maps.length, (i) async {
-      return await publicKeyFromMap(this, maps[i]);
+      return await identityFromMap(this, maps[i]);
     }));
   }
 
@@ -242,7 +285,7 @@ class Storage {
       where: 'name = ? AND slot = ? AND NOT deleted',
       whereArgs: [name, slot]);
     if (maps.isNotEmpty) {
-      return await publicKeyFromMap(this, maps.first);
+      return await identityFromMap(this, maps.first);
     }
     return null;
   }
@@ -251,13 +294,16 @@ class Storage {
     return fetchKeyInfo(ownIdentityDBName);
   }
 
-  Future<DBIdentity?> fetchKeyInfoFromKey(Uint8List key) async {
+  Future<DBIdentity?> fetchKeyInfoFromKey(
+    Uint8List key,
+    CryptographicId_PublicKeyType type
+  ) async {
     final List<Map<String, dynamic>> maps = await database.query(
       'dbkeyinfos',
-      where: 'hex(public_key) = ? AND slot = ? AND NOT deleted',
-      whereArgs: [utils.hex(key), slot]);
+      where: 'fingerprint = ? AND slot = ? AND NOT deleted',
+      whereArgs: [fingerprintFromPublicKey(key, type), slot]);
     if (maps.isNotEmpty) {
-      return await publicKeyFromMap(this, maps.first);
+      return await identityFromMap(this, maps.first);
     }
     return null;
   }
@@ -267,6 +313,8 @@ DBIdentity createPlaceholderOwnID() {
   return DBIdentity(
     name: ownIdentityDBName,
     publicKey: Uint8List(0),
+    fingerprint: "",
+    duplicate: false,
     date: 0,
     signature: Uint8List(0),
     publicKeyType: CryptographicId_PublicKeyType.Ed25519,
@@ -275,7 +323,7 @@ DBIdentity createPlaceholderOwnID() {
 }
 
 bool isPlaceholderOwnID(DBIdentity id) {
-  return id.publicKey.isEmpty;
+  return id.fingerprint == "";
 }
 
 Future<Storage> storage = Storage._createWithDB();

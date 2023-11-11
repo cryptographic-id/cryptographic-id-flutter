@@ -274,38 +274,39 @@ void main() {
      "0410840113039")), throwsA(isA<Exception>()));
   });
 
-  test('formatPublicKey', () {
+  test('fingerprintFromPublicKey', () {
     const alice =
            'F5:8B:97:F2:6C:5F:BD:EC\n61:08:6D:63:8C:03:87:42\n'
            '6B:9A:D2:3A:FA:A1:E0:83\n6B:6C:D7:C3:66:81:95:67';
-    expect(crypto.formatPublicKey(alicePublicKey(),
+    expect(crypto.fingerprintFromPublicKey(alicePublicKey(),
                                   CryptographicId_PublicKeyType.Ed25519,
                                   false),
            alice);
-    expect(crypto.formatPublicKey(alicePublicKey(),
+    expect(crypto.fingerprintFromPublicKey(alicePublicKey(),
                                   CryptographicId_PublicKeyType.Ed25519,
                                   true),
            alice);
 
-    expect(crypto.formatPublicKey(prime256v1PublicKey(),
+    expect(crypto.fingerprintFromPublicKey(prime256v1PublicKey(),
                                   CryptographicId_PublicKeyType.Prime256v1,
                                   true),
            'C3:25:12:8D:DF:E7:79:B4\n59:2E:64:C7:04:DC:FF:17\n'
            'BB:EE:B8:33:69:2F:F0:6E\n12:9B:DC:82:4E:16:6C:ED');
-    expect(crypto.formatPublicKey(prime256v1PublicKeyEncoded(),
-                                  CryptographicId_PublicKeyType.Prime256v1,
-                                  true),
+    expect(crypto.fingerprintFromPublicKey(
+             prime256v1PublicKeyEncoded(),
+             CryptographicId_PublicKeyType.Prime256v1,
+             true),
            'A6:ED:7C:17:DE:6E:2A:70\n85:35:7E:E4:52:A2:09:FA\n'
            'D6:E6:C2:08:F6:41:2D:F5\nE2:4D:DB:59:AB:12:DF:94');
 
     const prime256fingerprint =
       '2B:7A:CF:2A:10:07:4D:F9\nDB:E8:01:2D:F6:A0:D6:A1\n'
       'D6:ED:AF:72:4D:CC:06:E8\n37:37:DC:72:A9:C2:57:1A';
-    expect(crypto.formatPublicKey(prime256v1PublicKey(),
+    expect(crypto.fingerprintFromPublicKey(prime256v1PublicKey(),
                                   CryptographicId_PublicKeyType.Prime256v1,
                                   false),
            prime256fingerprint);
-    expect(crypto.formatPublicKey(prime256v1PublicKeyEncoded(),
+    expect(crypto.fingerprintFromPublicKey(prime256v1PublicKeyEncoded(),
                                   CryptographicId_PublicKeyType.Prime256v1,
                                   false),
            prime256fingerprint);
@@ -317,7 +318,7 @@ void main() {
       103, 62, 66, 142, 149, 148, 25, 210, 24, 248, 146, 173, 134, 155, 145,
       211, 20, 133
     ]);
-    expect(crypto.formatPublicKey(key,
+    expect(crypto.fingerprintFromPublicKey(key,
                                   CryptographicId_PublicKeyType.Prime256v1,
                                   false),
            '46:A9:B7:B9:AC:D1:90:62\nB7:43:73:1A:81:35:F2:E3\n'
@@ -329,12 +330,12 @@ void main() {
       62, 66, 142, 149, 148, 25, 210, 24, 248, 146, 173, 134, 155, 145, 211,
       20, 253
     ]);
-    expect(crypto.formatPublicKey(keyBig,
+    expect(crypto.fingerprintFromPublicKey(keyBig,
                                   CryptographicId_PublicKeyType.Prime256v1,
                                   false),
            'D8:C7:0C:8A:58:25:19:09\nCD:38:CD:52:FB:47:72:6E\n'
            'A4:05:28:4F:6F:FF:39:E8\n59:FF:F1:C9:3F:75:93:5E');
-    expect(crypto.formatPublicKey(Uint8List.fromList([0]),
+    expect(crypto.fingerprintFromPublicKey(Uint8List.fromList([0]),
                                   CryptographicId_PublicKeyType.Prime256v1),
            "Invalid public key");
   });

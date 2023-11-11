@@ -144,7 +144,7 @@ TextFormField fingerprintFormField(AppLocalizations localization,
                                    Uint8List key,
                                    [legacy = false]) {
   final pubKeyController = TextEditingController();
-  pubKeyController.text = crypto.formatPublicKey(key, type, legacy);
+  pubKeyController.text = crypto.fingerprintFromPublicKey(key, type, legacy);
   final label = legacy ?
     localization.legacyFingerprint(type.toString()) :
     localization.fingerprint(type.toString());

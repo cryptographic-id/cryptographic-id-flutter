@@ -166,7 +166,7 @@ Uint8List encodeBigIntUncompressed(BigInt number) {
   return result;
 }
 
-String formatPublicKey(
+String fingerprintFromPublicKey(
   Uint8List key,
   CryptographicId_PublicKeyType type,
   [bool legacy = false]

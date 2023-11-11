@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_gen/protobuf/cryptographic_id.pb.dart';
 
+import '../crypto.dart' as crypto;
 import '../storage.dart';
 import '../personal_information.dart';
 import './error_screen.dart';
@@ -40,9 +41,13 @@ DBIdentity createDatabaseObject(String name,
         )
   };
   if (dbKey == null) {
+    final publicKey = Uint8List.fromList(id.publicKey);
     return DBIdentity(
       name: name,
-      publicKey: Uint8List.fromList(id.publicKey),
+      publicKey: publicKey,
+      fingerprint: crypto.fingerprintFromPublicKey(
+        publicKey, id.publicKeyType),
+      duplicate: false,
       date: id.timestamp.toInt(),
       signature: Uint8List.fromList(id.signature),
       publicKeyType: id.publicKeyType,

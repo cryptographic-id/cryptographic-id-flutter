@@ -142,21 +142,21 @@ class _ScanResultState extends State<ScanResult> {
                                                    item2: tmpID));
       final storage = await getStorage();
       final pubKey = Uint8List.fromList(tmpID.publicKey);
-      final keyFromDB = await storage.fetchKeyInfoFromKey(pubKey);
       final result = await p.first;
+      final fingerprint = crypto.fingerprintFromPublicKey(
+        pubKey, tmpID.publicKeyType);
+      DBIdentity? useIdentity;
+      if (widget.checkIdentity != null) {
+        useIdentity = widget.checkIdentity!;
+      } else {
+        useIdentity = await storage.fetchKeyInfoFromKey(
+          pubKey, tmpID.publicKeyType);
+      }
       var errMsg = null;
       if (result.item1) {
-        if (widget.checkIdentity != null) {
-          final checkIdentity = widget.checkIdentity!;
-          if (!listEquals(checkIdentity.publicKey, tmpID.publicKey)) {
-            errMsg = localization.differentSignature(checkIdentity.name);
-          } else {
-            if (keyFromDB != null) {
-              if (keyFromDB.name != checkIdentity.name) {
-                errMsg = localization.databaseNameDiffers(
-                  keyFromDB.name, checkIdentity.name);
-              }
-            }
+        if (useIdentity != null) {
+          if (useIdentity.fingerprint != fingerprint) {
+            errMsg = localization.differentSignature(useIdentity.name);
           }
         }
       } else {
@@ -168,16 +168,14 @@ class _ScanResultState extends State<ScanResult> {
       }
       List<ValueAddUpdate> valuesToAdd = [];
       if (errMsg == null) {
-        valuesToAdd = createAddUpdateList(tmpID, keyFromDB);
+        valuesToAdd = createAddUpdateList(tmpID, useIdentity);
       }
 
       final knownKeys = await knownKeysFuture;
-      final fingerprint = crypto.formatPublicKey(
-        Uint8List.fromList(tmpID.publicKey), tmpID.publicKeyType);
       setState(() {
         loaded = true;
         id = tmpID;
-        dbKeyInfo = keyFromDB;
+        dbKeyInfo = useIdentity;
         error = errMsg;
         isRecent = tmpIsRecent;
         values = valuesToAdd;
@@ -224,7 +222,7 @@ class _ScanResultState extends State<ScanResult> {
       showName = darkText(localization.showName(dbKeyInfo!.name));
     }
 
-    final fingerprint = crypto.formatPublicKey(
+    final fingerprint = crypto.fingerprintFromPublicKey(
       Uint8List.fromList(id.publicKey), id.publicKeyType);
     final fingerprintTexts = [
       darkText(fingerprint),
@@ -232,7 +230,7 @@ class _ScanResultState extends State<ScanResult> {
         const SizedBox(height: 15),
         darkText(localization.legacyFingerprint(
           id.publicKeyType.toString()), FontWeight.w900),
-        darkText(crypto.formatPublicKey(
+        darkText(crypto.fingerprintFromPublicKey(
           Uint8List.fromList(id.publicKey), id.publicKeyType, true)),
       ]
     ];

@@ -128,11 +128,13 @@ class _ContactOverviewState extends State<ContactOverview> {
       itemCount: keys.length,
       itemBuilder: (context, i) {
         final pos = i;
+        final textStyle = keys[pos].duplicate ?
+          const TextStyle(color: Colors.red) : const TextStyle();
         return ListTile(
           leading: const Icon(Icons.person),
           title: Row(
             children: [
-              Text(keys[pos].name),
+              Text(keys[pos].name, style: textStyle),
               const Spacer(),
               IconButton(
                 icon: const Icon(Icons.qr_code_scanner_outlined),

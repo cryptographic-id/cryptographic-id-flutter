@@ -57,6 +57,7 @@ class _ModifyOwnIDState extends State<ModifyOwnID> {
             signature: Uint8List(0),
             );
       }
+      const publicKeyType = CryptographicId_PublicKeyType.Ed25519;
       if (isPlaceholderOwnID(_ownID)) {
         final key = await createKey();
         await storage.secureBinaryWrite(
@@ -64,9 +65,12 @@ class _ModifyOwnIDState extends State<ModifyOwnID> {
         final insertKey = DBIdentity(
           name: ownIdentityDBName,
           publicKey: key.item2,
+          fingerprint: fingerprintFromPublicKey(
+            key.item2, publicKeyType),
+          duplicate: false,
           date: 0,
           signature: Uint8List(0),
-          publicKeyType: CryptographicId_PublicKeyType.Ed25519,
+          publicKeyType: publicKeyType,
           personalInformation: update,
         );
         await storage.insertKeyInfo(insertKey);
@@ -74,9 +78,12 @@ class _ModifyOwnIDState extends State<ModifyOwnID> {
         final insertKey = DBIdentity(
           name: ownIdentityDBName,
           publicKey: _ownID.publicKey,
+          fingerprint: fingerprintFromPublicKey(
+            _ownID.publicKey, publicKeyType),
           date: 0,
+          duplicate: false,
           signature: Uint8List(0),
-          publicKeyType: CryptographicId_PublicKeyType.Ed25519,
+          publicKeyType: publicKeyType,
           personalInformation: update,
         );
         await storage.upsertPersonalInfo(insertKey);
