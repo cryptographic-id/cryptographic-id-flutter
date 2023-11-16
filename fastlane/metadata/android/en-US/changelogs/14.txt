@@ -5,3 +5,5 @@ There are now too fields for the fingerprint:
 
 Since the public-key was used to identify identities in the database, there can be multiple entries for the same fingerprint. The fingerprint is now used to identify an identity. If there are multiple identities with the same fingerprint in the database, duplicates are marked red. This should not happen, except a signer changed its key format. (There is no known software, which did that).
 Duplicate entries will be removed in the future.
+
+Updated dependencies
