@@ -121,7 +121,7 @@ class _ContactOverviewState extends State<ContactOverview> {
     final children = ListView.separated(
       separatorBuilder: (context, index) => const Divider(
         height: 1.0,
-        thickness: 3.0,
+        thickness: 1.0,
       ),
       // add gap for floatingActionButton
       padding: const EdgeInsets.only(bottom: 60),

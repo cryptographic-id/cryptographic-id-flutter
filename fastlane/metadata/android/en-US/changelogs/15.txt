@@ -1,0 +1,2 @@
+- Use material 3 design and adapt design
+- Updated dependencies
