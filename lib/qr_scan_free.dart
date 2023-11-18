@@ -15,6 +15,7 @@ class ScanQR extends StatefulWidget {
 
 class _ScanQRState extends State<ScanQR> {
   QRViewController? controller;
+  String lastScanned = "";
   final GlobalKey qrKey = GlobalKey(debugLabel: 'QR');
 
   void _onQRViewCreated(QRViewController controller, BuildContext context) {
@@ -27,7 +28,13 @@ class _ScanQRState extends State<ScanQR> {
       } else {
         final code = scanData.code!;
         debugPrint('Barcode found! $code');
-        widget.onScanned(context, code);
+        if (code == lastScanned) {
+          // sometimes qr_code_scanner returns wrong results
+          // these cannot be decoded properly and result in an error
+          // this hopefully reduces these problems
+          widget.onScanned(context, code);
+        }
+        lastScanned = code;
       }
     });
   }
