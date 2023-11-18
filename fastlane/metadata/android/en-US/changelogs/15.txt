@@ -1,3 +1,4 @@
 - Use material 3 design and adapt design
 - Updated dependencies
 - Try to mitigate errors caused by wrong scans returned by qr_code_scanner
+- Use mobile_scanner on non f-droid builds for faster and less-error-prone scans
