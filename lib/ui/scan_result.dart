@@ -225,6 +225,8 @@ class _ScanResultState extends State<ScanResult> {
     final fingerprint = crypto.fingerprintFromPublicKey(
       Uint8List.fromList(id.publicKey), id.publicKeyType);
     final fingerprintTexts = [
+      darkText(localization.fingerprint(
+        id.publicKeyType.toString()), FontWeight.w900),
       darkText(fingerprint),
       if (id.publicKeyType == CryptographicId_PublicKeyType.Prime256v1) ...[
         const SizedBox(height: 15),
@@ -254,10 +256,6 @@ class _ScanResultState extends State<ScanResult> {
             children: [
               darkText(localization.signatureCorrect, FontWeight.w900),
               showName,
-              const SizedBox(height: 15),
-              darkText(localization.fingerprint(
-                id.publicKeyType.toString()), FontWeight.w900),
-              ...fingerprintTexts,
               if (knownKey != null) ...[
                 const SizedBox(height: 10),
                 darkText("Known key:", FontWeight.w900),
@@ -267,10 +265,12 @@ class _ScanResultState extends State<ScanResult> {
               showIsRecent,
               darkText(localization.signedDate(formatTimestamp(signed))),
               darkText(signatureTimeText),
-              darkText(""),
+              const SizedBox(height: 15),
               darkText(localization.showMessage, FontWeight.w900),
               darkText(bytesToString(id.msg)),
-              darkText(""),
+              const SizedBox(height: 15),
+              ...fingerprintTexts,
+              const SizedBox(height: 15),
               if (showAddUpdate) ElevatedButton(
                 onPressed: () async {
                   final res = await Navigator.of(context).push(
