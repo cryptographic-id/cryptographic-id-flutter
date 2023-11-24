@@ -44,6 +44,16 @@
 
 ![Invalid signature](prime256v1_invalid_signature.svg)
 
+### Different encodings
+
+#### Unencoded
+
+![Unencoded](prime256v1_format_unencoded.svg)
+
+#### Encoded
+
+![Encoded](prime256v1_format_encoded.svg)
+
 ## Other
 
 #### Wrong public key type
