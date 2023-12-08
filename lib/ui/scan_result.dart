@@ -82,7 +82,7 @@ Future<void> _backgroundVerify(Tuple<SendPort, CryptographicId> params) async {
 }
 
 String formatTimestamp(int ts) {
-  var date = DateTime.fromMicrosecondsSinceEpoch(ts * 1000000);
+  var date = DateTime.fromMicrosecondsSinceEpoch(ts * 1000);
   return date.toString();
 }
 
@@ -238,7 +238,7 @@ class _ScanResultState extends State<ScanResult> {
     ];
     bool showAddUpdate = (dbKeyInfo == null) || (values.isNotEmpty);
     final int signed = crypto.oldestTimestamp(id);
-    final int signatureAge = scannedTime - signed;
+    final double signatureAge = (scannedTime - signed) / 1000;
     final signatureTimeText = signatureAge >= 0 ?
       localization.signatureAgePast(signatureAge) :
       localization.signatureAgeFuture(- signatureAge);

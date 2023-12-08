@@ -122,18 +122,26 @@ Future<void> signCryptographicId(CryptographicId id, Uint8List privateKey) async
 }
 
 int now() {
-  return (DateTime.now().millisecondsSinceEpoch / 1000).round();
+  return DateTime.now().millisecondsSinceEpoch;
 }
 
-const timestampRecentDiff = 60;
+const timestampRecentDiff = 60 * 1000;
 bool _isTsRecent(int now, fixnum.Int64 ts) {
   return ts >= now - timestampRecentDiff && ts <= now;
 }
 
+fixnum.Int64 timestampToMS(fixnum.Int64 ts) {
+  if (ts > 1672527600000) { // ms timestamp of 2023
+    return ts;
+  } else {
+    return ts * 1000;
+  }
+}
+
 int oldestTimestamp(CryptographicId id) {
-  int oldest = id.timestamp.toInt();
+  int oldest = timestampToMS(id.timestamp).toInt();
   for (final entry in id.personalInformation) {
-    final int ts = entry.timestamp.toInt();
+    final int ts = timestampToMS(entry.timestamp).toInt();
     if (ts < oldest) {
       oldest = ts;
     }
@@ -145,11 +153,11 @@ bool isSignatureRecent(CryptographicId id) {
   // do not use oldestTimestamp, since future-timestamps are not checked
   final int timestamp = now();
   for (final entry in id.personalInformation) {
-    if (!_isTsRecent(timestamp, entry.timestamp)) {
+    if (!_isTsRecent(timestamp, timestampToMS(entry.timestamp))) {
       return false;
     }
   }
-  return _isTsRecent(timestamp, id.timestamp);
+  return _isTsRecent(timestamp, timestampToMS(id.timestamp));
 }
 
 Uint8List encodeBigIntUncompressed(BigInt number) {

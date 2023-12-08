@@ -221,7 +221,7 @@ void main() {
 
   test('now', () {
     final before = DateTime.now().millisecondsSinceEpoch;
-    final now = crypto.now() * 1000;
+    final now = crypto.now();
     final after = DateTime.now().millisecondsSinceEpoch;
     expect(before - 1000 <= now && now <= after + 1000, true);
   });
@@ -235,28 +235,40 @@ void main() {
     entry2.timestamp = fixnum.Int64(515);
     id.personalInformation.add(entry1);
     id.personalInformation.add(entry2);
-    expect(crypto.oldestTimestamp(id), fixnum.Int64(505));
+    expect(crypto.oldestTimestamp(id), fixnum.Int64(505000));
     id.timestamp = fixnum.Int64(500);
-    expect(crypto.oldestTimestamp(id), fixnum.Int64(500));
+    expect(crypto.oldestTimestamp(id), fixnum.Int64(500000));
     entry2.timestamp = fixnum.Int64(499);
-    expect(crypto.oldestTimestamp(id), fixnum.Int64(499));
+    expect(crypto.oldestTimestamp(id), fixnum.Int64(499000));
+
+    // test in milliseconds
+    final msID = CryptographicId();
+    msID.timestamp = fixnum.Int64(1702396824351);
+    msID.personalInformation.add(entry1);
+    expect(crypto.oldestTimestamp(msID), fixnum.Int64(505000));
+    entry1.timestamp = fixnum.Int64(1802396824351);
+    expect(crypto.oldestTimestamp(msID), fixnum.Int64(1702396824351));
   });
 
   test('isSignatureRecent', () {
-    final now = fixnum.Int64(crypto.now());
-    final id = CryptographicId();
-    id.timestamp = now + 2;
-    final entry1 = CryptographicId_PersonalInformation();
-    entry1.timestamp = now - 1;
-    final entry2 = CryptographicId_PersonalInformation();
-    entry2.timestamp = now - 10;
-    id.personalInformation.add(entry1);
-    id.personalInformation.add(entry2);
-    expect(crypto.isSignatureRecent(id), false);
-    id.timestamp = now - 1;
-    expect(crypto.isSignatureRecent(id), true);
-    entry2.timestamp = now + 10;
-    expect(crypto.isSignatureRecent(id), false);
+    // test in seconds and milliseconds
+    for (int i = 0; i < 2; i++) {
+      final ts = (i == 0) ? crypto.now() : crypto.now() / 1000;
+      final now = fixnum.Int64(ts.round());
+      final id = CryptographicId();
+      id.timestamp = now + 2;
+      final entry1 = CryptographicId_PersonalInformation();
+      entry1.timestamp = now - 1;
+      final entry2 = CryptographicId_PersonalInformation();
+      entry2.timestamp = now - 10;
+      id.personalInformation.add(entry1);
+      id.personalInformation.add(entry2);
+      expect(crypto.isSignatureRecent(id), false);
+      id.timestamp = now - 1;
+      expect(crypto.isSignatureRecent(id), true);
+      entry2.timestamp = now + 10;
+      expect(crypto.isSignatureRecent(id), false);
+    }
   });
 
   test('encodeBigIntUncompressed', () {

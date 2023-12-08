@@ -1,0 +1,1 @@
+- Support timestamps in milliseconds, support for timestamps in seconds will be removed in the future.

@@ -147,8 +147,8 @@
 		"description": "Age of signature in seconds in the past",
 		"placeholders": {
 			"seconds": {
-				"type": "int",
-				"example": "15"
+				"type": "double",
+				"example": "1923512412.22313"
 			}
 		}
 	},
@@ -157,8 +157,8 @@
 		"description": "Age of signature in seconds in the future",
 		"placeholders": {
 			"seconds": {
-				"type": "int",
-				"example": "15"
+				"type": "double",
+				"example": "1923512412.22313"
 			}
 		}
 	},
