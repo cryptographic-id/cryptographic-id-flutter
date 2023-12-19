@@ -1,2 +1,4 @@
 - After 2024-07-01, remove duplicates and the duplicate key handling.
 - After 2025-01-01, remove handling of timestamps in seconds
+- Add config option to only sign with biometric authentication.
+- Implement real attestation
