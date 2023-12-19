@@ -19,6 +19,11 @@ Uint8List alicePublicKey() {
     103]);
 }
 
+String aliceFingerprint() {
+  return 'B9:67:D2:78:DF:6F:80:46\nA3:A2:E9:D4:FB:F2:E2:7B\n'
+         'DA:1E:74:E8:A7:79:37:33\n03:23:B5:AB:AE:3E:8D:68';
+}
+
 Uint8List bobPrivateKey() {
   return Uint8List.fromList([
     37, 103, 10, 136, 189, 252, 155, 20, 28, 102, 195, 1, 86, 98, 15, 143, 201,
@@ -30,6 +35,11 @@ Uint8List bobPublicKey() {
     200, 171, 177, 238, 239, 223, 192, 4, 109, 195, 209, 192, 4, 198, 207, 80,
     151, 40, 154, 100, 234, 145, 221, 219, 198, 110, 135, 32, 121, 81, 109,
     32]);
+}
+
+String bobFingerprint() {
+  return "F1:E5:58:C8:1D:18:FE:6E\nEB:04:79:BB:99:05:B7:0D\n"
+         "9D:4B:6F:82:0A:D3:33:03\n01:AA:DE:C6:E1:CA:EC:41";
 }
 
 Uint8List prime256v1PublicKey() {
@@ -287,17 +297,19 @@ void main() {
   });
 
   test('fingerprintFromPublicKey', () {
-    const alice =
-           'F5:8B:97:F2:6C:5F:BD:EC\n61:08:6D:63:8C:03:87:42\n'
-           '6B:9A:D2:3A:FA:A1:E0:83\n6B:6C:D7:C3:66:81:95:67';
     expect(crypto.fingerprintFromPublicKey(alicePublicKey(),
                                   CryptographicId_PublicKeyType.Ed25519,
                                   false),
-           alice);
+           aliceFingerprint());
     expect(crypto.fingerprintFromPublicKey(alicePublicKey(),
                                   CryptographicId_PublicKeyType.Ed25519,
                                   true),
-           alice);
+           'F5:8B:97:F2:6C:5F:BD:EC\n61:08:6D:63:8C:03:87:42\n'
+           '6B:9A:D2:3A:FA:A1:E0:83\n6B:6C:D7:C3:66:81:95:67');
+    expect(crypto.fingerprintFromPublicKey(prime256v1PublicKey(),
+                                  CryptographicId_PublicKeyType.Ed25519,
+                                  false),
+           'Invalid ED25519 public key');
 
     expect(crypto.fingerprintFromPublicKey(prime256v1PublicKey(),
                                   CryptographicId_PublicKeyType.Prime256v1,

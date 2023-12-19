@@ -1,1 +1,2 @@
 - Support timestamps in milliseconds, support for timestamps in seconds will be removed in the future.
+- Calculate correct ED25519 fingerprint (hash compressed point). It is handled exactly like the Prime256v1 fingerprint migration.

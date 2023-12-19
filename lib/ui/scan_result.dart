@@ -228,13 +228,11 @@ class _ScanResultState extends State<ScanResult> {
       darkText(localization.fingerprint(
         id.publicKeyType.toString()), FontWeight.w900),
       darkText(fingerprint),
-      if (id.publicKeyType == CryptographicId_PublicKeyType.Prime256v1) ...[
-        const SizedBox(height: 15),
-        darkText(localization.legacyFingerprint(
-          id.publicKeyType.toString()), FontWeight.w900),
-        darkText(crypto.fingerprintFromPublicKey(
-          Uint8List.fromList(id.publicKey), id.publicKeyType, true)),
-      ]
+      const SizedBox(height: 15),
+      darkText(localization.legacyFingerprint(
+        id.publicKeyType.toString()), FontWeight.w900),
+      darkText(crypto.fingerprintFromPublicKey(
+        Uint8List.fromList(id.publicKey), id.publicKeyType, true)),
     ];
     bool showAddUpdate = (dbKeyInfo == null) || (values.isNotEmpty);
     final int signed = crypto.oldestTimestamp(id);

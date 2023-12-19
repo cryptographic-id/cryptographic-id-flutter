@@ -66,7 +66,7 @@ class _ModifyOwnIDState extends State<ModifyOwnID> {
           name: ownIdentityDBName,
           publicKey: key.item2,
           fingerprint: fingerprintFromPublicKey(
-            key.item2, publicKeyType),
+            key.item2, publicKeyType, false),
           duplicate: false,
           date: 0,
           signature: Uint8List(0),
@@ -79,7 +79,7 @@ class _ModifyOwnIDState extends State<ModifyOwnID> {
           name: ownIdentityDBName,
           publicKey: _ownID.publicKey,
           fingerprint: fingerprintFromPublicKey(
-            _ownID.publicKey, publicKeyType),
+            _ownID.publicKey, publicKeyType, false),
           date: 0,
           duplicate: false,
           signature: Uint8List(0),
@@ -158,7 +158,9 @@ class _ModifyOwnIDState extends State<ModifyOwnID> {
     );
     if (!isPlaceholderOwnID(_ownID)) {
       formList.add(fingerprintFormField(localization, _ownID.publicKeyType,
-                                        _ownID.publicKey));
+                                        _ownID.publicKey, false));
+      formList.add(fingerprintFormField(localization, _ownID.publicKeyType,
+                                        _ownID.publicKey, true));
     }
 
     ListView body = ListView(

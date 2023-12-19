@@ -196,6 +196,16 @@ String fingerprintFromPublicKey(
       bytes.add(encodeBigIntUncompressed(q.y!.toBigInteger()!));
       data = digest.process(bytes.toBytes());
     }
+  } else {
+    if (!legacy) {
+      if (key.length != 32) {
+        return "Invalid ED25519 public key";
+      }
+      final digest = SHA256Digest();
+      final bytes = BytesBuilder();
+      bytes.add(key);
+      data = digest.process(bytes.toBytes());
+    }
   }
   final hex = utils.hex(data);
   if (hex.length != 64) {

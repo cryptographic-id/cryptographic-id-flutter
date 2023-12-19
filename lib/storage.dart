@@ -23,50 +23,58 @@ Future<void> executeMany(Database db, String sql) async {
   }
 }
 
-Future<String> createTableSQL = loadSQL("create_tables");
-Future<String> upgradeTable2SQL = loadSQL("upgrade/2");
-Future<String> upgradeTable3PreSQL = loadSQL("upgrade/3_pre");
-Future<String> upgradeTable3PostSQL = loadSQL("upgrade/3_post");
+Future<void> executeManyFromFile(Database db, String file) async {
+  String sql = await loadSQL(file);
+  await executeMany(db, sql);
+}
+
+Future<void> databaseUpdateFingerprint(Database db) async {
+  final List<Map<String, dynamic>> maps = await db.query(
+    'dbkeyInfos',
+    orderBy: 'name ASC',
+  );
+  final fingerprints = <String, int>{};
+  final batch = db.batch();
+  for (final readonly in maps) {
+    final e = Map<String, dynamic>.from(readonly);
+    final type = publicKeyTypeFromInt(e['public_key_type']);
+    var fingerprint = fingerprintFromPublicKey(e['public_key'], type);
+    if (fingerprints.containsKey(fingerprint)) {
+      final count = fingerprints[fingerprint]!;
+      e['duplicate'] = 1;
+      // fingerprint is unique
+      e['fingerprint'] = fingerprint + "_DUP" + count.toString();
+      fingerprints[fingerprint] = count + 1;
+    } else {
+      e['duplicate'] = 0;
+      e['fingerprint'] = fingerprint;
+      fingerprints[fingerprint] = 1;
+    }
+    batch.insert(
+      'dbkeyInfos', e, conflictAlgorithm: ConflictAlgorithm.replace);
+  }
+  await batch.commit();
+}
 
 Future<Database> openOrCreateDatabase() async {
   var databasesPath = await getDatabasesPath();
   var path = databasesPath + '/main.db';
-  return await openDatabase(path, version: 3,
+  return await openDatabase(path, version: 4,
     onCreate: (Database db, int version) async {
-      final sql = await createTableSQL;
-      await executeMany(db, sql);
+      await executeManyFromFile(db, "create_tables");
     },
     onUpgrade: (db, oldVersion, newVersion) async {
       if (oldVersion < 2) {
-        await executeMany(db, await upgradeTable2SQL);
+        await executeManyFromFile(db, "upgrade/2");
       }
       if (oldVersion < 3) {
-        await executeMany(db, await upgradeTable3PreSQL);
-        final List<Map<String, dynamic>> maps = await db.query(
-          'dbkeyInfos',
-        );
-        final fingerprints = <String, int>{};
-        final batch = db.batch();
-        for (final readonly in maps) {
-          final e = Map<String, dynamic>.from(readonly);
-          final type = publicKeyTypeFromInt(e['public_key_type']);
-          var fingerprint = fingerprintFromPublicKey(e['public_key'], type);
-          if (fingerprints.containsKey(fingerprint)) {
-            final count = fingerprints[fingerprint]!;
-            e['duplicate'] = 1;
-            // fingerprint is unique
-            e['fingerprint'] = fingerprint + "_DUP" + count.toString();
-            fingerprints[fingerprint] = count + 1;
-          } else {
-            e['duplicate'] = 0;
-            e['fingerprint'] = fingerprint;
-            fingerprints[fingerprint] = 1;
-          }
-          batch.insert(
-            'dbkeyInfos', e, conflictAlgorithm: ConflictAlgorithm.replace);
-        }
-        await batch.commit();
-        await executeMany(db, await upgradeTable3PostSQL);
+        await executeManyFromFile(db, "upgrade/3_pre");
+        await databaseUpdateFingerprint(db);
+        await executeManyFromFile(db, "upgrade/3_post");
+      }
+      if (oldVersion < 4) {
+        // Fix also ed25519 keys
+        await databaseUpdateFingerprint(db);
       }
     },
   );
@@ -307,6 +315,10 @@ class Storage {
     }
     return null;
   }
+
+  Future<void> close() {
+    return database.close();
+  }
 }
 
 DBIdentity createPlaceholderOwnID() {
@@ -330,4 +342,8 @@ Future<Storage> storage = Storage._createWithDB();
 
 Future<Storage> getStorage() {
   return storage;
+}
+
+Future<Storage> createForTestsOnly() {
+  return Storage._createWithDB();
 }
