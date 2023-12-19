@@ -148,6 +148,10 @@
 		"placeholders": {
 			"seconds": {
 				"type": "double",
+				"format": "currency",
+				"optionalParameters": {
+					"customPattern": "0.00"
+				},
 				"example": "1923512412.22313"
 			}
 		}
@@ -158,6 +162,10 @@
 		"placeholders": {
 			"seconds": {
 				"type": "double",
+				"format": "currency",
+				"optionalParameters": {
+					"customPattern": "0.00"
+				},
 				"example": "1923512412.22313"
 			}
 		}
