@@ -22,10 +22,10 @@ index c0e2bf5..50d2b6c 100644
 -    dependency: "direct main"
 -    description:
 -      name: mobile_scanner
--      sha256: cf978740676ba5b0c17399baf117984b31190bb7a6eaa43e51229ed46abc42ee
+-      sha256: c3e5bba1cb626b6ab4fc46610f72a136803f6854267967e19f4a4a6a31ff9b74
 -      url: "https://pub.dev"
 -    source: hosted
--    version: "3.5.2"
+-    version: "3.5.5"
    path:
      dependency: transitive
      description:
