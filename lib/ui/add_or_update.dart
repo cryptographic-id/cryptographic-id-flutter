@@ -172,11 +172,11 @@ class _AddOrUpdateState extends State<AddOrUpdate> {
           } else {
             await storage.upsertPersonalInfo(dbObj);
           }
-          if (mounted) {
+          if (context.mounted) {
             Navigator.of(context).pop(true);
           }
         } catch (e) {
-          if (mounted) {
+          if (context.mounted) {
             await Navigator.of(context).push(
               MaterialPageRoute(
                 builder: (c) => showError(localization.insertError, e.toString()),

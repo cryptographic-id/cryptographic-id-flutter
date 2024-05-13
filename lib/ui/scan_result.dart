@@ -279,7 +279,7 @@ class _ScanResultState extends State<ScanResult> {
                         values: values),
                     ),
                   );
-                  if (res != null && mounted) {
+                  if (res != null && context.mounted) {
                     Navigator.of(context).pop(res);
                   }
                 },
