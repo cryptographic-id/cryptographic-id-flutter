@@ -88,7 +88,7 @@ class _ModifyOwnIDState extends State<ModifyOwnID> {
         );
         await storage.upsertPersonalInfo(insertKey);
       }
-      if (mounted) {
+      if (context.mounted) {
         widget.onSaved(context);
       }
     } catch (e) {

@@ -11,25 +11,25 @@ index 0a9bc88..d51ca16 100644
  void scanQRCode(String purpose, BuildContext context,
                  Function(BuildContext, String) onScanned) async {
 diff --git a/pubspec.lock b/pubspec.lock
-index c0e2bf5..50d2b6c 100644
+index 30e9188..96b5861 100644
 --- a/pubspec.lock
 +++ b/pubspec.lock
-@@ -229,14 +229,6 @@ packages:
+@@ -253,14 +253,6 @@ packages:
        url: "https://pub.dev"
      source: hosted
-     version: "1.10.0"
+     version: "1.11.0"
 -  mobile_scanner:
 -    dependency: "direct main"
 -    description:
 -      name: mobile_scanner
--      sha256: c3e5bba1cb626b6ab4fc46610f72a136803f6854267967e19f4a4a6a31ff9b74
+-      sha256: "4e30d37fac883fd7c1649ccca76f7e0993aaf2d10dfb681524c4e3451b8e3835"
 -      url: "https://pub.dev"
 -    source: hosted
--    version: "3.5.5"
+-    version: "5.1.0"
    path:
      dependency: transitive
      description:
-@@ -333,6 +325,14 @@ packages:
+@@ -357,6 +349,14 @@ packages:
        url: "https://pub.dev"
      source: hosted
      version: "3.0.1"
@@ -44,15 +44,21 @@ index c0e2bf5..50d2b6c 100644
    sky_engine:
      dependency: transitive
      description: flutter
+@@ -500,4 +500,4 @@ packages:
+     version: "1.0.4"
+ sdks:
+   dart: ">=3.3.0 <4.0.0"
+-  flutter: ">=3.19.0"
++  flutter: ">=3.16.6"
 diff --git a/pubspec.yaml b/pubspec.yaml
-index a7f1314..f7bd880 100644
+index 4df90b2..4f90e74 100644
 --- a/pubspec.yaml
 +++ b/pubspec.yaml
 @@ -22,9 +22,9 @@ dependencies:
    fixnum: ^1.1.0
    flutter_secure_storage: ^9.0.0
-   intl: ^0.18.0
--  mobile_scanner: ^3.5.0
+   intl: ^0.18.1
+-  mobile_scanner: ^5.1.0
    pointycastle: ^3.6.2
    protobuf: ^3.0.0
 +  qr_code_scanner: ^1.0.1
